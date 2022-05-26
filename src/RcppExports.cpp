@@ -12,14 +12,14 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 
-RcppExport SEXP _rcpp_module_boot_stan_fit4weighted_decision_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4uncertainty_model_mod();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_stan_fit4weighted_decision_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4weighted_decision_mod, 0},
+    {"_rcpp_module_boot_stan_fit4uncertainty_model_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uncertainty_model_mod, 0},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_baldur3(DllInfo *dll) {
+RcppExport void R_init_baldur(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

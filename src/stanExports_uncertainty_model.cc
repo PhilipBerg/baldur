@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_weighted_decision.h"
+#include "stanExports_uncertainty_model.h"
 
-RCPP_MODULE(stan_fit4weighted_decision_mod) {
+RCPP_MODULE(stan_fit4uncertainty_model_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_weighted_decision")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_uncertainty_model")
 
     .constructor<SEXP,SEXP,SEXP>()
 
