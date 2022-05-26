@@ -16,5 +16,5 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(baldur3)
+library(baldur)
 ```

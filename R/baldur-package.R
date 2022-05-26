@@ -1,11 +1,11 @@
-#' The 'baldur3' package.
+#' The 'baldur' package.
 #'
 #' @description A DESCRIPTION OF THE PACKAGE
 #'
 #' @docType package
-#' @name baldur3-package
-#' @aliases baldur3
-#' @useDynLib baldur3, .registration = TRUE
+#' @name baldur-package
+#' @aliases baldur
+#' @useDynLib baldur, .registration = TRUE
 #' @import methods
 #' @import Rcpp
 #' @importFrom rstan sampling
@@ -14,6 +14,7 @@
 #' @importFrom stats predict.glm
 #' @importFrom stats residuals
 #' @importFrom stats sd
+#' @importFrom stats dgamma
 #' @importFrom magrittr %>%
 #' @importFrom dplyr across
 #' @references
