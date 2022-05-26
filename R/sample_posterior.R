@@ -13,11 +13,56 @@
 #' @export
 #'
 #' @examples 'lorem'
-sample_posterior <- function(data, identifier, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = baldur3::stanmodels$weighted_decision, clusters = 1){
+sample_posterior <- function(data, identifier, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = baldur::stanmodels$uncertainty_model, clusters = 1){
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
   C <- nrow(contrast_matrix)
+  pmap_columns <- rlang::expr(list(!!rlang::sym(identifier), alpha, beta))
+  ori_data <- data
   if(clusters != 1){
+    #### a ####
+    bayesian_model <- rstan::stan_model(
+      model_code  = 'data {
+  int<lower=0> N;   // number of data items
+  int<lower=0> K;   // number of predictors
+  int C;            // Number of comparisons to perform
+  matrix[N, K] x;   // predictor matrix
+  vector[N] y;      // outcome vector
+  int c[C, 2];      // Comparisons to perform
+  real alpha;       // alpha prior for gamma
+  real beta_gamma;  // beta prior for gamma
+  vector[K] xbar;   // prior reg coef
+  vector[N] u;      // uncertainty
+}
+parameters {
+  vector[K] beta;       // coefficients for predictors
+  real<lower=0> sigma;  // error scale
+  real y_diff[C];       // difference in coefficients
+  vector[K] eta;        // Error in mean
+}
+model {
+  sigma  ~ gamma(alpha, beta_gamma);
+  eta    ~ normal(0, 1);
+  y      ~ normal(x * beta, sigma*u);
+  beta   ~ normal(xbar + sigma*eta, sigma);
+  y_diff ~ normal(beta[c[, 1]] - beta[c[, 2]], sigma);
+}
+generated quantities {
+  vector<lower=0,upper=1>[C] error;
+  vector[C] q;
+  for (k in 1:C){
+    q[k] = beta[c[k, 1]] - beta[c[k, 2]];
+    if(0 < q[k]){
+      error[k] = normal_cdf(0, q[k], sigma)*2;
+    }else{
+      error[k] = (1 - normal_cdf(0, q[k], sigma))*2;
+    }
+  }
+}
+
+'
+    )
+    #### ####
     cl <- multidplyr::new_cluster(clusters)
     multidplyr::cluster_library(cl,
                                 c("rstan",
@@ -26,30 +71,42 @@ sample_posterior <- function(data, identifier, design_matrix, contrast_matrix, u
                                   "purrr",
                                   "tibble",
                                   "stringr",
-                                  "magrittr"
+                                  "magrittr",
+                                  'StanHeaders',
+                                  "rstantools"
                                 )
     )
     multidplyr::cluster_copy(cl,
                              c(
                                "bayesian_testing",
-                               "data",
                                "identifier",
                                "design_matrix",
                                "uncertainty_matrix",
-                               'bayesian_model',
                                "generate_stan_data_input",
-                               "stan_summary"
+                               "stan_summary",
+                               "pmap_columns",
+                               "ori_data",
+                               # paste0(
+                               #   "rstantools_model_",
+                               #   stringr::word(deparse(substitute(bayesian_model)), 2, sep = '\\$')
+                               # ),
+                               "N",
+                               "K",
+                               "C",
+                               "contrast_matrix",
+                               'bayesian_model'
                              )
     )
-    data <- data %>%
+    data <- ori_data %>%
       multidplyr::partition(cl)
+    on.exit({rm(cl); gc()})
   }
-  pmap_columns <- rlang::expr(list(!!rlang::sym(identifier), alpha, beta))
   data %>%
     dplyr::mutate(
       tmp = purrr::pmap(!!pmap_columns,
                         bayesian_testing,
-                        data, identifier, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix)
+                        ori_data, identifier, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix
+      )
     ) %>%
     dplyr::collect() %>%
     tidyr::unnest(tmp)
@@ -83,10 +140,12 @@ generate_stan_data_input <- function(id, identifier, design_matrix, data, uncert
 stan_summary <- function(fit, condi, C, dat){
   lfc_pars <- paste0('y_diff[', seq_len(C), ']')
   err_pars <- paste0('error[', seq_len(C), ']')
-  summ <- fit %>%
-    rstan::summary() %>%
+  summ <- rstan::summary(fit) %>%
     magrittr::use_series(summary)
-  summ <- summ[rownames(summ) %in% c(lfc_pars, err_pars, 'sigma'), colnames(summ) %in% c('mean', '2.5%', '97.5%', 'n_eff', 'Rhat', '50%')]
+  summ <- summ[
+    rownames(summ) %in% c(lfc_pars, err_pars, 'sigma'),
+    colnames(summ) %in% c('mean', '2.5%', '97.5%', 'n_eff', 'Rhat', '50%')
+  ]
   summ <- summ[1:nrow(summ), c(1:2, 4:6, 3)]
   dplyr::tibble(
     comparison = purrr::map2_chr(condi[dat$c[,1]], condi[dat$c[,2]], ~stringr::str_flatten(c(.x, .y), collapse = ' vs ')),
@@ -113,6 +172,6 @@ bayesian_testing <- function(id, alpha, beta, data, identifier, design_matrix, c
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
   dat <- generate_stan_data_input(id, identifier, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
-  fit <- sampling(model, data = dat, verbose = F, refresh = 0, warmup = 1000, iter = 2000, chains = 4)
-  stan_summary(fit, condi, C, dat)
+  rstan::sampling(object = model, data = dat, verbose = F, refresh = 0, warmup = 1000, iter = 2000, chains = 4) %>%
+    stan_summary(condi, C, dat)
 }

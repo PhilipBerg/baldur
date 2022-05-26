@@ -10,7 +10,7 @@ sample_posterior(
   design_matrix,
   contrast_matrix,
   uncertainty_matrix,
-  bayesian_model = baldur3::stanmodels$weighted_decision,
+  bayesian_model = baldur::stanmodels$uncertainty_model,
   clusters = 1
 )
 }

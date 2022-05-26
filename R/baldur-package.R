@@ -1,6 +1,6 @@
 #' The 'baldur' package.
 #'
-#' @description A DESCRIPTION OF THE PACKAGE
+#' @description baldur is a Bayesian model
 #'
 #' @docType package
 #' @name baldur-package
