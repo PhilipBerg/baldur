@@ -74,4 +74,4 @@ yeast_results %>%
 ```
 Here `err` is the probability of error, i.e., the tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, and `sigma` is the common variance.
 Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_975`, and `_med` are the 2.5, 97.5, and 50.0 percentiles, respectively.
-The suffixes `_eff` and `_rhat` are the diagnostic variables returned by `rstan` (please see the Stan manual for definitions).
+The suffixes `_eff` and `_rhat` are the diagnostic variables returned by `rstan` (please see the Stan manual for details).

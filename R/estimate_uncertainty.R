@@ -28,7 +28,7 @@ estimate_uncertainty <- function(data, identifier, design_matrix, formula = sd ~
     paste0(collapse = '|')
   data %>%
     dplyr::mutate(
-      dplyr::across(where(is.numeric),
+      dplyr::across(dplyr::where(is.numeric),
                     !!pred
       )
     ) %>%

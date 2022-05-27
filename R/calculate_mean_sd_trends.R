@@ -14,7 +14,7 @@ calculate_mean_sd_trends <- function(data, design_matrix){
     paste0(collapse = '|')
   data %>%
     dplyr::mutate(
-      mean = rowMeans(dplyr::across(matches(conditions))),
-      sd = apply(dplyr::across(matches(conditions)), 1, sd)
+      mean = rowMeans(dplyr::across(dplyr::matches(conditions))),
+      sd = apply(dplyr::across(dplyr::matches(conditions)), 1, sd)
     )
 }
