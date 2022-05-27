@@ -4,12 +4,14 @@
 \alias{estimate_uncertainty}
 \title{Estimate measurement uncertainty}
 \usage{
-estimate_uncertainty(data, identifier, formula = sd ~ mean + c)
+estimate_uncertainty(data, identifier, design_matrix, formula = sd ~ mean + c)
 }
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame}}
 
 \item{identifier}{Id column}
+
+\item{design_matrix}{Cell mean design matrix for the data}
 
 \item{formula}{Formula for the gamma regression}
 }
@@ -17,7 +19,7 @@ estimate_uncertainty(data, identifier, formula = sd ~ mean + c)
 A matrix with the uncertainty
 }
 \description{
-Estimates the measurement uncertainty for each data point.
+Estimates the measurement uncertainty for each data point using a Gamma regression.
 }
 \examples{
 'lorem'

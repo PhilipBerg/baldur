@@ -6,7 +6,7 @@
 \usage{
 sample_posterior(
   data,
-  identifier,
+  id_col_name,
   design_matrix,
   contrast_matrix,
   uncertainty_matrix,
@@ -17,7 +17,7 @@ sample_posterior(
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame} with alpha,beta priors annotated}
 
-\item{identifier}{A character of the id column}
+\item{id_col_name}{A character of the id column}
 
 \item{design_matrix}{A design matrix for the data (see example)}
 

@@ -15,7 +15,7 @@ calculate_mean_sd_trends(data, design_matrix)
 A \code{tibble} or \code{data.frame} with the mean and sd vectors
 }
 \description{
-Calculates the mean and variance of the rows.
+Calculates the mean and sd of the rows.
 }
 \examples{
 'lorem'

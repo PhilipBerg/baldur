@@ -1,6 +1,6 @@
 #' Calculate the Mean-Variance trend
 #'
-#' @description Calculates the mean and variance of the rows.
+#' @description Calculates the mean and sd of the rows.
 #' @param data A `tibble` or `data.frame` to annotate with mean and sd
 #' @param design_matrix A design matrix for the data (see example)
 #'

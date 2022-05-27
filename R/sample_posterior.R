@@ -2,7 +2,7 @@
 #'
 #' @description Function to sample the posterior of the Bayesian decision model.
 #' @param data A `tibble` or `data.frame` with alpha,beta priors annotated
-#' @param identifier A character of the id column
+#' @param id_col_name A character of the id column
 #' @param design_matrix A design matrix for the data (see example)
 #' @param contrast_matrix A contrast matrix of the decisions to test such that the first column is the index of the column in the design matrix that should be compared to the second column
 #' @param uncertainty_matrix A matrix of observation uncertainty
@@ -13,11 +13,11 @@
 #' @export
 #'
 #' @examples 'lorem'
-sample_posterior <- function(data, identifier, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = baldur::stanmodels$uncertainty_model, clusters = 1){
+sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = stanmodels$uncertainty_model, clusters = 1){
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
   C <- nrow(contrast_matrix)
-  pmap_columns <- rlang::expr(list(!!rlang::sym(identifier), alpha, beta))
+  pmap_columns <- rlang::expr(list(!!rlang::sym(id_col_name), alpha, beta))
   ori_data <- data
   if(clusters != 1){
     #### a ####
@@ -79,7 +79,7 @@ generated quantities {
     multidplyr::cluster_copy(cl,
                              c(
                                "bayesian_testing",
-                               "identifier",
+                               "id_col_name",
                                "design_matrix",
                                "uncertainty_matrix",
                                "generate_stan_data_input",
@@ -105,15 +105,15 @@ generated quantities {
     dplyr::mutate(
       tmp = purrr::pmap(!!pmap_columns,
                         bayesian_testing,
-                        ori_data, identifier, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix
+                        ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix
       )
     ) %>%
     dplyr::collect() %>%
     tidyr::unnest(tmp)
 }
 
-generate_stan_data_input <- function(id, identifier, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex){
-  row <- data[data[[identifier]] == id, stringr::str_detect(names(data), condi_regex)]
+generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex){
+  row <- data[data[[id_col_name]] == id, stringr::str_detect(names(data), condi_regex)]
   xbar <- purrr::map_dbl(purrr::set_names(condi, condi),
                          ~as.numeric(row[stringr::str_which(colnames(row), .x)]) %>%
                            mean()
@@ -168,10 +168,10 @@ stan_summary <- function(fit, condi, C, dat){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, identifier, design_matrix, comparison, model, N, K, C, uncertainty = NULL){
+bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL){
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
-  dat <- generate_stan_data_input(id, identifier, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
+  dat <- generate_stan_data_input(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
   rstan::sampling(object = model, data = dat, verbose = F, refresh = 0, warmup = 1000, iter = 2000, chains = 4) %>%
     stan_summary(condi, C, dat)
 }

@@ -1,14 +1,15 @@
 #' Estimate measurement uncertainty
-#' @description Estimates the measurement uncertainty for each data point.
+#' @description Estimates the measurement uncertainty for each data point using a Gamma regression.
 #' @param data A `tibble` or `data.frame`
-#' @param formula Formula for the gamma regression
 #' @param identifier Id column
+#' @param design_matrix Cell mean design matrix for the data
+#' @param formula Formula for the gamma regression
 #'
 #' @return A matrix with the uncertainty
 #' @export
 #'
 #' @examples 'lorem'
-estimate_uncertainty <- function(data, identifier, formula = sd ~ mean + c){
+estimate_uncertainty <- function(data, identifier, design_matrix, formula = sd ~ mean + c){
   gamma_reg <- glm(formula, Gamma(log), data)
   if(!is.null(data$c)){
     pred <- ~predict.glm(
@@ -23,13 +24,15 @@ estimate_uncertainty <- function(data, identifier, formula = sd ~ mean + c){
       type = "response"
     )
   }
+  condi_regex <- colnames(design_matrix) %>%
+    paste0(collapse = '|')
   data %>%
     dplyr::mutate(
       dplyr::across(where(is.numeric),
                     !!pred
       )
     ) %>%
-    dplyr::select(-c(dplyr::all_of(identifier), -where(is.numeric), c, mean, sd)) %>%
+    dplyr::select(dplyr::matches(condi_regex)) %>%
     as.matrix() %>%
     magrittr::set_rownames(data[[identifier]])
 }

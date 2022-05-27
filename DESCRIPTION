@@ -1,10 +1,10 @@
 Package: baldur
-Title: Bayesian Heirachal modeling for proteomics data
+Title: Bayesian Heirachal Modeling For Proteomics Data
 Version: 0.0.0.9000
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Differential abundance analysis for label-free proteomics
+Description: Differential abundance analysis for label-free proteomics using a bayesain decision model.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8

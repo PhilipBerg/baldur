@@ -14,7 +14,7 @@
 #' @examples 'lorem'
 trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps = .1, n = 1000, verbose = T){
   cur_data <- data %>%
-    prep_data_for_clustering(design_matrix, formula, eps = eps, n = n) %>%
+    prep_data_for_clustering(design_matrix, eps = eps, n = n) %>%
     run_procedure(formula, eps = eps, n = n)
   while (cur_data$i > 1) {
     if(verbose){
@@ -29,10 +29,10 @@ trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps
     dplyr::select(-c(betal, betau, intl, intu, alpha))
 }
 
-prep_data_for_clustering <- function(data, design_matrix, formula, eps = .1, n = 1000){
+prep_data_for_clustering <- function(data, design_matrix, eps = .1, n = 1000){
   data_ms <- data %>%
     calculate_mean_sd_trends(design_matrix)
-  gam_reg <-  glm(formula, Gamma(log), data_ms)
+  gam_reg <-  glm(sd ~ mean, Gamma(log), data_ms)
   data_ms %>%
     dplyr::mutate(
       res = residuals(gam_reg),
