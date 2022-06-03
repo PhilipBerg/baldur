@@ -14,7 +14,6 @@ knitr::opts_chunk$set(
 ```
 
 # baldur
-
 <!-- badges: start -->
 <!-- badges: end -->
 
@@ -22,12 +21,13 @@ The goal of baldur is to shine light on your proteomics data.
 
 ## Installation
 
-You can install the development version of baldur like so:
-
+You can install the development version of `baldur` like so:
 ``` r
 require(devtools)
 #devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 ```
+
+Please note that you need to follow the guidlines for seting upp RStan according to their homepage.
 
 ## Example
 

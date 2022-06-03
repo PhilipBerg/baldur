@@ -1,4 +1,3 @@
-// some comment
 data {
   int<lower=0> N;   // number of data items
   int<lower=0> K;   // number of predictors
