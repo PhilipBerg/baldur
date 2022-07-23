@@ -8,7 +8,8 @@
 #' @return A matrix with the uncertainty
 #' @export
 #'
-#' @examples 'lorem'
+#' @examples # Please see the vignette for a tutorial
+#' # vignette('baldur-tutorial')
 estimate_uncertainty <- function(data, identifier, design_matrix, formula = sd ~ mean + c){
   gamma_reg <- glm(formula, Gamma(log), data)
   if(!is.null(data$c)){

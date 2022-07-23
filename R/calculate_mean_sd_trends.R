@@ -7,7 +7,8 @@
 #' @return A `tibble` or `data.frame` with the mean and sd vectors
 #' @export
 #'
-#' @examples 'lorem'
+#' @examples # Please see the vignette for a tutorial
+#' # vignette('baldur-tutorial')
 calculate_mean_sd_trends <- function(data, design_matrix){
   conditions <- design_matrix %>%
     colnames() %>%

@@ -8,7 +8,8 @@
 #' @return A `tibble` or `data.frame` with the alpha,beta priors
 #' @export
 #'
-#' @examples 'lorem'
+#' @examples # Please see the vignette for a tutorial
+#' # vignette('baldur-tutorial')
 estimate_gamma_priors <- function(data, design_matrix, formula = sd ~ mean + c){
   gamma_reg <- glm(formula, Gamma(log), data)
   data %>%

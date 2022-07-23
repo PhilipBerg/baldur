@@ -11,7 +11,8 @@
 #' @return A `tibble` or `data.frame` the partitioning vector `c`
 #' @export
 #'
-#' @examples 'lorem'
+#' @examples # Please see the vignette for a tutorial
+#' # vignette('baldur-tutorial')
 trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps = .1, n = 1000, verbose = T){
   cur_data <- data %>%
     prep_data_for_clustering(design_matrix, eps = eps, n = n) %>%

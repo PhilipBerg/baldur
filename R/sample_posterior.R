@@ -12,7 +12,8 @@
 #' @return A `tibble` or `data.frame` annotated  with statistics of the posterior
 #' @export
 #'
-#' @examples 'lorem'
+#' @examples # Please see the vignette for a tutorial
+#' # vignette('baldur-tutorial')
 sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = stanmodels$uncertainty_model, clusters = 1){
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
