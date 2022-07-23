@@ -1,2 +1,11 @@
 baldur
 pair
+dplyr
+tidyr
+purrr
+tibble
+stringr
+magrittr
+StanHeaders
+ggplot2
+rstan
