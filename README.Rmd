@@ -13,9 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# baldur
-<!-- badges: start -->
-<!-- badges: end -->
+# Baldur
 
 The goal of Baldur is to shine light on your proteomics data.
 
@@ -24,8 +22,9 @@ Please note that `baldur` is currently only working on R versions 4.0.X.
 This is due to the dependency on RStan that is not yet working on the new toolchain associated with R versions 4.1.X.
 We hope to fix this problem as soon as possible.
 
-You can install the development version of `baldur` like so:
+You can install the development version of `baldur` from this github:
 ``` r
+require(devtools)
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 ```
 
