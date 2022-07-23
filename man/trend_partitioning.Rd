@@ -33,5 +33,6 @@ A \code{tibble} or \code{data.frame} the partitioning vector \code{c}
 Partitions the data into two mixtures.
 }
 \examples{
-'lorem'
+# Please see the vignette for a tutorial
+# vignette('baldur-tutorial')
 }

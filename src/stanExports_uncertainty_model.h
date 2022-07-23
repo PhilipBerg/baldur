@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_uncertainty_model");
-    reader.add_event(40, 38, "end", "model_uncertainty_model");
+    reader.add_event(39, 37, "end", "model_uncertainty_model");
     return reader;
 }
 #include <stan_meta_header.hpp>
@@ -80,27 +80,27 @@ public:
         (void) DUMMY_VAR__;  // suppress unused var warning
         try {
             // initialize data block variables from context__
-            current_statement_begin__ = 3;
+            current_statement_begin__ = 2;
             context__.validate_dims("data initialization", "N", "int", context__.to_vec());
             N = int(0);
             vals_i__ = context__.vals_i("N");
             pos__ = 0;
             N = vals_i__[pos__++];
             check_greater_or_equal(function__, "N", N, 0);
-            current_statement_begin__ = 4;
+            current_statement_begin__ = 3;
             context__.validate_dims("data initialization", "K", "int", context__.to_vec());
             K = int(0);
             vals_i__ = context__.vals_i("K");
             pos__ = 0;
             K = vals_i__[pos__++];
             check_greater_or_equal(function__, "K", K, 0);
-            current_statement_begin__ = 5;
+            current_statement_begin__ = 4;
             context__.validate_dims("data initialization", "C", "int", context__.to_vec());
             C = int(0);
             vals_i__ = context__.vals_i("C");
             pos__ = 0;
             C = vals_i__[pos__++];
-            current_statement_begin__ = 6;
+            current_statement_begin__ = 5;
             validate_non_negative_index("x", "N", N);
             validate_non_negative_index("x", "K", K);
             context__.validate_dims("data initialization", "x", "matrix_d", context__.to_vec(N,K));
@@ -114,7 +114,7 @@ public:
                     x(j_1__, j_2__) = vals_r__[pos__++];
                 }
             }
-            current_statement_begin__ = 7;
+            current_statement_begin__ = 6;
             validate_non_negative_index("y", "N", N);
             context__.validate_dims("data initialization", "y", "vector_d", context__.to_vec(N));
             y = Eigen::Matrix<double, Eigen::Dynamic, 1>(N);
@@ -124,7 +124,7 @@ public:
             for (size_t j_1__ = 0; j_1__ < y_j_1_max__; ++j_1__) {
                 y(j_1__) = vals_r__[pos__++];
             }
-            current_statement_begin__ = 8;
+            current_statement_begin__ = 7;
             validate_non_negative_index("c", "C", C);
             validate_non_negative_index("c", "2", 2);
             context__.validate_dims("data initialization", "c", "int", context__.to_vec(C,2));
@@ -138,19 +138,19 @@ public:
                     c[k_0__][k_1__] = vals_i__[pos__++];
                 }
             }
-            current_statement_begin__ = 9;
+            current_statement_begin__ = 8;
             context__.validate_dims("data initialization", "alpha", "double", context__.to_vec());
             alpha = double(0);
             vals_r__ = context__.vals_r("alpha");
             pos__ = 0;
             alpha = vals_r__[pos__++];
-            current_statement_begin__ = 10;
+            current_statement_begin__ = 9;
             context__.validate_dims("data initialization", "beta_gamma", "double", context__.to_vec());
             beta_gamma = double(0);
             vals_r__ = context__.vals_r("beta_gamma");
             pos__ = 0;
             beta_gamma = vals_r__[pos__++];
-            current_statement_begin__ = 11;
+            current_statement_begin__ = 10;
             validate_non_negative_index("xbar", "K", K);
             context__.validate_dims("data initialization", "xbar", "vector_d", context__.to_vec(K));
             xbar = Eigen::Matrix<double, Eigen::Dynamic, 1>(K);
@@ -160,7 +160,7 @@ public:
             for (size_t j_1__ = 0; j_1__ < xbar_j_1_max__; ++j_1__) {
                 xbar(j_1__) = vals_r__[pos__++];
             }
-            current_statement_begin__ = 12;
+            current_statement_begin__ = 11;
             validate_non_negative_index("u", "N", N);
             context__.validate_dims("data initialization", "u", "vector_d", context__.to_vec(N));
             u = Eigen::Matrix<double, Eigen::Dynamic, 1>(N);
@@ -176,15 +176,15 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 15;
+            current_statement_begin__ = 14;
             validate_non_negative_index("beta", "K", K);
             num_params_r__ += K;
-            current_statement_begin__ = 16;
+            current_statement_begin__ = 15;
             num_params_r__ += 1;
-            current_statement_begin__ = 17;
+            current_statement_begin__ = 16;
             validate_non_negative_index("y_diff", "C", C);
             num_params_r__ += (1 * C);
-            current_statement_begin__ = 18;
+            current_statement_begin__ = 17;
             validate_non_negative_index("eta", "K", K);
             num_params_r__ += K;
         } catch (const std::exception& e) {
@@ -204,7 +204,7 @@ public:
         (void) pos__; // dummy call to supress warning
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
-        current_statement_begin__ = 15;
+        current_statement_begin__ = 14;
         if (!(context__.contains_r("beta")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable beta missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("beta");
@@ -221,7 +221,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable beta: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 16;
+        current_statement_begin__ = 15;
         if (!(context__.contains_r("sigma")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable sigma missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("sigma");
@@ -234,7 +234,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable sigma: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 17;
+        current_statement_begin__ = 16;
         if (!(context__.contains_r("y_diff")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable y_diff missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("y_diff");
@@ -254,7 +254,7 @@ public:
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable y_diff: ") + e.what()), current_statement_begin__, prog_reader__());
             }
         }
-        current_statement_begin__ = 18;
+        current_statement_begin__ = 17;
         if (!(context__.contains_r("eta")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable eta missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("eta");
@@ -296,21 +296,21 @@ public:
         try {
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
-            current_statement_begin__ = 15;
+            current_statement_begin__ = 14;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> beta;
             (void) beta;  // dummy to suppress unused var warning
             if (jacobian__)
                 beta = in__.vector_constrain(K, lp__);
             else
                 beta = in__.vector_constrain(K);
-            current_statement_begin__ = 16;
+            current_statement_begin__ = 15;
             local_scalar_t__ sigma;
             (void) sigma;  // dummy to suppress unused var warning
             if (jacobian__)
                 sigma = in__.scalar_lb_constrain(0, lp__);
             else
                 sigma = in__.scalar_lb_constrain(0);
-            current_statement_begin__ = 17;
+            current_statement_begin__ = 16;
             std::vector<local_scalar_t__> y_diff;
             size_t y_diff_d_0_max__ = C;
             y_diff.reserve(y_diff_d_0_max__);
@@ -320,7 +320,7 @@ public:
                 else
                     y_diff.push_back(in__.scalar_constrain());
             }
-            current_statement_begin__ = 18;
+            current_statement_begin__ = 17;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> eta;
             (void) eta;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -328,15 +328,15 @@ public:
             else
                 eta = in__.vector_constrain(K);
             // model body
-            current_statement_begin__ = 21;
+            current_statement_begin__ = 20;
             lp_accum__.add(gamma_log<propto__>(sigma, alpha, beta_gamma));
-            current_statement_begin__ = 22;
+            current_statement_begin__ = 21;
             lp_accum__.add(normal_log<propto__>(eta, 0, 1));
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 22;
             lp_accum__.add(normal_log<propto__>(y, multiply(x, beta), multiply(sigma, u)));
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 23;
             lp_accum__.add(normal_log<propto__>(beta, add(xbar, multiply(sigma, eta)), sigma));
-            current_statement_begin__ = 25;
+            current_statement_begin__ = 24;
             lp_accum__.add(normal_log<propto__>(y_diff, subtract(stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "beta"), stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(2), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "beta")), sigma));
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -432,33 +432,33 @@ public:
             if (!include_gqs__ && !include_tparams__) return;
             if (!include_gqs__) return;
             // declare and define generated quantities
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 27;
             validate_non_negative_index("error", "C", C);
             Eigen::Matrix<double, Eigen::Dynamic, 1> error(C);
             stan::math::initialize(error, DUMMY_VAR__);
             stan::math::fill(error, DUMMY_VAR__);
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 28;
             validate_non_negative_index("q", "C", C);
             Eigen::Matrix<double, Eigen::Dynamic, 1> q(C);
             stan::math::initialize(q, DUMMY_VAR__);
             stan::math::fill(q, DUMMY_VAR__);
             // generated quantities statements
-            current_statement_begin__ = 30;
+            current_statement_begin__ = 29;
             for (int k = 1; k <= C; ++k) {
-                current_statement_begin__ = 31;
+                current_statement_begin__ = 30;
                 stan::model::assign(q, 
                             stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                             (get_base1(beta, get_base1(get_base1(c, k, "c", 1), 1, "c", 2), "beta", 1) - get_base1(beta, get_base1(get_base1(c, k, "c", 1), 2, "c", 2), "beta", 1)), 
                             "assigning variable q");
-                current_statement_begin__ = 32;
+                current_statement_begin__ = 31;
                 if (as_bool(logical_lt(0, get_base1(q, k, "q", 1)))) {
-                    current_statement_begin__ = 33;
+                    current_statement_begin__ = 32;
                     stan::model::assign(error, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                 (normal_cdf(0, get_base1(q, k, "q", 1), sigma) * 2), 
                                 "assigning variable error");
                 } else {
-                    current_statement_begin__ = 35;
+                    current_statement_begin__ = 34;
                     stan::model::assign(error, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                 ((1 - normal_cdf(0, get_base1(q, k, "q", 1), sigma)) * 2), 
@@ -466,14 +466,14 @@ public:
                 }
             }
             // validate, write generated quantities
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 27;
             check_greater_or_equal(function__, "error", error, 0);
             check_less_or_equal(function__, "error", error, 1);
             size_t error_j_1_max__ = C;
             for (size_t j_1__ = 0; j_1__ < error_j_1_max__; ++j_1__) {
                 vars__.push_back(error(j_1__));
             }
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 28;
             size_t q_j_1_max__ = C;
             for (size_t j_1__ = 0; j_1__ < q_j_1_max__; ++j_1__) {
                 vars__.push_back(q(j_1__));

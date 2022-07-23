@@ -20,5 +20,6 @@ A \code{tibble} or \code{data.frame} with the alpha,beta priors
 Estimates the priors for the Bayesian model.
 }
 \examples{
-'lorem'
+# Please see the vignette for a tutorial
+# vignette('baldur-tutorial')
 }

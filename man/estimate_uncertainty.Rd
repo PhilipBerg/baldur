@@ -22,5 +22,6 @@ A matrix with the uncertainty
 Estimates the measurement uncertainty for each data point using a Gamma regression.
 }
 \examples{
-'lorem'
+# Please see the vignette for a tutorial
+# vignette('baldur-tutorial')
 }

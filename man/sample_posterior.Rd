@@ -36,5 +36,6 @@ A \code{tibble} or \code{data.frame} annotated  with statistics of the posterior
 Function to sample the posterior of the Bayesian decision model.
 }
 \examples{
-'lorem'
+# Please see the vignette for a tutorial
+# vignette('baldur-tutorial')
 }

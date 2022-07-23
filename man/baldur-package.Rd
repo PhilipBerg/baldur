@@ -6,7 +6,7 @@
 \alias{baldur}
 \title{The 'baldur' package.}
 \description{
-baldur is a Bayesian model
+baldur is a Bayesian heirachal model for statistical decision in proteomics data
 }
 \references{
 Stan Development Team (2022). RStan: the R interface to Stan. R package version 2.21.5. https://mc-stan.org

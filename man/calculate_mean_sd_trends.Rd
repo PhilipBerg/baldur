@@ -18,5 +18,6 @@ A \code{tibble} or \code{data.frame} with the mean and sd vectors
 Calculates the mean and sd of the rows.
 }
 \examples{
-'lorem'
+# Please see the vignette for a tutorial
+# vignette('baldur-tutorial')
 }
