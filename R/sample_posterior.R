@@ -6,7 +6,7 @@
 #' @param design_matrix A design matrix for the data (see example)
 #' @param contrast_matrix A contrast matrix of the decisions to test such that the first column is the index of the column in the design matrix that should be compared to the second column
 #' @param uncertainty_matrix A matrix of observation uncertainty
-#' @param bayesian_model Which Bayesian model to use. Currently only on internal model allowed, this argument is for forward compatibility
+#' @param bayesian_model Which Bayesian model to use. Currently only one internal model allowed, this argument is for forward compatibility
 #' @param clusters The number of parallel threads to run on.
 #'
 #' @return A `tibble` or `data.frame` annotated  with statistics of the posterior
