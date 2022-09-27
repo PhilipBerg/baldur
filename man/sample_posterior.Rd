@@ -11,7 +11,10 @@ sample_posterior(
   contrast_matrix,
   uncertainty_matrix,
   bayesian_model = stanmodels$uncertainty_model,
-  clusters = 1
+  clusters = 1,
+  robust = F,
+  perc = 0.05,
+  ...
 )
 }
 \arguments{
@@ -25,9 +28,15 @@ sample_posterior(
 
 \item{uncertainty_matrix}{A matrix of observation uncertainty}
 
-\item{bayesian_model}{Which Bayesian model to use. Currently only on internal model allowed, this argument is for forward compatibility}
+\item{bayesian_model}{Which Bayesian model to use. Currently only one internal model allowed, this argument is for forward compatibility}
 
 \item{clusters}{The number of parallel threads to run on.}
+
+\item{robust}{If integration of the posterior should be done robust by trimming the tails}
+
+\item{perc}{If robust is \code{TRUE} how much of each tail to remove before integration. Should be between 0 (no trimming) and 0.5 (trimming all data).}
+
+\item{...}{Additional arguments passed to}
 }
 \value{
 A \code{tibble} or \code{data.frame} annotated  with statistics of the posterior
@@ -36,6 +45,36 @@ A \code{tibble} or \code{data.frame} annotated  with statistics of the posterior
 Function to sample the posterior of the Bayesian decision model.
 }
 \examples{
-# Please see the vignette for a tutorial
-# vignette('baldur-tutorial')
+# (Please see the vignette for a tutorial)
+# Setup model matrix
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+colnames(design) <- paste0("ng", c(50, 100))
+
+yeast_norm <- yeast \%>\%
+# Remove missing data
+  tidyr::drop_na() \%>\%
+  # Normalize data
+  psrn('identifier') \%>\%
+  # Add mean-variance trends
+  calculate_mean_sd_trends(design)
+# Fit the gamma regression
+gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
+# Estimate each data point's uncertainty
+unc <- estimate_uncertainty(yeast_norm, 'identifier', design, gam)
+yeast_norm <- yeast_norm \%>\%
+   # Add hyper-priors for sigma
+   estimate_gamma_priors(design, gam)
+# Setup contrast matrix
+contrast <- matrix(1:2, ncol = 2)
+\dontrun{
+yeast_norm \%>\%
+  sample_posterior(
+    'identifier',
+    design,
+    contrast,
+    unc,
+    clusters = 1 # I highly recommend increasing the number of parallel workers/clusters
+                 # this will greatly reduce the speed of running baldur
+  )
+}
 }

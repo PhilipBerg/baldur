@@ -1,0 +1,183 @@
+---
+title: "Baldur Yeast Tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Baldur Yeast Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# 1. Setup
+First we load `baldur` and setup the model dependent variables we need, then normalize the data and add the mean-variance trends.
+```{r setup}
+library(baldur)
+# Setup design matrix
+yeast_design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+colnames(yeast_design) <- paste0('ng', c(50, 100))
+# Compare the first and second column of the design matrix
+# with the following contrast matrix
+yeast_contrast <- matrix(1:2, nrow = 1)
+
+# Since baldur itself does not deal with missing data we filter out
+# rows that have missing data for the purpose of the tutorial.
+# Else, one would first need to run imputation, then the tutorial follows
+# in the same fashion.
+yeast_norm <- yeast %>% 
+  # Remove missing data
+  tidyr::drop_na() %>% 
+  # Normalize data (this might already have been done if imputation was performed)
+  psrn('identifier') %>% 
+  # Add mean-variance trends
+  calculate_mean_sd_trends(yeast_design)
+```
+Importantly, note that the column names of the design matrix are unique subsets of the names of the columns within the conditions:
+```{r design}
+colnames(yeast)
+colnames(yeast_design)
+```
+This is essential for `baldur` to know which columns to use in calculations and to perform transformations.
+
+# 2. Mixture separation, prior estimation, and uncertainty estimation
+Next is to infer the mixture of the data and to estimate the parameters needed for `baldur`.
+First we will setup the needed variables for using `baldur` without partioning the data.
+Then, partitioning and setting up `baldur` after trend-partioning.
+```{r cluster}
+# Fit the gamma regression
+gam_sin <- fit_gamma_regression(yeast_norm, sd ~ mean)
+# Estimate the uncertainty
+unc_sin <- estimate_uncertainty(yeast_norm, 'identifier', yeast_design, gam_sin)
+
+# Partition the data and estimate the priors
+yeast_cluster <- yeast_norm %>% 
+  trend_partitioning(
+    design_matrix = yeast_design,
+    formula = sd ~ mean + c, # Set the formula you want to use for the partitioning
+                             # with c being the partitioning variable.
+                             # Note the given formula assumes different intercepts
+                             # between the two clusters. But could be changed
+                             # if e.g., there seems to be a different slope as wee
+                             # then we would have used formula = sd ~  mean*c
+    eps = 0.1,               # Set the size of the integration window around sd.
+                             # Note that larger eps will generally push the 
+                             # partitioning upwards. Try to not make it to large so that
+                             # the integration covers a large amount outside the function domain (0,Inf)
+    n = 1000,                # Larger number makes the integration more precis but makes the 
+                             # algorithm run slower
+    verbose = T              # If the number of points moved at each iteration should be printed
+    )
+# Fir the gamma regression
+gam_mix <- fit_gamma_regression(yeast_cluster)
+# Get each data points uncertainty
+unc_mix <- estimate_uncertainty(yeast_cluster, 'identifier', yeast_design, gam_mix)
+```
+
+# 3. Run the sampling procedure
+Finally we sample the posterior of each row in the data.
+First we sample assuming a single trend, then using the partitioning.
+```{r posterior}
+# Single trend
+sin_results <- yeast_cluster %>% 
+  # Add hyper-priors for sigma
+  estimate_gamma_priors(yeast_design, gam_sin) %>% 
+  # For time purposes we only sample for six rows
+  head() %>% 
+  sample_posterior(
+    'identifier',
+    yeast_design,
+    yeast_contrast,
+    unc_sin,
+    clusters = 1 # I highly recommend increasing the number of parallel workers/clusters
+                 # this will greatly reduce the speed of running baldur
+  )
+# The top hits then looks as follows:
+sin_results %>% 
+  dplyr::arrange(err)
+
+# Mixed trends
+mix_results <- yeast_cluster %>% 
+  # Add hyper-priors for sigma
+  estimate_gamma_priors(yeast_design, gam_mix) %>% 
+  # For time purposes we only sample for six rows
+  head() %>% 
+  sample_posterior(
+    'identifier',
+    yeast_design,
+    yeast_contrast,
+    unc_mix
+  )
+
+# The top hits then looks as follows:
+mix_results %>% 
+  dplyr::arrange(err)
+```
+Here `err` is the probability of error, i.e., the two tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, `sigma` is the common variance, and `lp` is the log-posterior.
+Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0, and 97.5, percentiles, respectively.
+The suffixes `_eff` and `_rhat` are the diagnostic variables returned by `rstan` (please see the Stan manual for details).
+In general, a larger `_eff` indicates a better sampling efficiency, and `_rhat` compares the mixing within chains against between the chains and should be smaller than 1.05.
+
+# 4. Sampling with parallel computation
+`baludr` is very easy to run in parallel and will drastically reduce the running time.
+The only thing that needs to be changed is the `clusters` flag:
+```{r parellel}
+# Single trend
+sin_results <- yeast_cluster %>% 
+  # Add hyper-priors for sigma
+  estimate_gamma_priors(yeast_design, gam_sin) %>% 
+  # For time purposes we only sample for 20 rows
+  head(20) %>% 
+  sample_posterior(
+    'identifier',
+    yeast_design,
+    yeast_contrast,
+    unc_sin,
+    clusters = 2
+  )
+
+# Mixed trend
+mix_results <- yeast_cluster %>% 
+  # Add hyper-priors for sigma
+  estimate_gamma_priors(yeast_design, gam_mix) %>% 
+  # For time purposes we only sample for 20 rows
+  head(20) %>% 
+  sample_posterior(
+    'identifier',
+    yeast_design,
+    yeast_contrast,
+    unc_mix,
+    clusters = 2
+  )
+```
+
+# 5. Visualization
+`baldur` have two ways of visualizing the results 1) plotting sigma vs LFC and 2) Volcano plots.
+To plot sigma against LFC we use `plot_sa`:
+```{r plotting_sa, fig.show='hold'}
+sin_results %>% 
+  plot_sa(
+    alpha = .05 # Level of significance
+  )
+mix_results %>% 
+  plot_sa(
+    alpha = .05, # Level of significance
+    lfc = 1      # Add LFC lines
+  )
+```
+
+To make a volcano plot one uses `plot_volcano` in a similar fashion to `plot_sa`:
+```{r plotting_volc, fig.show='hold'}
+sin_results %>% 
+  plot_volcano(
+    alpha = .05 # Level of significance
+  )
+mix_results %>% 
+  plot_volcano(
+    alpha = .05, # Level of significance
+    lfc = 1      # Add LFC lines
+  )
+```

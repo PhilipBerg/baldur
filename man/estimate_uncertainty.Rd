@@ -4,16 +4,16 @@
 \alias{estimate_uncertainty}
 \title{Estimate measurement uncertainty}
 \usage{
-estimate_uncertainty(data, identifier, design_matrix, formula = sd ~ mean + c)
+estimate_uncertainty(data, identifier, design_matrix, gam_reg)
 }
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame}}
 
-\item{identifier}{Id column}
+\item{identifier}{Name of the peptide name/id column}
 
 \item{design_matrix}{Cell mean design matrix for the data}
 
-\item{formula}{Formula for the gamma regression}
+\item{gam_reg}{A gamma regression model}
 }
 \value{
 A matrix with the uncertainty
@@ -22,6 +22,19 @@ A matrix with the uncertainty
 Estimates the measurement uncertainty for each data point using a Gamma regression.
 }
 \examples{
-# Please see the vignette for a tutorial
-# vignette('baldur-tutorial')
+#' # Setup model matrix
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+colnames(design) <- paste0("ng", c(50, 100))
+
+yeast_norm <- yeast \%>\%
+# Remove missing data
+tidyr::drop_na() \%>\%
+  # Normalize data
+psrn('identifier') \%>\%
+# Add mean-variance trends
+calculate_mean_sd_trends(design)
+# Fit the gamma regression
+gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
+# Estimate each data point's uncertainty
+unc <- estimate_uncertainty(yeast_norm, 'identifier', design, gam)
 }

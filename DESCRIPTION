@@ -5,19 +5,17 @@ Authors@R:
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Differential abundance analysis for label-free proteomics using a bayesain decision model.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 Biarch: true
 Depends: 
-    R (>= 3.4.0)
+    R (>= 4.0.0)
 Imports: 
     dplyr,
     magrittr,
     methods,
-    multidplyr,
     purrr,
     Rcpp (>= 0.12.0),
     RcppParallel (>= 5.0.1),
@@ -25,7 +23,9 @@ Imports:
     rstantools (>= 2.2.0.9000),
     stats,
     stringr,
-    tidyr
+    tidyr,
+    rlang,
+    Rdpack
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
@@ -36,5 +36,10 @@ LinkingTo:
 SystemRequirements: GNU make
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    multidplyr,
+    ggplot2,
+    tibble
 VignetteBuilder: knitr
+LazyData: true
+RdMacros: Rdpack

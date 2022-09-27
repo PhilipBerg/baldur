@@ -33,6 +33,21 @@ A \code{tibble} or \code{data.frame} the partitioning vector \code{c}
 Partitions the data into two mixtures.
 }
 \examples{
-# Please see the vignette for a tutorial
-# vignette('baldur-tutorial')
+# (Please see the vignettes for tutorials)
+# Setup model matrix
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+colnames(design) <- paste0("ng", c(50, 100))
+
+yeast_norm <- yeast \%>\%
+# Remove missing data
+  tidyr::drop_na() \%>\%
+  # Normalize data
+  psrn('identifier') \%>\%
+  # Add mean-variance trends
+  calculate_mean_sd_trends(design)
+\dontrun{
+yeast_norm \%>\%
+  # Partition the data
+  trend_partitioning(design)
+}
 }

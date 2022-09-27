@@ -4,14 +4,14 @@
 \alias{estimate_gamma_priors}
 \title{Estimate Gamma priors for sigma}
 \usage{
-estimate_gamma_priors(data, design_matrix, formula = sd ~ mean + c)
+estimate_gamma_priors(data, design_matrix, gamma_reg)
 }
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame} to add gamma priors to}
 
 \item{design_matrix}{A design matrix for the data (see example)}
 
-\item{formula}{Formula for the Gamma regression}
+\item{gamma_reg}{A Gamma regression object}
 }
 \value{
 A \code{tibble} or \code{data.frame} with the alpha,beta priors
@@ -20,6 +20,19 @@ A \code{tibble} or \code{data.frame} with the alpha,beta priors
 Estimates the priors for the Bayesian model.
 }
 \examples{
-# Please see the vignette for a tutorial
-# vignette('baldur-tutorial')
+# Setup model matrix
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+colnames(design) <- paste0("ng", c(50, 100))
+
+# Normalize data
+yeast_norm <- yeast \%>\%
+    psrn("identifier") \%>\%
+    # Get mean-variance trends
+    calculate_mean_sd_trends(design)
+# Fit gamma regression
+gam_reg <- fit_gamma_regression(yeast_norm, sd ~ mean)
+
+# Estimate priors
+yeast_norm \%>\%
+    estimate_gamma_priors(design, gam_reg)
 }

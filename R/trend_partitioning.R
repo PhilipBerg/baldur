@@ -1,3 +1,4 @@
+utils::globalVariables(c("alpha", "betau", "betal", "intl", "intu", "res"))
 #' Mean-Variance Trend Partitioning
 #'
 #' @description Partitions the data into two mixtures.
@@ -11,8 +12,23 @@
 #' @return A `tibble` or `data.frame` the partitioning vector `c`
 #' @export
 #'
-#' @examples # Please see the vignette for a tutorial
-#' # vignette('baldur-tutorial')
+#' @examples # (Please see the vignettes for tutorials)
+#' # Setup model matrix
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+#' colnames(design) <- paste0("ng", c(50, 100))
+#'
+#' yeast_norm <- yeast %>%
+#' # Remove missing data
+#'   tidyr::drop_na() %>%
+#'   # Normalize data
+#'   psrn('identifier') %>%
+#'   # Add mean-variance trends
+#'   calculate_mean_sd_trends(design)
+#' \dontrun{
+#' yeast_norm %>%
+#'   # Partition the data
+#'   trend_partitioning(design)
+#' }
 trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps = .1, n = 1000, verbose = T){
   cur_data <- data %>%
     prep_data_for_clustering(design_matrix, eps = eps, n = n) %>%
@@ -37,7 +53,7 @@ prep_data_for_clustering <- function(data, design_matrix, eps = .1, n = 1000){
   data_ms %>%
     dplyr::mutate(
       res = residuals(gam_reg),
-      c = dplyr::if_else(res<0, 'L', 'U')
+      c = dplyr::if_else(res < 0, 'L', 'U')
     ) %>%
     dplyr::select(-res)
 }
@@ -91,5 +107,9 @@ num_int_trapz <- function(sd, alpha, beta, eps, n){
 }
 
 estimate_beta <- function(model, mean, c, alpha){
-  alpha / predict.glm(model, newdata = data.frame(mean = mean, c = c), type = 'response')
+  if(!is.function(c)){
+    alpha / stats::predict.glm(model, newdata = data.frame(mean = mean, c = c), type = 'response')
+  } else{
+    alpha / stats::predict.glm(model, newdata = data.frame(mean = mean), type = 'response')
+  }
 }

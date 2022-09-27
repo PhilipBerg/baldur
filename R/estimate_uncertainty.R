@@ -1,26 +1,39 @@
 #' Estimate measurement uncertainty
 #' @description Estimates the measurement uncertainty for each data point using a Gamma regression.
 #' @param data A `tibble` or `data.frame`
-#' @param identifier Id column
+#' @param identifier Name of the peptide name/id column
 #' @param design_matrix Cell mean design matrix for the data
-#' @param formula Formula for the gamma regression
+#' @param gam_reg A gamma regression model
 #'
 #' @return A matrix with the uncertainty
 #' @export
 #'
-#' @examples # Please see the vignette for a tutorial
-#' # vignette('baldur-tutorial')
-estimate_uncertainty <- function(data, identifier, design_matrix, formula = sd ~ mean + c){
-  gamma_reg <- glm(formula, Gamma(log), data)
-  if(!is.null(data$c)){
-    pred <- ~predict.glm(
-      gamma_reg,
+#' @examples
+#' #' # Setup model matrix
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+#' colnames(design) <- paste0("ng", c(50, 100))
+#'
+#' yeast_norm <- yeast %>%
+#' # Remove missing data
+#' tidyr::drop_na() %>%
+#'   # Normalize data
+#' psrn('identifier') %>%
+#' # Add mean-variance trends
+#' calculate_mean_sd_trends(design)
+#' # Fit the gamma regression
+#' gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
+#' # Estimate each data point's uncertainty
+#' unc <- estimate_uncertainty(yeast_norm, 'identifier', design, gam)
+estimate_uncertainty <- function(data, identifier, design_matrix, gam_reg){
+  if('c' %in% names(data)){
+    pred <- ~ stats::predict.glm(
+      gam_reg,
       newdata = data.frame(mean = ., c = c),
       type = "response"
     )
-  }else{
-    pred <- ~predict.glm(
-      gamma_reg,
+  } else {
+    pred <- ~ stats::predict.glm(
+      gam_reg,
       newdata = data.frame(mean = .),
       type = "response"
     )
