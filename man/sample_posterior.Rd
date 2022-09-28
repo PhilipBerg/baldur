@@ -2,7 +2,7 @@
 % Please edit documentation in R/sample_posterior.R
 \name{sample_posterior}
 \alias{sample_posterior}
-\title{Sample Posterior}
+\title{Sample the Posterior of the Bayesian model}
 \usage{
 sample_posterior(
   data,

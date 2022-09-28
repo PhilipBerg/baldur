@@ -12,6 +12,32 @@ utils::globalVariables(c(".", "sd", "model"))
 #' @return a plot with the mean-variance trend before partitioning on the left side, and the right side after.
 #' @export
 #'
+#' @importFrom cowplot plot_grid
+#' @importFrom cowplot ggdraw
+#' @importFrom cowplot draw_label
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_smooth
+#' @importFrom ggplot2 stat_function
+#' @importFrom ggplot2 guide_legend
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 theme_classic
+#' @importFrom ggplot2 ggtitle
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_color_manual
+#' @importFrom ggplot2 guides
+#' @importFrom ggplot2 theme
+#' @importFrom purrr set_names
+#' @importFrom rlang call2
+#' @importFrom rlang eval_tidy
+#' @importFrom rlang dots_list
+#' @importFrom stats Gamma
+#' @importFrom stats glm
+#' @importFrom stats predict.glm
+#' @importFrom tidyr drop_na
+#' @importFrom viridisLite turbo
+#'
+#'
 #' @examples
 #' # Produce a design matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
@@ -126,7 +152,7 @@ plot_gamma_partition <- function(data, design, ...) {
   )
   data %>%
     dplyr::mutate(
-      c = stringr::str_replace_all(c, stats::setNames(c('Lower', 'Upper'), c('L', 'U')))
+      c = stringr::str_replace_all(c, purrr::set_names(c('Lower', 'Upper'), c('L', 'U')))
     ) %>%
     tidyr::drop_na() %>%
     ggplot2::ggplot(ggplot2::aes(mean, sd, color = c)) +

@@ -7,6 +7,10 @@
 #' @return A `tibble` or `data.frame` with the mean and sd vectors
 #' @export
 #'
+#' @importFrom dplyr mutate
+#' @importFrom dplyr across
+#' @importFrom dplyr matches
+#'
 #' @examples
 #' # Setup model matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))

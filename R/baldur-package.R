@@ -16,7 +16,12 @@
 #' @importFrom stats sd
 #' @importFrom stats dgamma
 #' @importFrom magrittr %>%
+#' @importFrom magrittr set_rownames
 #' @importFrom dplyr across
+#' @importFrom dplyr mutate
+#' @importFrom dplyr matches
+#' @importFrom rlang dots_list
+#' @importFrom rlang dots_list
 #' @references
 #' Stan Development Team (2022). RStan: the R interface to Stan. R package version 2.21.5. https://mc-stan.org
 #'

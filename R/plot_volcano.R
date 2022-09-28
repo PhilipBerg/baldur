@@ -10,6 +10,16 @@ utils::globalVariables(c("lfc", "err"))
 #' @return `plot_volcano` returns a `ggplot` object
 #' @export
 #'
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_vline
+#' @importFrom ggplot2 geom_hline
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 facet_wrap
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_x_continuous
+#'
 #' @examples
 #' # Setup model matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))

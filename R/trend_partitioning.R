@@ -12,6 +12,12 @@ utils::globalVariables(c("alpha", "betau", "betal", "intl", "intu", "res"))
 #' @return A `tibble` or `data.frame` the partitioning vector `c`
 #' @export
 #'
+#' @importFrom dplyr select
+#' @importFrom dplyr mutate
+#' @importFrom dplyr if_else
+#' @importFrom stats predict.glm
+#' @importFrom purrr pmap_dbl
+#'
 #' @examples # (Please see the vignettes for tutorials)
 #' # Setup model matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))

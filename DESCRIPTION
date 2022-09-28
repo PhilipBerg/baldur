@@ -3,7 +3,7 @@ Title: Bayesian Heirachal Modeling For Proteomics Data
 Version: 0.0.0.9000
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0002-3772-6185"))
 Description: Differential abundance analysis for label-free proteomics using a bayesain decision model.
 License: MIT + file LICENSE
 Encoding: UTF-8

@@ -24,7 +24,17 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #'    normalized data and one containing the loading info as well as the
 #'    estimated normalization factors.
 #' @export
+#'
 #' @importFrom dplyr .data
+#' @importFrom dplyr enquo
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarise
+#' @importFrom dplyr left_join
+#' @importFrom dplyr select
+#' @importFrom dplyr mutate
+#' @importFrom dplyr across
+#' @importFrom tidyr pivot_longer
+#' @importFrom tibble enframe
 #' @importFrom utils globalVariables
 #'
 #' @examples
@@ -48,7 +58,7 @@ psrn <- function(data,
     tidyr::pivot_longer(!!target) %>%
     dplyr::group_by(.data[[id_col]]) %>%
     dplyr::summarise(
-      ref = prod(value)^(1 / dplyr::n())
+      ref = prod(value^(1 / dplyr::n()))
     )
   scaling_factors <- data_filtered %>%
     tidyr::pivot_longer(!!target, names_to = "sample") %>%
