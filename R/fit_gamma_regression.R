@@ -13,6 +13,9 @@
 #' @return `fit_gamma_regression` returns a glm object
 #' @export
 #'
+#' @importFrom stats glm
+#' @importFrom stats Gamma
+#'
 #' @examples
 #' # Generate a design matrix for the data
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))

@@ -11,6 +11,15 @@ utils::globalVariables(c("sigma", "err"))
 #' @return `plot_sa` returns a `ggplot` object
 #' @export
 #'
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_hline
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 facet_wrap
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_y_continuous
+#'
 #' @examples
 #' # Setup model matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
@@ -61,10 +70,10 @@ plot_sa <- function(results, alpha = .05, lfc = NULL) {
     ggplot2::geom_point(size = 1/2) +
     ggplot2::theme_bw() +
     ggplot2::facet_wrap(comparison~.) +
-    ggplot2::labs(color = 'Significant?') +
     ggplot2::scale_y_continuous(limits = rng) +
     ggplot2::labs(
       x = expression(sigma),
-      y = expression(log[2](Fold~Change))
+      y = expression(log[2](Fold~Change)),
+      color = 'Significant?'
     )
 }

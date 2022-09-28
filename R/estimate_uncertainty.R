@@ -8,6 +8,13 @@
 #' @return A matrix with the uncertainty
 #' @export
 #'
+#' @importFrom stats predict.glm
+#' @importFrom dplyr mutate
+#' @importFrom dplyr across
+#' @importFrom dplyr select
+#' @importFrom dplyr matches
+#' @importFrom magrittr set_rownames
+#'
 #' @examples
 #' #' # Setup model matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))

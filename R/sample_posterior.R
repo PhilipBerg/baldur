@@ -1,5 +1,5 @@
 utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu"))
-#' Sample Posterior
+#' Sample the Posterior of the Bayesian model
 #'
 #' @description Function to sample the posterior of the Bayesian decision model.
 #'
@@ -17,6 +17,37 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu"))
 #' @export
 #'
 #' @importFrom rlang :=
+#' @importFrom rlang dots_list
+#' @importFrom rlang expr
+#' @importFrom rlang sym
+#' @importFrom rlang abort
+#' @importFrom rlang current_env
+#' @importFrom multidplyr new_cluster
+#' @importFrom multidplyr cluster_library
+#' @importFrom multidplyr cluster_copy
+#' @importFrom multidplyr cluster_assign_partition
+#' @importFrom multidplyr cluster_send
+#' @importFrom multidplyr cluster_call
+#' @importFrom multidplyr cluster_assign
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr mutate
+#' @importFrom dplyr transmute
+#' @importFrom dplyr between
+#' @importFrom dplyr filter
+#' @importFrom dplyr tibble
+#' @importFrom stringr word
+#' @importFrom stats setNames
+#' @importFrom stats ecdf
+#' @importFrom stats quantile
+#' @importFrom purrr map
+#' @importFrom purrr pmap
+#' @importFrom purrr map2_dfr
+#' @importFrom purrr map_dbl
+#' @importFrom purrr map2_chr
+#' @importFrom tidyr unnest
+#' @importFrom rstan extract
+#' @importFrom rstan summary
+#' @importFrom magrittr use_series
 #'
 #' @examples # (Please see the vignette for a tutorial)
 #' # Setup model matrix
@@ -55,8 +86,8 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
   C <- nrow(contrast_matrix)
-  pmap_columns <- rlang::expr(list(!!rlang::sym(id_col_name), alpha, beta))
   ori_data <- data
+  pmap_columns <- rlang::expr(list(!!rlang::sym(id_col_name), alpha, beta))
   if(clusters != 1){
     cl <- multidplyr::new_cluster(clusters)
     suppressWarnings(
@@ -93,7 +124,8 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                "contrast_matrix",
                                'bayesian_model',
                                "robust",
-                               "perc"
+                               "perc",
+                               "rstan_inputs"
                              )
     )
     model_check <- stringr::word(deparse(substitute(bayesian_model)), 2, sep = '\\$')

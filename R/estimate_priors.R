@@ -8,6 +8,8 @@
 #' @return A `tibble` or `data.frame` with the alpha,beta priors
 #' @export
 #'
+#' @importFrom dplyr mutate
+#'
 #' @examples
 #' # Setup model matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))

@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_uncertainty_model");
-    reader.add_event(39, 37, "end", "model_uncertainty_model");
+    reader.add_event(43, 41, "end", "model_uncertainty_model");
     return reader;
 }
 #include <stan_meta_header.hpp>
@@ -177,7 +177,7 @@ public:
             num_params_r__ = 0U;
             param_ranges_i__.clear();
             current_statement_begin__ = 14;
-            validate_non_negative_index("beta", "K", K);
+            validate_non_negative_index("mu", "K", K);
             num_params_r__ += K;
             current_statement_begin__ = 15;
             num_params_r__ += 1;
@@ -205,21 +205,21 @@ public:
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
         current_statement_begin__ = 14;
-        if (!(context__.contains_r("beta")))
-            stan::lang::rethrow_located(std::runtime_error(std::string("Variable beta missing")), current_statement_begin__, prog_reader__());
-        vals_r__ = context__.vals_r("beta");
+        if (!(context__.contains_r("mu")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable mu missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("mu");
         pos__ = 0U;
-        validate_non_negative_index("beta", "K", K);
-        context__.validate_dims("parameter initialization", "beta", "vector_d", context__.to_vec(K));
-        Eigen::Matrix<double, Eigen::Dynamic, 1> beta(K);
-        size_t beta_j_1_max__ = K;
-        for (size_t j_1__ = 0; j_1__ < beta_j_1_max__; ++j_1__) {
-            beta(j_1__) = vals_r__[pos__++];
+        validate_non_negative_index("mu", "K", K);
+        context__.validate_dims("parameter initialization", "mu", "vector_d", context__.to_vec(K));
+        Eigen::Matrix<double, Eigen::Dynamic, 1> mu(K);
+        size_t mu_j_1_max__ = K;
+        for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
+            mu(j_1__) = vals_r__[pos__++];
         }
         try {
-            writer__.vector_unconstrain(beta);
+            writer__.vector_unconstrain(mu);
         } catch (const std::exception& e) {
-            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable beta: ") + e.what()), current_statement_begin__, prog_reader__());
+            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable mu: ") + e.what()), current_statement_begin__, prog_reader__());
         }
         current_statement_begin__ = 15;
         if (!(context__.contains_r("sigma")))
@@ -297,12 +297,12 @@ public:
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
             current_statement_begin__ = 14;
-            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> beta;
-            (void) beta;  // dummy to suppress unused var warning
+            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> mu;
+            (void) mu;  // dummy to suppress unused var warning
             if (jacobian__)
-                beta = in__.vector_constrain(K, lp__);
+                mu = in__.vector_constrain(K, lp__);
             else
-                beta = in__.vector_constrain(K);
+                mu = in__.vector_constrain(K);
             current_statement_begin__ = 15;
             local_scalar_t__ sigma;
             (void) sigma;  // dummy to suppress unused var warning
@@ -327,17 +327,38 @@ public:
                 eta = in__.vector_constrain(K, lp__);
             else
                 eta = in__.vector_constrain(K);
-            // model body
+            // transformed parameters
             current_statement_begin__ = 20;
-            lp_accum__.add(gamma_log<propto__>(sigma, alpha, beta_gamma));
+            validate_non_negative_index("mu_diff", "C", C);
+            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> mu_diff(C);
+            stan::math::initialize(mu_diff, DUMMY_VAR__);
+            stan::math::fill(mu_diff, DUMMY_VAR__);
+            // transformed parameters block statements
             current_statement_begin__ = 21;
-            lp_accum__.add(normal_log<propto__>(eta, 0, 1));
-            current_statement_begin__ = 22;
-            lp_accum__.add(normal_log<propto__>(y, multiply(x, beta), multiply(sigma, u)));
-            current_statement_begin__ = 23;
-            lp_accum__.add(normal_log<propto__>(beta, add(xbar, multiply(sigma, eta)), sigma));
+            stan::math::assign(mu_diff, subtract(stan::model::rvalue(mu, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "mu"), stan::model::rvalue(mu, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(2), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "mu")));
+            // validate transformed parameters
+            const char* function__ = "validate transformed params";
+            (void) function__;  // dummy to suppress unused var warning
+            current_statement_begin__ = 20;
+            size_t mu_diff_j_1_max__ = C;
+            for (size_t j_1__ = 0; j_1__ < mu_diff_j_1_max__; ++j_1__) {
+                if (stan::math::is_uninitialized(mu_diff(j_1__))) {
+                    std::stringstream msg__;
+                    msg__ << "Undefined transformed parameter: mu_diff" << "(" << j_1__ << ")";
+                    stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable mu_diff: ") + msg__.str()), current_statement_begin__, prog_reader__());
+                }
+            }
+            // model body
             current_statement_begin__ = 24;
-            lp_accum__.add(normal_log<propto__>(y_diff, subtract(stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "beta"), stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(2), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "beta")), sigma));
+            lp_accum__.add(gamma_log<propto__>(sigma, alpha, beta_gamma));
+            current_statement_begin__ = 25;
+            lp_accum__.add(normal_log<propto__>(eta, 0, 1));
+            current_statement_begin__ = 26;
+            lp_accum__.add(normal_log<propto__>(y, multiply(x, mu), multiply(sigma, u)));
+            current_statement_begin__ = 27;
+            lp_accum__.add(normal_log<propto__>(mu, add(xbar, multiply(sigma, eta)), sigma));
+            current_statement_begin__ = 28;
+            lp_accum__.add(normal_log<propto__>(y_diff, mu_diff, sigma));
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
             // Next line prevents compiler griping about no return
@@ -358,12 +379,11 @@ public:
     }
     void get_param_names(std::vector<std::string>& names__) const {
         names__.resize(0);
-        names__.push_back("beta");
+        names__.push_back("mu");
         names__.push_back("sigma");
         names__.push_back("y_diff");
         names__.push_back("eta");
-        names__.push_back("error");
-        names__.push_back("q");
+        names__.push_back("mu_diff");
     }
     void get_dims(std::vector<std::vector<size_t> >& dimss__) const {
         dimss__.resize(0);
@@ -378,9 +398,6 @@ public:
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(K);
-        dimss__.push_back(dims__);
-        dims__.resize(0);
-        dims__.push_back(C);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(C);
@@ -400,10 +417,10 @@ public:
         static const char* function__ = "model_uncertainty_model_namespace::write_array";
         (void) function__;  // dummy to suppress unused var warning
         // read-transform, write parameters
-        Eigen::Matrix<double, Eigen::Dynamic, 1> beta = in__.vector_constrain(K);
-        size_t beta_j_1_max__ = K;
-        for (size_t j_1__ = 0; j_1__ < beta_j_1_max__; ++j_1__) {
-            vars__.push_back(beta(j_1__));
+        Eigen::Matrix<double, Eigen::Dynamic, 1> mu = in__.vector_constrain(K);
+        size_t mu_j_1_max__ = K;
+        for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
+            vars__.push_back(mu(j_1__));
         }
         double sigma = in__.scalar_lb_constrain(0);
         vars__.push_back(sigma);
@@ -429,55 +446,27 @@ public:
         (void) DUMMY_VAR__;  // suppress unused var warning
         if (!include_tparams__ && !include_gqs__) return;
         try {
+            // declare and define transformed parameters
+            current_statement_begin__ = 20;
+            validate_non_negative_index("mu_diff", "C", C);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> mu_diff(C);
+            stan::math::initialize(mu_diff, DUMMY_VAR__);
+            stan::math::fill(mu_diff, DUMMY_VAR__);
+            // do transformed parameters statements
+            current_statement_begin__ = 21;
+            stan::math::assign(mu_diff, subtract(stan::model::rvalue(mu, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "mu"), stan::model::rvalue(mu, stan::model::cons_list(stan::model::index_multi(stan::model::rvalue(c, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(2), stan::model::nil_index_list())), "c")), stan::model::nil_index_list()), "mu")));
             if (!include_gqs__ && !include_tparams__) return;
-            if (!include_gqs__) return;
-            // declare and define generated quantities
-            current_statement_begin__ = 27;
-            validate_non_negative_index("error", "C", C);
-            Eigen::Matrix<double, Eigen::Dynamic, 1> error(C);
-            stan::math::initialize(error, DUMMY_VAR__);
-            stan::math::fill(error, DUMMY_VAR__);
-            current_statement_begin__ = 28;
-            validate_non_negative_index("q", "C", C);
-            Eigen::Matrix<double, Eigen::Dynamic, 1> q(C);
-            stan::math::initialize(q, DUMMY_VAR__);
-            stan::math::fill(q, DUMMY_VAR__);
-            // generated quantities statements
-            current_statement_begin__ = 29;
-            for (int k = 1; k <= C; ++k) {
-                current_statement_begin__ = 30;
-                stan::model::assign(q, 
-                            stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
-                            (get_base1(beta, get_base1(get_base1(c, k, "c", 1), 1, "c", 2), "beta", 1) - get_base1(beta, get_base1(get_base1(c, k, "c", 1), 2, "c", 2), "beta", 1)), 
-                            "assigning variable q");
-                current_statement_begin__ = 31;
-                if (as_bool(logical_lt(0, get_base1(q, k, "q", 1)))) {
-                    current_statement_begin__ = 32;
-                    stan::model::assign(error, 
-                                stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
-                                (normal_cdf(0, get_base1(q, k, "q", 1), sigma) * 2), 
-                                "assigning variable error");
-                } else {
-                    current_statement_begin__ = 34;
-                    stan::model::assign(error, 
-                                stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
-                                ((1 - normal_cdf(0, get_base1(q, k, "q", 1), sigma)) * 2), 
-                                "assigning variable error");
+            // validate transformed parameters
+            const char* function__ = "validate transformed params";
+            (void) function__;  // dummy to suppress unused var warning
+            // write transformed parameters
+            if (include_tparams__) {
+                size_t mu_diff_j_1_max__ = C;
+                for (size_t j_1__ = 0; j_1__ < mu_diff_j_1_max__; ++j_1__) {
+                    vars__.push_back(mu_diff(j_1__));
                 }
             }
-            // validate, write generated quantities
-            current_statement_begin__ = 27;
-            check_greater_or_equal(function__, "error", error, 0);
-            check_less_or_equal(function__, "error", error, 1);
-            size_t error_j_1_max__ = C;
-            for (size_t j_1__ = 0; j_1__ < error_j_1_max__; ++j_1__) {
-                vars__.push_back(error(j_1__));
-            }
-            current_statement_begin__ = 28;
-            size_t q_j_1_max__ = C;
-            for (size_t j_1__ = 0; j_1__ < q_j_1_max__; ++j_1__) {
-                vars__.push_back(q(j_1__));
-            }
+            if (!include_gqs__) return;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
             // Next line prevents compiler griping about no return
@@ -508,10 +497,10 @@ public:
                                  bool include_tparams__ = true,
                                  bool include_gqs__ = true) const {
         std::stringstream param_name_stream__;
-        size_t beta_j_1_max__ = K;
-        for (size_t j_1__ = 0; j_1__ < beta_j_1_max__; ++j_1__) {
+        size_t mu_j_1_max__ = K;
+        for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "beta" << '.' << j_1__ + 1;
+            param_name_stream__ << "mu" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         param_name_stream__.str(std::string());
@@ -531,29 +520,23 @@ public:
         }
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
+            size_t mu_diff_j_1_max__ = C;
+            for (size_t j_1__ = 0; j_1__ < mu_diff_j_1_max__; ++j_1__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "mu_diff" << '.' << j_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
         }
         if (!include_gqs__) return;
-        size_t error_j_1_max__ = C;
-        for (size_t j_1__ = 0; j_1__ < error_j_1_max__; ++j_1__) {
-            param_name_stream__.str(std::string());
-            param_name_stream__ << "error" << '.' << j_1__ + 1;
-            param_names__.push_back(param_name_stream__.str());
-        }
-        size_t q_j_1_max__ = C;
-        for (size_t j_1__ = 0; j_1__ < q_j_1_max__; ++j_1__) {
-            param_name_stream__.str(std::string());
-            param_name_stream__ << "q" << '.' << j_1__ + 1;
-            param_names__.push_back(param_name_stream__.str());
-        }
     }
     void unconstrained_param_names(std::vector<std::string>& param_names__,
                                    bool include_tparams__ = true,
                                    bool include_gqs__ = true) const {
         std::stringstream param_name_stream__;
-        size_t beta_j_1_max__ = K;
-        for (size_t j_1__ = 0; j_1__ < beta_j_1_max__; ++j_1__) {
+        size_t mu_j_1_max__ = K;
+        for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "beta" << '.' << j_1__ + 1;
+            param_name_stream__ << "mu" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         param_name_stream__.str(std::string());
@@ -573,20 +556,14 @@ public:
         }
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
+            size_t mu_diff_j_1_max__ = C;
+            for (size_t j_1__ = 0; j_1__ < mu_diff_j_1_max__; ++j_1__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "mu_diff" << '.' << j_1__ + 1;
+                param_names__.push_back(param_name_stream__.str());
+            }
         }
         if (!include_gqs__) return;
-        size_t error_j_1_max__ = C;
-        for (size_t j_1__ = 0; j_1__ < error_j_1_max__; ++j_1__) {
-            param_name_stream__.str(std::string());
-            param_name_stream__ << "error" << '.' << j_1__ + 1;
-            param_names__.push_back(param_name_stream__.str());
-        }
-        size_t q_j_1_max__ = C;
-        for (size_t j_1__ = 0; j_1__ < q_j_1_max__; ++j_1__) {
-            param_name_stream__.str(std::string());
-            param_name_stream__ << "q" << '.' << j_1__ + 1;
-            param_names__.push_back(param_name_stream__.str());
-        }
     }
 }; // model
 }  // namespace

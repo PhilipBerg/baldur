@@ -23,14 +23,12 @@ Importantly, you first need to follow the instructions for installing `rstan` [h
 Then you can install `baldur` as accordingly:
 
 You can install the development version of `baldur` from this github:
-``` r
+```{r}
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 # or
 # install.package('baldur')
 ```
 
-Please note that you need to follow the guidelines for setting up RStan according to their homepage.
-
 ## Example
 
-Please see the vignettes for an example `vignette('baldur_yeast_tutorial')` and `vignette('baldur_ups_tutorial')`.
+Please see the vignettes for an examples `vignette('baldur_yeast_tutorial')` and `vignette('baldur_ups_tutorial')`.
