@@ -9,13 +9,19 @@ The goal of Baldur is to shine light on your proteomics data.
 
 Please note that `baldur` is currently only working on R versions 4.0.X.
 This is due to the dependency on RStan that is not yet working on the
-new toolchain associated with R versions 4.1.X. We hope to fix this
+new toolchain associated with R versions 4.1/2.X. We hope to fix this
 problem as soon as possible.
 
-You can install the development version of `baldur` from this github:
+You can install the development version of `baldur` from this github.
 
 ``` r
-require(devtools)
+if (!require("devtools")) {
+  install.packages("devtools")
+}
+if (!require("remotes")) {
+  install.packages("remotes")
+}
+remotes::install_github("stan-dev/rstantools")
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 ```
 

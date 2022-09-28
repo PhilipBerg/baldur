@@ -59,19 +59,21 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
   ori_data <- data
   if(clusters != 1){
     cl <- multidplyr::new_cluster(clusters)
-    invisible(
-      multidplyr::cluster_library(cl,
-                                  c(
-                                    "dplyr",
-                                    "tidyr",
-                                    "purrr",
-                                    "tibble",
-                                    "stringr",
-                                    "magrittr",
-                                    "rstan",
-                                    'StanHeaders',
-                                    'rlang'
-                                  )
+    suppressWarnings(
+      invisible(
+        multidplyr::cluster_library(cl,
+                                    c(
+                                      "dplyr",
+                                      "tidyr",
+                                      "purrr",
+                                      "tibble",
+                                      "stringr",
+                                      "magrittr",
+                                      "rstan",
+                                      'StanHeaders',
+                                      'rlang'
+                                    )
+        )
       )
     )
     multidplyr::cluster_copy(cl,
