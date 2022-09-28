@@ -2,24 +2,23 @@
 % Please edit documentation in R/plot_gamma_regression.R
 \name{plot_gamma_partition}
 \alias{plot_gamma_partition}
-\title{Function for plotting the gamma regression used for imputation}
+\title{Function for plotting the gamma regression after partitioning}
 \usage{
 plot_gamma_partition(data, design, ...)
 }
 \arguments{
 \item{data}{The data to use for producing the plots.}
 
-\item{design}{A design matrix as produced by \code{\link[stats]{model.matrix}}.}
+\item{design}{A design matrix as produced by \code{stats::\link[stats:model.matrix]{model.matrix}}.}
 
-\item{...}{Additional arguments to \code{\link[mavis]{trend_partitioning}}.}
+\item{...}{Additional arguments to \code{baldur::\link[baldur:trend_partitioning]{trend_partitioning}}.}
 }
 \value{
-a plot with the mean-variance trend used for the trend lines used in
-the imputation.
+a plot with the mean-variance trend after partitioning
 }
 \description{
 Generates a scatter plot with the gamma regressions of the mean-variance
-trends for the imputation.
+trends after partitioning.
 }
 \examples{
 # Produce a design matrix
@@ -27,7 +26,7 @@ design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))
 
 # Normalize and log transform the data
-yeast <- psrn(yeast_prog, "identifier")
+yeast <- psrn(yeast, "identifier")
 
 # Generate the plot
 \dontrun{

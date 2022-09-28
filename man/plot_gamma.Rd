@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_gamma_regression.R
 \name{plot_gamma}
 \alias{plot_gamma}
-\title{Function for plotting the gamma regression used for mean-variance normalization}
+\title{Function for plotting the gamma regression for the mean-variance trend}
 \usage{
 plot_gamma(data)
 }
@@ -14,7 +14,7 @@ a plot with the estimated mean-variance trend
 }
 \description{
 Generates a scatter plot with the gamma regressions of the mean-variance
-trends for the precision weights
+trends without partitioning
 }
 \examples{
 # Produce a design matrix
@@ -22,7 +22,7 @@ design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))
 
 # Normalize and log transform the data
-yeast <- psrn(yeast_prog, "identifier")
+yeast <- psrn(yeast, "identifier")
 
 # Generate the plot
 yeast \%>\%

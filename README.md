@@ -6,28 +6,14 @@
 The goal of Baldur is to shine light on your proteomics data.
 
 ## Installation
-
-Please note that `baldur` is currently only working on R versions 4.0.X.
-This is due to the dependency on RStan that is not yet working on the
-new toolchain associated with R versions 4.1/2.X. We hope to fix this
-problem as soon as possible.
-
-You can install the development version of `baldur` from this github.
-
+You can install the development version of `baldur` from this github or the stable version from CRAN.
+Importantly, you first need to follow the instructions for installing `rstan` [https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started).
+Then you can install `baldur` as accordingly:
 ``` r
-if (!require("devtools")) {
-  install.packages("devtools")
-}
-if (!require("remotes")) {
-  install.packages("remotes")
-}
-remotes::install_github("stan-dev/rstantools")
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
+# or
+# install.package('baldur')
 ```
-
-Please note that you need to follow the guidelines for setting up RStan
-according to their homepage.
-
 ## Example
 
-Please see the vignette for an example `vignette('baldur-tutorial')`.
+Please see the vignettes for an example `vignette('baldur_yeast_tutorial')` and `vignette('baldur_ups_tutorial')`.

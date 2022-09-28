@@ -3,7 +3,7 @@ utils::globalVariables(c(".", "sd", "model"))
 #' Function for plotting the mean-variance gamma regressions
 #'
 #' Generates a scatter plot with the gamma regressions of the mean-variance
-#' trends for the precision weights and imputation.
+#' trends with and without partitioning
 #'
 #' @param data The data to use for producing the plots.
 #' @param design A design matrix as produced by \code{\link[stats]{model.matrix}}.
@@ -60,10 +60,10 @@ plot_mean_sd_trend <- function(data) {
     )
 }
 
-#' Function for plotting the gamma regression used for mean-variance normalization
+#' Function for plotting the gamma regression for the mean-variance trend
 #'
 #' Generates a scatter plot with the gamma regressions of the mean-variance
-#' trends for the precision weights
+#' trends without partitioning
 #'
 #' @param data The data to use for producing the plots.
 #'
@@ -89,17 +89,16 @@ plot_gamma <- function(data) {
     ggplot2::ggtitle("Before Partitioning")
 }
 
-#' Function for plotting the gamma regression used for imputation
+#' Function for plotting the gamma regression after partitioning
 #'
 #' Generates a scatter plot with the gamma regressions of the mean-variance
-#' trends for the imputation.
+#' trends after partitioning.
 #'
 #' @param data The data to use for producing the plots.
 #' @param design A design matrix as produced by \code{stats::\link[stats:model.matrix]{model.matrix}}.
 #' @param ... Additional arguments to \code{baldur::\link[baldur:trend_partitioning]{trend_partitioning}}.
 #'
-#' @return a plot with the mean-variance trend used for the trend lines used in
-#'  the imputation.
+#' @return a plot with the mean-variance trend after partitioning
 #' @export
 #'
 #' @examples
@@ -127,7 +126,7 @@ plot_gamma_partition <- function(data, design, ...) {
   )
   data %>%
     dplyr::mutate(
-      c = stringr::str_replace_all(c, setNames(c('Lower', 'Upper'), c('L', 'U')))
+      c = stringr::str_replace_all(c, stats::setNames(c('Lower', 'Upper'), c('L', 'U')))
     ) %>%
     tidyr::drop_na() %>%
     ggplot2::ggplot(ggplot2::aes(mean, sd, color = c)) +
