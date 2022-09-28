@@ -30,7 +30,7 @@ Imports:
     ggplot2 (>= 3.3.6),
     cowplot (>= 1.1.1),
     tibble (>= 3.1.7),
-    iridisLite (>= 0.4.1)
+    viridisLite (>= 0.4.1)
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),

@@ -95,8 +95,8 @@ plot_gamma <- function(data) {
 #' trends for the imputation.
 #'
 #' @param data The data to use for producing the plots.
-#' @param design A design matrix as produced by \code{\link[stats]{model.matrix}}.
-#' @param ... Additional arguments to \code{\link[mavis]{trend_partitioning}}.
+#' @param design A design matrix as produced by \code{stats::\link[stats:model.matrix]{model.matrix}}.
+#' @param ... Additional arguments to \code{baldur::\link[baldur:trend_partitioning]{trend_partitioning}}.
 #'
 #' @return a plot with the mean-variance trend used for the trend lines used in
 #'  the imputation.
