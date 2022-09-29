@@ -144,5 +144,18 @@ New submission
 Possibly misspelled words in DESCRIPTION:
   Proteomics (2:54)
   proteomics (7:61)
+  
+  
+I got similar results from
+`devtools::check_rhub()`
+
+with the exception of one note
+
+* checking installed package size ... NOTE
+  installed size is 49.1Mb
+  sub-directories of 1Mb or more:
+    libs  48.4Mb
+    
+Which I again think comes from `rstantools`
 
 * This is a new release.
