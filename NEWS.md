@@ -1,3 +1,3 @@
 # baldur 0.0.1
-
-* Added a `NEWS.md` file to track changes to the package.
+First release of `baldur`!
+Please report any issues to [https://github.com/PhilipBerg/baldur/issues](https://github.com/PhilipBerg/baldur/issues).
