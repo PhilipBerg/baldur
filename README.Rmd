@@ -27,6 +27,7 @@ You can install the development version of `baldur` from this github:
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 # or
 # install.package('baldur')
+# Once it becomes available on CRAN
 ```
 
 ## Example

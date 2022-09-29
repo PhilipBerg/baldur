@@ -1,6 +1,6 @@
 #' The 'baldur' package.
 #'
-#' @description baldur is a Bayesian heirachal model for statistical decision in proteomics data
+#' @description baldur is a Bayesian hierarchical model for statistical decision in proteomics data
 #'
 #' @docType package
 #' @name baldur-package

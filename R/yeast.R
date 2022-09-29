@@ -1,4 +1,4 @@
-#' Spiked-in data set of reversibly oxidized cysteins
+#' Spiked-in data set of reversibly oxidized cysteines
 #'
 #' A dataset containing quantification of reversibly oxidized cysteines using Progenesis.
 #' True positives cysteines spiked-in from yeast at two different concentrations

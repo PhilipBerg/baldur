@@ -12,7 +12,7 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @param data data.frame
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
-#' @param load_info logical; should the load information be ouput?
+#' @param load_info logical; should the load information be output?
 #' @param log boolean variable indicating if the data should be log transformed
 #'     after normalization
 #' @param target target columns to normalize, supports

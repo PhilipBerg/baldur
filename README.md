@@ -13,7 +13,7 @@ instructions for installing `rstan`
 <https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started>. Then you
 can install `baldur` as accordingly:
 
-You can install the development version of `baldur` from this github:
+You can install the development version of `baldur` from this GitHub:
 
 ```{r}
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
