@@ -4,7 +4,7 @@ Version: 0.0.1
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3772-6185"))
-Description: Differential abundance analysis for label-free proteomics using a Bayesain decision model.
+Description: Differential abundance analysis for label-free proteomics using a Bayesian decision model.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

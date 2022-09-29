@@ -1,4 +1,4 @@
-utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu"))
+utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' Sample the Posterior of the Bayesian model
 #'
 #' @description Function to sample the posterior of the Bayesian decision model.
@@ -12,8 +12,14 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu"))
 #' @param clusters The number of parallel threads to run on.
 #' @param robust If integration of the posterior should be done robust by trimming the tails
 #' @param perc  If robust is `TRUE` how much of each tail to remove before integration. Should be between 0 (no trimming) and 0.5 (trimming all data).
-#' @param ... Additional arguments passed to
-#' @return A `tibble` or `data.frame` annotated  with statistics of the posterior
+#' @param mu_not The value of the null hypothesis for the difference in means
+#' @param ... Additional arguments passed to \code{rstan::\link[rstan:sampling]{sampling}}. Note that verbose will always be forced to `FALSE`
+#'
+#' @return A `tibble` or `data.frame` annotated  with statistics of the posterior and p(error).
+#' `err` is the probability of error, i.e., the two tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, `sigma` is the common #' variance, and `lp` is the log-posterior.
+#' Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0, and 97.5, percentiles, respectively.
+#' The suffixes `_eff` and `_rhat` are the diagnostic variables returned by `rstan` (please see the Stan manual for more details).
+#' In general, a larger `_eff` indicates a better sampling efficiency, and `_rhat` compares the mixing within chains against between the chains and should be smaller than 1.05.
 #' @export
 #'
 #' @importFrom rlang :=
@@ -44,6 +50,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu"))
 #' @importFrom purrr map2_dfr
 #' @importFrom purrr map_dbl
 #' @importFrom purrr map2_chr
+#' @importFrom purrr quietly
 #' @importFrom tidyr unnest
 #' @importFrom rstan extract
 #' @importFrom rstan summary
@@ -81,8 +88,9 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu"))
 #'                  # this will greatly reduce the speed of running baldur
 #'   )
 #' }
-sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = stanmodels$uncertainty_model, clusters = 1, robust = F, perc = .05, ...){
+sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = stanmodels$uncertainty_model, clusters = 1, robust = F, perc = .05, mu_not = 0, ...){
   rstan_inputs <- rlang::dots_list(...)
+  rstan_inputs$verbose <- F
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
   C <- nrow(contrast_matrix)
@@ -92,18 +100,18 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
     cl <- multidplyr::new_cluster(clusters)
     suppressWarnings(
       invisible(
-        multidplyr::cluster_library(cl,
-                                    c(
-                                      "dplyr",
-                                      "tidyr",
-                                      "purrr",
-                                      "tibble",
-                                      "stringr",
-                                      "magrittr",
-                                      "rstan",
-                                      'StanHeaders',
-                                      'rlang'
-                                    )
+        purrr::quietly(multidplyr::cluster_library)(cl,
+                                                    c(
+                                                      "dplyr",
+                                                      "tidyr",
+                                                      "purrr",
+                                                      "tibble",
+                                                      "stringr",
+                                                      "magrittr",
+                                                      "rstan",
+                                                      'StanHeaders',
+                                                      'rlang'
+                                                    )
         )
       )
     )
@@ -125,7 +133,9 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                'bayesian_model',
                                "robust",
                                "perc",
-                               "rstan_inputs"
+                               "mu_not",
+                               "rstan_inputs",
+                               "stan_nse_wrapper"
                              )
     )
     model_check <- stringr::word(deparse(substitute(bayesian_model)), 2, sep = '\\$')
@@ -144,7 +154,7 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
     )
     multidplyr::cluster_send(cl,
                              dat <- purrr::pmap(list(stats::setNames(id, id), alpha, beta),
-                                                ~generate_stan_data_input(
+                                                ~ generate_stan_data_input(
                                                   ..1,
                                                   id_col_name,
                                                   design_matrix,
@@ -160,25 +170,17 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
     )
     results <- multidplyr::cluster_call(cl,
                                         purrr::map(dat,
-                                                   ~rstan::sampling(
-                                                     object = bayesian_model,
-                                                     data = .x,
-                                                     verbose = F,
-                                                     refresh = 0,
-                                                     warmup = 1000,
-                                                     iter = 2000,
-                                                     chains = 4
-                                                   )
+                                                   stan_nse_wrapper,
+                                                   bayesian_model,
+                                                   rstan_inputs
                                         ) %>%
                                           purrr::map2_dfr(dat,
-                                                          ~stan_summary(
-                                                            .x,
-                                                            condi,
-                                                            C,
-                                                            .y,
-                                                            robust,
-                                                            perc
-                                                          ),
+                                                          stan_summary,
+                                                          condi,
+                                                          C,
+                                                          robust,
+                                                          perc,
+                                                          mu_not,
                                                           .id = id_col_name
                                           )
     ) %>%
@@ -192,11 +194,22 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
         !!id_col_name := .data[[id_col_name]],
         tmp = purrr::pmap(!!pmap_columns,
                           bayesian_testing,
-                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, robust, perc
+                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, robust, perc, mu_not, rstan_inputs
         )
       ) %>%
       tidyr::unnest(tmp)
   }
+}
+
+stan_nse_wrapper <- function(data, model, ...){
+  rlang::eval_tidy(
+    rlang::call2(
+      rstan::sampling,
+      object = model,
+      data = data,
+      !!!rlang::dots_splice(...)
+    )
+  )
 }
 
 generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex){
@@ -224,7 +237,7 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
   )
 }
 
-estimate_error <- function(posterior, robust, perc) {
+estimate_error <- function(posterior, robust, perc, mu_not) {
   if (robust) {
     if (perc >= .5) {
       rlang::abort(
@@ -232,7 +245,7 @@ estimate_error <- function(posterior, robust, perc) {
           'perc must be less than 0.5 when robust = TRUE or all posetrior data will be filtered.',
           'Please set perc to a value less than 0.5, we do not recommend larger than 0.25 and a large sample from the posterior would be needed.'
         ),
-        class = 'filtering',
+        class = 'posterior-filtering',
         call = rlang::current_env()
       )
     }
@@ -240,19 +253,19 @@ estimate_error <- function(posterior, robust, perc) {
     posterior <- posterior[ dplyr::between(posterior, q[1], q[2]) ]
   }
   e <- stats::ecdf(posterior)
-  p <- e(0)
+  p <- e(mu_not)
   if (p < .5) {
-    2*p
+    2 * p
   }
   else {
-    2*(1-p)
+    2 * (1 - p)
   }
 }
 
-stan_summary <- function(fit, condi, C, dat, robust, perc){
+stan_summary <- function(fit, dat, condi, C, robust, perc, mu_not){
   lfc_pars <- paste0('y_diff[', seq_len(C), ']')
   err <- rstan::extract(fit, pars = lfc_pars) %>%
-    purrr::map_dbl(estimate_error, robust, perc)
+    purrr::map_dbl(estimate_error, robust, perc, mu_not)
   summ <- rstan::summary(fit, pars = c(lfc_pars, 'sigma', 'lp__')) %>%
     magrittr::use_series(summary)
   summ <- summ[
@@ -284,10 +297,10 @@ stan_summary <- function(fit, condi, C, dat, robust, perc){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, robust, perc){
+bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, robust, perc, mu_not, rstan_args){
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
   dat <- generate_stan_data_input(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
-  rstan::sampling(object = model, data = dat, verbose = F, refresh = 0, warmup = 1000, iter = 2000, chains = 4) %>%
-    stan_summary(condi, C, dat, robust, perc)
+  purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)$result %>%
+    stan_summary(dat, condi, C, robust, perc, mu_not)
 }

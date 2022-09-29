@@ -61,11 +61,11 @@ plot_sa <- function(results, alpha = .05, lfc = NULL) {
   rng <- c(-mx, mx)
   p <- results %>%
     ggplot2::ggplot(ggplot2::aes(sigma, lfc, color = err < alpha))
-    if(!is.null(lfc)){
-      p <- p +
-        ggplot2::geom_hline(yintercept = -abs(lfc), color = 'green', linetype = 'dashed') +
-        ggplot2::geom_hline(yintercept = abs(lfc), color = 'green', linetype = 'dashed')
-    }
+  if(!is.null(lfc)){
+    p <- p +
+      ggplot2::geom_hline(yintercept = -abs(lfc), color = 'green', linetype = 'dashed') +
+      ggplot2::geom_hline(yintercept = abs(lfc), color = 'green', linetype = 'dashed')
+  }
   p +
     ggplot2::geom_point(size = 1/2) +
     ggplot2::theme_bw() +

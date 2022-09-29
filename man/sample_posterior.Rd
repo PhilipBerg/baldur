@@ -14,6 +14,7 @@ sample_posterior(
   clusters = 1,
   robust = F,
   perc = 0.05,
+  mu_not = 0,
   ...
 )
 }
@@ -36,10 +37,16 @@ sample_posterior(
 
 \item{perc}{If robust is \code{TRUE} how much of each tail to remove before integration. Should be between 0 (no trimming) and 0.5 (trimming all data).}
 
-\item{...}{Additional arguments passed to}
+\item{mu_not}{The value of the null hypothesis for the difference in means}
+
+\item{...}{Additional arguments passed to \code{rstan::\link[rstan:sampling]{sampling}}. Note that verbose will always be forced to \code{FALSE}}
 }
 \value{
-A \code{tibble} or \code{data.frame} annotated  with statistics of the posterior
+A \code{tibble} or \code{data.frame} annotated  with statistics of the posterior and p(error).
+\code{err} is the probability of error, i.e., the two tail-density supporting the null-hypothesis, \code{lfc} is the estimated log$_2$-fold change, \code{sigma} is the common #' variance, and \code{lp} is the log-posterior.
+Columns without suffix shows the mean estimate from the posterior, while the suffixes \verb{_025}, \verb{_50}, and \verb{_975}, are the 2.5, 50.0, and 97.5, percentiles, respectively.
+The suffixes \verb{_eff} and \verb{_rhat} are the diagnostic variables returned by \code{rstan} (please see the Stan manual for more details).
+In general, a larger \verb{_eff} indicates a better sampling efficiency, and \verb{_rhat} compares the mixing within chains against between the chains and should be smaller than 1.05.
 }
 \description{
 Function to sample the posterior of the Bayesian decision model.
