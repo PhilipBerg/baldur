@@ -27,15 +27,3 @@ model {
   mu     ~ normal(xbar + sigma*eta, sigma);
   y_diff ~ normal(mu_diff, sigma);
 }
-// generated quantities {
-//   vector<lower=0,upper=1>[C] error;
-//   vector[C] q;
-//   for (k in 1:C){
-//     q[k] = beta[c[k, 1]] - beta[c[k, 2]];
-//     if(0 < q[k]){
-//       error[k] = normal_cdf(0, q[k], sigma)*2;
-//     }else{
-//       error[k] = (1 - normal_cdf(0, q[k], sigma))*2;
-//     }
-//   }
-// }

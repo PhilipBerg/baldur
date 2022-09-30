@@ -11,7 +11,7 @@ plot_volcano(results, alpha = 0.05, lfc = NULL)
 
 \item{alpha}{Significance cut-off; used to draw a line indicating where significance starts}
 
-\item{lfc}{LFC cut-off; used to draw lines for abs(lfc), if \code{NULL} no lines are drawn}
+\item{lfc}{LFC cut-off; used to draw lines for \code{abs(lfc)}, if \code{NULL} no lines are drawn}
 }
 \value{
 \code{plot_volcano} returns a \code{ggplot} object

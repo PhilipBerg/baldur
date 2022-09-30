@@ -3,7 +3,7 @@
 \docType{data}
 \name{yeast}
 \alias{yeast}
-\title{Spiked-in data set of reversibly oxidized cysteins}
+\title{Spiked-in data set of reversibly oxidized cysteines}
 \format{
 A data frame with 2235 rows and 7 variables:
 \describe{

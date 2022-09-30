@@ -18,7 +18,7 @@ name of the features in data (e.g., peptides, proteins, etc.)}
 \item{log}{boolean variable indicating if the data should be log transformed
 after normalization}
 
-\item{load_info}{logical; should the load information be ouput?}
+\item{load_info}{logical; should the load information be output?}
 
 \item{target}{target columns to normalize, supports
 \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
