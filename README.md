@@ -1,4 +1,4 @@
-![cran-badge example for gert package](http://www.r-pkg.org/badges/version/baldur)
+![cran-badge](http://www.r-pkg.org/badges/version/baldur)
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # Baldur

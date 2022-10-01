@@ -26,11 +26,16 @@ design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))
 
 # Normalize and log transform the data
-yeast <- psrn(yeast, "identifier")
+yeast_norm <- yeast \%>\%
+    # Remove missing data
+    # Note that this could be replaced with imputation
+    tidyr::drop_na() \%>\%
+    # Normalize
+    psrn("identifier")
 
 # Generate the plot
-\dontrun{
-yeast \%>\%
+\donttest{
+yeast_norm \%>\%
   calculate_mean_sd_trends(design) \%>\%
   plot_gamma_partition(design, verbose = FALSE)
 }

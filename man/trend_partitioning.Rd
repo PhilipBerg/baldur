@@ -10,7 +10,7 @@ trend_partitioning(
   formula = sd ~ mean + c,
   eps = 0.1,
   n = 1000,
-  verbose = T
+  verbose = TRUE
 )
 }
 \arguments{
@@ -45,7 +45,7 @@ yeast_norm <- yeast \%>\%
   psrn('identifier') \%>\%
   # Add mean-variance trends
   calculate_mean_sd_trends(design)
-\dontrun{
+\donttest{
 yeast_norm \%>\%
   # Partition the data
   trend_partitioning(design)

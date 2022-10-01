@@ -26,10 +26,15 @@ design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))
 
 # Normalize and log transform the data
-yeast <- psrn(yeast, "identifier")
+yeast_norm <- yeast \%>\%
+    # Remove missing data
+    # Note that this could be replaced with imputation
+    tidyr::drop_na() \%>\%
+    # Normalize
+    psrn("identifier")
 
 # Generate the plots
-\dontrun{
-plot_gamma_regression(yeast, design, verbose = FALSE)
+\donttest{
+plot_gamma_regression(yeast_norm, design, verbose = FALSE)
 }
 }

@@ -22,10 +22,10 @@ design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))
 
 # Normalize and log transform the data
-yeast <- psrn(yeast, "identifier")
+yeast_norm <- psrn(yeast, "identifier")
 
 # Generate the plot
-yeast \%>\%
+yeast_norm \%>\%
   calculate_mean_sd_trends(design) \%>\%
   plot_gamma()
 }

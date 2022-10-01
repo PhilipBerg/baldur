@@ -12,7 +12,7 @@ sample_posterior(
   uncertainty_matrix,
   bayesian_model = stanmodels$uncertainty_model,
   clusters = 1,
-  robust = F,
+  robust = FALSE,
   perc = 0.05,
   mu_not = 0,
   ...
@@ -73,7 +73,7 @@ yeast_norm <- yeast_norm \%>\%
    estimate_gamma_priors(design, gam)
 # Setup contrast matrix
 contrast <- matrix(1:2, ncol = 2)
-\dontrun{
+\donttest{
 yeast_norm \%>\%
   sample_posterior(
     'identifier',

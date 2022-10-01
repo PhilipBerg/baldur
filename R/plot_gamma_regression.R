@@ -44,11 +44,16 @@ utils::globalVariables(c(".", "sd", "model"))
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log transform the data
-#' yeast <- psrn(yeast, "identifier")
+#' yeast_norm <- yeast %>%
+#'     # Remove missing data
+#'     # Note that this could be replaced with imputation
+#'     tidyr::drop_na() %>%
+#'     # Normalize
+#'     psrn("identifier")
 #'
 #' # Generate the plots
-#' \dontrun{
-#' plot_gamma_regression(yeast, design, verbose = FALSE)
+#' \donttest{
+#' plot_gamma_regression(yeast_norm, design, verbose = FALSE)
 #' }
 plot_gamma_regression <- function(data, design, ...) {
   data <- data %>%
@@ -102,15 +107,15 @@ plot_mean_sd_trend <- function(data) {
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log transform the data
-#' yeast <- psrn(yeast, "identifier")
+#' yeast_norm <- psrn(yeast, "identifier")
 #'
 #' # Generate the plot
-#' yeast %>%
+#' yeast_norm %>%
 #'   calculate_mean_sd_trends(design) %>%
 #'   plot_gamma()
 plot_gamma <- function(data) {
   data %>%
-    tidyr::drop_na() %>%
+    tidyr::drop_na(sd) %>%
     plot_mean_sd_trend() +
     ggplot2::ggtitle("Before Partitioning")
 }
@@ -133,11 +138,16 @@ plot_gamma <- function(data) {
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log transform the data
-#' yeast <- psrn(yeast, "identifier")
+#' yeast_norm <- yeast %>%
+#'     # Remove missing data
+#'     # Note that this could be replaced with imputation
+#'     tidyr::drop_na() %>%
+#'     # Normalize
+#'     psrn("identifier")
 #'
 #' # Generate the plot
-#' \dontrun{
-#' yeast %>%
+#' \donttest{
+#' yeast_norm %>%
 #'   calculate_mean_sd_trends(design) %>%
 #'   plot_gamma_partition(design, verbose = FALSE)
 #' }
@@ -154,7 +164,7 @@ plot_gamma_partition <- function(data, design, ...) {
     dplyr::mutate(
       c = stringr::str_replace_all(c, purrr::set_names(c('Lower', 'Upper'), c('L', 'U')))
     ) %>%
-    tidyr::drop_na() %>%
+    tidyr::drop_na(sd) %>%
     ggplot2::ggplot(ggplot2::aes(mean, sd, color = c)) +
     ggplot2::geom_point(size = 1 / 10) +
     ggplot2::theme_classic() +

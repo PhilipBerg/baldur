@@ -41,7 +41,7 @@ utils::globalVariables(c("lfc", "err"))
 #'    estimate_gamma_priors(design, gam)
 #' # Setup contrast matrix
 #' contrast <- matrix(1:2, ncol = 2)
-#' \dontrun{
+#' \donttest{
 #' results <- yeast_norm %>%
 #'   sample_posterior(
 #'     'identifier',

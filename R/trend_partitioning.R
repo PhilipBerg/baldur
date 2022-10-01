@@ -30,12 +30,12 @@ utils::globalVariables(c("alpha", "betau", "betal", "intl", "intu", "res"))
 #'   psrn('identifier') %>%
 #'   # Add mean-variance trends
 #'   calculate_mean_sd_trends(design)
-#' \dontrun{
+#' \donttest{
 #' yeast_norm %>%
 #'   # Partition the data
 #'   trend_partitioning(design)
 #' }
-trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps = .1, n = 1000, verbose = T){
+trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps = .1, n = 1000, verbose = TRUE){
   cur_data <- data %>%
     prep_data_for_clustering(design_matrix, eps = eps, n = n) %>%
     run_procedure(formula, eps = eps, n = n)

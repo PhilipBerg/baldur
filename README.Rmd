@@ -16,18 +16,21 @@ knitr::opts_chunk$set(
 # Baldur
 
 The goal of Baldur is to shine light on your proteomics data.
+Baldur is a heirachal Bayesian model that uses an empirical bayes method to estimate hyper-priors on the variance.
+
 
 ## Installation
 You can install the development version of `baldur` from this github or the stable version from CRAN.
 Importantly, you first need to follow the instructions for installing `rstan` [https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started).
 Then you can install `baldur` as accordingly:
+For the stable release please install from CRAN:
+```{r}
+install.package('baldur')
+```
 
-You can install the development version of `baldur` from this github:
+Or you can install the development version of `baldur` from this github:
 ```{r}
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
-# or
-# install.package('baldur')
-# Once it becomes available on CRAN
 ```
 
 ## Example
