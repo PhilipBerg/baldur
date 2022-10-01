@@ -16,8 +16,9 @@ knitr::opts_chunk$set(
 # Baldur
 
 The goal of Baldur is to shine light on your proteomics data.
-Baldur is a heirachal Bayesian model that uses an empirical bayes method to estimate hyper-priors on the variance.
-
+Baldur is a hierarchical Bayesian model that uses an empirical Bayes method to estimate hyper-priors on the variance.
+It then estimates the posterior of the difference in means between different conditions for each peptide/protein/PTM.
+Finally, it integrates the posterior to estimate the probability of error.
 
 ## Installation
 You can install the development version of `baldur` from this github or the stable version from CRAN.
