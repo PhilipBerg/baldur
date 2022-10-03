@@ -1,5 +1,5 @@
 Package: baldur
-Title: "A Bayesian Hierarchical Model For Label-Free Proteomics Using Mean-Variance Trends"
+Title: A Bayesian Hierarchical Model for Label-Free Proteomics Using Mean-Variance Trends
 Version: 0.0.1
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
