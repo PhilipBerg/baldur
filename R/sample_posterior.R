@@ -237,7 +237,7 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
     beta_gamma = beta,
     mu_not = ybar,
     u = u,
-    sigma_bar = sigma_bar
+    sigma_mu_not = sigma_bar
   )
 }
 
