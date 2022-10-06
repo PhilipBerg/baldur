@@ -94,6 +94,7 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
   C <- nrow(contrast_matrix)
+  sigma_bar <- sd(data$mean)
   ori_data <- data
   pmap_columns <- rlang::expr(list(!!rlang::sym(id_col_name), alpha, beta))
   if(clusters != 1){
@@ -135,7 +136,8 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                "perc",
                                "mu_not",
                                "rstan_inputs",
-                               "stan_nse_wrapper"
+                               "stan_nse_wrapper",
+                               "sigma_bar"
                              )
     )
     model_check <- stringr::word(deparse(substitute(bayesian_model)), 2, sep = '\\$')
@@ -164,7 +166,8 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                                   N, K, C,
                                                   ..2, ..3,
                                                   condi,
-                                                  condi_regex
+                                                  condi_regex,
+                                                  sigma_bar
                                                 )
                              )
     )
@@ -194,7 +197,7 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
         !!id_col_name := .data[[id_col_name]],
         tmp = purrr::pmap(!!pmap_columns,
                           bayesian_testing,
-                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, robust, perc, mu_not, rstan_inputs
+                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, robust, perc, mu_not, rstan_inputs, sigma_bar
         )
       ) %>%
       tidyr::unnest(tmp)
@@ -212,7 +215,7 @@ stan_nse_wrapper <- function(data, model, ...){
   )
 }
 
-generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex){
+generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar){
   row <- data[data[[id_col_name]] == id, stringr::str_detect(names(data), condi_regex)]
   xbar <- purrr::map_dbl(purrr::set_names(condi, condi),
                          ~as.numeric(row[stringr::str_which(colnames(row), .x)]) %>%
@@ -233,7 +236,8 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
     alpha = alpha,
     beta_gamma = beta,
     xbar = xbar,
-    u = u
+    u = u,
+    sigma_bar = sigma_bar
   )
 }
 
@@ -297,10 +301,10 @@ stan_summary <- function(fit, dat, condi, C, robust, perc, mu_not){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, robust, perc, mu_not, rstan_args){
+bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, robust, perc, mu_not, rstan_args, sigma_bar){
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
-  dat <- generate_stan_data_input(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
+  dat <- generate_stan_data_input(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar)
   purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)$result %>%
     stan_summary(dat, condi, C, robust, perc, mu_not)
 }
