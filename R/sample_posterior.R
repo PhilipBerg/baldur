@@ -217,7 +217,7 @@ stan_nse_wrapper <- function(data, model, ...){
 
 generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar){
   row <- data[data[[id_col_name]] == id, stringr::str_detect(names(data), condi_regex)]
-  xbar <- purrr::map_dbl(purrr::set_names(condi, condi),
+  ybar <- purrr::map_dbl(purrr::set_names(condi, condi),
                          ~as.numeric(row[stringr::str_which(colnames(row), .x)]) %>%
                            mean()
   )[condi]
@@ -235,7 +235,7 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
     c = comparison,
     alpha = alpha,
     beta_gamma = beta,
-    xbar = xbar,
+    mu_not = ybar,
     u = u,
     sigma_bar = sigma_bar
   )
