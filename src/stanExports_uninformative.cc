@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_uncertainty_model_semi_informative.h"
+#include "stanExports_uninformative.h"
 
-RCPP_MODULE(stan_fit4uncertainty_model_semi_informative_mod) {
+RCPP_MODULE(stan_fit4uninformative_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_uncertainty_model_semi_informative")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_uninformative")
 
     .constructor<SEXP,SEXP,SEXP>()
 

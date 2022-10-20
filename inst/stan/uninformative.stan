@@ -8,8 +8,14 @@ data {
   real alpha;         // alpha prior for gamma
   real beta_gamma;    // beta prior for gamma
   vector[N] u;        // uncertainty
-  vector[K] mu_not;   // prior mu
-  real sigma_mu_not;  // variance of ybars
+}
+transformed data{
+  vector[K] n_k;     // per condition measurements
+  vector[C] n_c;     // per comparison measurements
+  for (i in 1:K) {
+    n_k[i] = 1/sum(x[,i]);
+  }
+  n_c = sqrt((n_k[c[, 1]] + n_k[c[, 2]]));
 }
 parameters {
   vector[K] mu;           // coefficients for predictors
@@ -20,13 +26,14 @@ parameters {
 }
 transformed parameters{
   vector[C] mu_diff;      // differences in means
+  vector[C] sigma_lfc; // variance of ybars
   mu_diff = mu[c[, 1]] - mu[c[, 2]];
+  sigma_lfc = sigma * n_c;
 }
 model {
-  sigma        ~ gamma(alpha, beta_gamma);                  // variance
-  eta          ~ normal(0, 1);                              // NCP auxilary variable
-  prior_mu_not ~ normal(mu_not, sigma_mu_not);              // Prior mean
-  mu           ~ normal(prior_mu_not + sigma*eta, sigma);   // mean
-  y            ~ normal(x * mu, sigma*u);                   // data model
-  y_diff       ~ normal(mu_diff, sigma);                    // difference statistic
+  sigma        ~ gamma(alpha, beta_gamma);                    // variance
+  eta          ~ normal(0, 1);                                // NCP auxilary variable
+  mu           ~ normal(prior_mu_not + sigma*eta, sigma);     // mean
+  y            ~ normal(x * mu, sigma*u);                     // data model
+  y_diff       ~ normal(mu_diff, sigma_lfc);                  // difference statistic
 }

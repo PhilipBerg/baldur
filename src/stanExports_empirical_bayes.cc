@@ -2,12 +2,12 @@
 
 #include <Rcpp.h>
 using namespace Rcpp ;
-#include "stanExports_uncertainty_model_uninformative.h"
+#include "stanExports_empirical_bayes.h"
 
-RCPP_MODULE(stan_fit4uncertainty_model_uninformative_mod) {
+RCPP_MODULE(stan_fit4empirical_bayes_mod) {
 
 
-    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_uncertainty_model_uninformative")
+    class_<rstan::stan_fit<stan_model, boost::random::ecuyer1988> >("rstantools_model_empirical_bayes")
 
     .constructor<SEXP,SEXP,SEXP>()
 

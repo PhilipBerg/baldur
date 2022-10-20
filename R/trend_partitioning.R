@@ -5,7 +5,7 @@ utils::globalVariables(c("alpha", "betau", "betal", "intl", "intu", "res"))
 #' @param data A `tibble` or `data.frame` to partition
 #' @param design_matrix A design matrix for the data (see example)
 #' @param formula Formula for the Gamma regression
-#' @param eps Size of the integration window
+#' @param h Size of the integration window
 #' @param n Number of integration windows
 #' @param verbose If the number of points moved should be output
 #'
@@ -35,10 +35,10 @@ utils::globalVariables(c("alpha", "betau", "betal", "intl", "intu", "res"))
 #'   # Partition the data
 #'   trend_partitioning(design)
 #' }
-trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps = .1, n = 1000, verbose = TRUE){
+trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, h = .1, n = 1000, verbose = TRUE){
   cur_data <- data %>%
-    prep_data_for_clustering(design_matrix, eps = eps, n = n) %>%
-    run_procedure(formula, eps = eps, n = n)
+    prep_data_for_clustering(design_matrix, h = h, n = n) %>%
+    run_procedure(formula, h = h, n = n)
   while (cur_data$i > 1) {
     if(verbose){
       print(
@@ -46,13 +46,13 @@ trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, eps
       )
     }
     cur_data <- cur_data$data %>%
-      run_procedure(formula, eps = eps, n = n)
+      run_procedure(formula, h = h, n = n)
   }
   cur_data$data %>%
     dplyr::select(-c(betal, betau, intl, intu, alpha))
 }
 
-prep_data_for_clustering <- function(data, design_matrix, eps = .1, n = 1000){
+prep_data_for_clustering <- function(data, design_matrix, h = .1, n = 1000){
   data_ms <- data %>%
     calculate_mean_sd_trends(design_matrix)
   gam_reg <-  glm(sd ~ mean, Gamma(log), data_ms)
@@ -89,23 +89,23 @@ resetimate_gamma_pars <- function(data, formula){
     )
 }
 
-add_integrals <- function(data, eps = .1, n = 1000){
+add_integrals <- function(data, h = .1, n = 1000){
   data %>%
     dplyr::mutate(
-      intu = purrr::pmap_dbl(list(sd, alpha, betau), num_int_trapz, eps, n),
-      intl = purrr::pmap_dbl(list(sd, alpha, betal), num_int_trapz, eps, n)
+      intu = purrr::pmap_dbl(list(sd, alpha, betau), num_int_trapz, h, n),
+      intl = purrr::pmap_dbl(list(sd, alpha, betal), num_int_trapz, h, n)
     )
 }
 
-run_procedure <- function(data, formula, eps = .1, n = 1000){
+run_procedure <- function(data, formula, h = .1, n = 1000){
   data %>%
     resetimate_gamma_pars(formula) %>%
-    add_integrals(eps = eps, n = n) %>%
+    add_integrals(h = h, n = n) %>%
     clust_itt_norm()
 }
 
-num_int_trapz <- function(sd, alpha, beta, eps, n){
-  rng <- c(-eps, eps) + sd
+num_int_trapz <- function(sd, alpha, beta, h, n){
+  rng <- c(-h, h) + sd
   x <- seq(rng[1], rng[2], length.out = n)
   dx <- diff(x)
   y <- dgamma(x, alpha, beta)

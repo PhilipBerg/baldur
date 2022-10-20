@@ -12,14 +12,12 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 
-RcppExport SEXP _rcpp_module_boot_stan_fit4uncertainty_model_highly_informative_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4uncertainty_model_semi_informative_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4uncertainty_model_uninformative_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4empirical_bayes_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4uninformative_mod();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_stan_fit4uncertainty_model_highly_informative_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uncertainty_model_highly_informative_mod, 0},
-    {"_rcpp_module_boot_stan_fit4uncertainty_model_semi_informative_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uncertainty_model_semi_informative_mod, 0},
-    {"_rcpp_module_boot_stan_fit4uncertainty_model_uninformative_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uncertainty_model_uninformative_mod, 0},
+    {"_rcpp_module_boot_stan_fit4empirical_bayes_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4empirical_bayes_mod, 0},
+    {"_rcpp_module_boot_stan_fit4uninformative_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uninformative_mod, 0},
     {NULL, NULL, 0}
 };
 
