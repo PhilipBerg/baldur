@@ -88,7 +88,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'                  # this will greatly reduce the speed of running baldur
 #'   )
 #' }
-sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = stanmodels$uncertainty_model_semi_informative, clusters = 1, robust = FALSE, perc = .05, mu_not = 0, ...){
+sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = stanmodels$empirical_bayes, clusters = 1, robust = FALSE, perc = .05, mu_not = 0, ...){
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
