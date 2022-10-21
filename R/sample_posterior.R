@@ -43,7 +43,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @importFrom dplyr tibble
 #' @importFrom stringr word
 #' @importFrom stats setNames
-#' @importFrom stats ecdf
+#' @importFrom stats pnorm
 #' @importFrom stats quantile
 #' @importFrom purrr map
 #' @importFrom purrr pmap
@@ -79,6 +79,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' contrast <- matrix(1:2, ncol = 2)
 #' \donttest{
 #' yeast_norm %>%
+#'   head() %>% # Just runnig a few for the example
 #'   sample_posterior(
 #'     'identifier',
 #'     design,

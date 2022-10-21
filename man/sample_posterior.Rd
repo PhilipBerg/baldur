@@ -10,7 +10,7 @@ sample_posterior(
   design_matrix,
   contrast_matrix,
   uncertainty_matrix,
-  bayesian_model = stanmodels$uncertainty_model,
+  bayesian_model = stanmodels$empirical_bayes,
   clusters = 1,
   robust = FALSE,
   perc = 0.05,

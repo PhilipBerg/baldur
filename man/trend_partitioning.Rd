@@ -8,7 +8,7 @@ trend_partitioning(
   data,
   design_matrix,
   formula = sd ~ mean + c,
-  eps = 0.1,
+  h = 0.1,
   n = 1000,
   verbose = TRUE
 )
@@ -20,7 +20,7 @@ trend_partitioning(
 
 \item{formula}{Formula for the Gamma regression}
 
-\item{eps}{Size of the integration window}
+\item{h}{Size of the integration window}
 
 \item{n}{Number of integration windows}
 
