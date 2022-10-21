@@ -64,8 +64,8 @@ yeast_cluster <- yeast_norm %>%
                              # between the two clusters. But could be changed
                              # if e.g., there seems to be a different slope as well
                              # then we would have used formula = sd ~  mean*c
-    eps = 0.1,               # Set the size of the integration window around sd.
-                             # Note that larger eps will generally push the 
+    h = 0.1,               # Set the size of the integration window around sd.
+                             # Note that larger h will generally push the 
                              # partitioning upwards. Try to not make it to large so that
                              # the integration covers a large amount outside the function domain (0,Inf)
     n = 1000,                # Larger number makes the integration more precis but makes the 
