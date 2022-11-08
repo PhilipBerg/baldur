@@ -56,8 +56,10 @@ utils::globalVariables(c(".", "sd", "model"))
 #' plot_gamma_regression(yeast_norm, design, verbose = FALSE)
 #' }
 plot_gamma_regression <- function(data, design, ...) {
-  data <- data %>%
-    calculate_mean_sd_trends(design)
+  if(!'sd' %in% names(data)){
+    data <- data %>%
+      calculate_mean_sd_trends(design)
+  }
   base_plot <- data %>%
     plot_gamma()
   part_plot <- data %>%
