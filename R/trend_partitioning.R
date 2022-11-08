@@ -53,10 +53,12 @@ trend_partitioning <- function(data, design_matrix, formula = sd ~ mean + c, h =
 }
 
 prep_data_for_clustering <- function(data, design_matrix, h = .1, n = 1000){
-  data_ms <- data %>%
-    calculate_mean_sd_trends(design_matrix)
-  gam_reg <-  glm(sd ~ mean, Gamma(log), data_ms)
-  data_ms %>%
+  if(!'sd' %in% colnames(data)) {
+    data <- data %>%
+      calculate_mean_sd_trends(design_matrix)
+  }
+  gam_reg <- fit_gamma_regression(data, sd ~ mean)
+  data %>%
     dplyr::mutate(
       res = residuals(gam_reg),
       c = dplyr::if_else(res < 0, 'L', 'U')
