@@ -26,13 +26,14 @@ parameters {
 }
 transformed parameters{
   vector[C] mu_diff;      // differences in means
-  vector[C] sigma_lfc; // variance of ybars
+  vector[C] sigma_lfc;    // variance of ybars
   mu_diff = mu[c[, 1]] - mu[c[, 2]];
   sigma_lfc = sigma * n_c;
 }
 model {
   sigma        ~ gamma(alpha, beta_gamma);                    // variance
   eta          ~ normal(0, 1);                                // NCP auxilary variable
+  prior_mu_not ~ normal(0, 100);                              // prior mean
   mu           ~ normal(prior_mu_not + sigma*eta, sigma);     // mean
   y            ~ normal(x * mu, sigma*u);                     // data model
   y_diff       ~ normal(mu_diff, sigma_lfc);                  // difference statistic

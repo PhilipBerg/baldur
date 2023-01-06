@@ -13,11 +13,11 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 
 RcppExport SEXP _rcpp_module_boot_stan_fit4empirical_bayes_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4uninformative_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4weakly_informative_mod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4empirical_bayes_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4empirical_bayes_mod, 0},
-    {"_rcpp_module_boot_stan_fit4uninformative_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uninformative_mod, 0},
+    {"_rcpp_module_boot_stan_fit4weakly_informative_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4weakly_informative_mod, 0},
     {NULL, NULL, 0}
 };
 
