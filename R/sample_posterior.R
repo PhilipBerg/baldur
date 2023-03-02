@@ -257,13 +257,8 @@ estimate_error <- function(posterior, robust, perc, mu_not) {
     q <- stats::quantile(posterior, c(perc, 1-perc))
     posterior <- posterior[ dplyr::between(posterior, q[1], q[2]) ]
   }
-  p <- pnorm(mu_not, mean(posterior), sd(posterior))
-  if (p < .5) {
-    2 * p
-  }
-  else {
-    2 * (1 - p)
-  }
+  s  <- -abs(mean(posterior) - mu_not)/sd(posterior)
+  2*pnorm(s)
 }
 
 stan_summary <- function(fit, dat, condi, C, robust, perc, mu_not){
