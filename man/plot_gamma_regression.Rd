@@ -4,21 +4,21 @@
 \alias{plot_gamma_regression}
 \title{Function for plotting the mean-variance gamma regressions}
 \usage{
-plot_gamma_regression(data, design, ...)
+plot_gamma_regression(data, design)
 }
 \arguments{
 \item{data}{The data to use for producing the plots.}
 
-\item{design}{A design matrix as produced by \code{\link[stats]{model.matrix}}.}
-
-\item{...}{Additional arguments to \code{\link[baldur]{trend_partitioning}}.}
+\item{design}{A design matrix as produced by
+\code{\link[stats]{model.matrix}}.}
 }
 \value{
-a plot with the mean-variance trend before partitioning on the left side, and the right side after.
+a plot with the mean-variance trend before partitioning on the left
+side, and the right side after.
 }
 \description{
 Generates a scatter plot with the gamma regressions of the mean-variance
-trends with and without partitioning
+trend
 }
 \examples{
 # Produce a design matrix
@@ -31,10 +31,7 @@ yeast_norm <- yeast \%>\%
     # Note that this could be replaced with imputation
     tidyr::drop_na() \%>\%
     # Normalize
-    psrn("identifier")
+    psrn("identifier") \%>\%
+    plot_gamma_regression(design)
 
-# Generate the plots
-\donttest{
-plot_gamma_regression(yeast_norm, design, verbose = FALSE)
-}
 }

@@ -1,12 +1,15 @@
 #' Estimate Gamma priors for sigma
 #'
-#' @description Estimates the priors for the Bayesian model.
+#' @description Estimates the priors for the Bayesian data and decision model.
+#'   `estimate_gamma_priors` is a wrapper that adds new columns to the data (one
+#'   for alpha and one for betas).
 #' @param data A `tibble` or `data.frame` to add gamma priors to
-#' @param design_matrix A design matrix for the data (see example)
-#' @param gamma_reg A Gamma regression object
+#' @param reg A `glm` Gamma regression or `lgmr` object
 #'
-#' @return A `tibble` or `data.frame` with the alpha,beta priors
+#' @return `estimate_gamma_priors` returns a `tibble` or `data.frame` with the alpha,beta priors estimate.
 #' @export
+#'
+#' @name estimate_gamma_priors
 #'
 #' @importFrom dplyr mutate
 #'
@@ -25,11 +28,29 @@
 #'
 #' # Estimate priors
 #' yeast_norm %>%
-#'     estimate_gamma_priors(design, gam_reg)
-estimate_gamma_priors <- function(data, design_matrix, gamma_reg){
+#'     estimate_gamma_priors(gam_reg)
+#' # Can also explicitly estimate the beta parameters
+#' estimate_beta(gam_reg, yeast_norm$mean, 1/summary(gamma_reg)$dispersion)
+estimate_gamma_priors <- function(data, reg){
+  if (!"mean" %in% names(data)) {
+    stop('Mean column missnig\nDid you forget to calculate the M-V trend?\n Try running calculate_mean_sd_trends')
+  }
   data %>%
     dplyr::mutate(
-      alpha = 1/summary(gamma_reg)$dispersion,
-      beta = estimate_beta(gamma_reg, mean, c, alpha)
+      alpha = 1/summary(reg)$dispersion,
+      beta = estimate_beta(reg, mean, alpha)
     )
+}
+
+#' Estimate the beta parameter of the gamma distribution of sigma
+#'
+#' @param mean  The mean value of the peptide
+#' @param alpha The alpha parameter of the peptide
+#'
+#' @rdname estimate_gamma_priors
+#'
+#' @return `estimate_gamma_priors` returns estimates of the beta parameter(s)
+#' @export
+estimate_beta <- function(mean, reg, alpha){
+  alpha / stats::predict.glm(reg, newdata = data.frame(mean = mean), type = 'response')
 }

@@ -4,7 +4,7 @@
 \alias{fit_gamma_regression}
 \title{Function for Fitting the Mean-Variance Gamma Regression Models}
 \usage{
-fit_gamma_regression(data, formula = sd ~ mean + c, ...)
+fit_gamma_regression(data, formula = sd ~ mean, ...)
 }
 \arguments{
 \item{data}{a \code{data.frame} to generate the mean-variance trends for. It

@@ -1,25 +1,35 @@
 utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' Sample the Posterior of the Bayesian model
 #'
-#' @description Function to sample the posterior of the Bayesian decision model.
+#' @description Function to sample the posterior of the Bayesian data and
+#'   decision model.
 #'
 #' @param data A `tibble` or `data.frame` with alpha,beta priors annotated
 #' @param id_col_name A character of the id column
 #' @param design_matrix A design matrix for the data (see example)
-#' @param contrast_matrix A contrast matrix of the decisions to test such that the first column is the index of the column in the design matrix that should be compared to the second column
+#' @param contrast_matrix A contrast matrix of the decisions to test such that
+#'   the first column is the index of the column in the design matrix that
+#'   should be compared to the second column
 #' @param uncertainty_matrix A matrix of observation uncertainty
-#' @param bayesian_model Which Bayesian model to use. Currently only one internal model allowed, this argument is for forward compatibility
+#' @param bayesian_model Which Bayesian model to use. Defaults to
+#'   [empirical_bayes] but also allows [weakly_informative]
 #' @param clusters The number of parallel threads to run on.
-#' @param robust If integration of the posterior should be done robust by trimming the tails
-#' @param perc  If robust is `TRUE` how much of each tail to remove before integration. Should be between 0 (no trimming) and 0.5 (trimming all data).
 #' @param mu_not The value of the null hypothesis for the difference in means
-#' @param ... Additional arguments passed to \code{rstan::\link[rstan:sampling]{sampling}}. Note that verbose will always be forced to `FALSE`
+#' @param ... Additional arguments passed to
+#'   \code{rstan::\link[rstan:sampling]{sampling}}. Note that verbose will
+#'   always be forced to `FALSE`
 #'
-#' @return A `tibble` or `data.frame` annotated  with statistics of the posterior and p(error).
-#' `err` is the probability of error, i.e., the two tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, `sigma` is the common #' variance, and `lp` is the log-posterior.
-#' Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0, and 97.5, percentiles, respectively.
-#' The suffixes `_eff` and `_rhat` are the diagnostic variables returned by `rstan` (please see the Stan manual for more details).
-#' In general, a larger `_eff` indicates a better sampling efficiency, and `_rhat` compares the mixing within chains against between the chains and should be smaller than 1.05.
+#' @return A [tibble()] or [data.frame()] annotated  with statistics of the
+#'   posterior and p(error). `err` is the probability of error, i.e., the two
+#'   tail-density supporting the null-hypothesis, `lfc` is the estimated
+#'   log$_2$-fold change, `sigma` is the common #' variance, and `lp` is the
+#'   log-posterior. Columns without suffix shows the mean estimate from the
+#'   posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0,
+#'   and 97.5, percentiles, respectively. The suffixes `_eff` and `_rhat` are
+#'   the diagnostic variables returned by `rstan` (please see the Stan manual
+#'   for more details). In general, a larger `_eff` indicates a better sampling
+#'   efficiency, and `_rhat` compares the mixing within chains against between
+#'   the chains and should be smaller than 1.05.
 #' @export
 #'
 #' @importFrom rlang :=
@@ -89,7 +99,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'                  # this will greatly reduce the speed of running baldur
 #'   )
 #' }
-sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = stanmodels$empirical_bayes, clusters = 1, robust = FALSE, perc = .05, mu_not = 0, ...){
+sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = empirical_bayes, clusters = 1, robust = FALSE, perc = .05, mu_not = 0, ...){
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
@@ -243,20 +253,6 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
 }
 
 estimate_error <- function(posterior, robust, perc, mu_not) {
-  if (robust) {
-    if (perc >= .5) {
-      rlang::abort(
-        c(
-          'perc must be less than 0.5 when robust = TRUE or all posetrior data will be filtered.',
-          'Please set perc to a value less than 0.5, we do not recommend larger than 0.25 and a large sample from the posterior would be needed.'
-        ),
-        class = 'posterior-filtering',
-        call = rlang::current_env()
-      )
-    }
-    q <- stats::quantile(posterior, c(perc, 1-perc))
-    posterior <- posterior[ dplyr::between(posterior, q[1], q[2]) ]
-  }
   s  <- -abs(mean(posterior) - mu_not)/sd(posterior)
   2*pnorm(s)
 }

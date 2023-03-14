@@ -2,22 +2,31 @@
 % Please edit documentation in R/estimate_priors.R
 \name{estimate_gamma_priors}
 \alias{estimate_gamma_priors}
+\alias{estimate_beta}
 \title{Estimate Gamma priors for sigma}
 \usage{
-estimate_gamma_priors(data, design_matrix, gamma_reg)
+estimate_gamma_priors(data, reg)
+
+estimate_beta(mean, reg, alpha)
 }
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame} to add gamma priors to}
 
-\item{design_matrix}{A design matrix for the data (see example)}
+\item{reg}{A \code{glm} Gamma regression or \code{lgmr} object}
 
-\item{gamma_reg}{A Gamma regression object}
+\item{mean}{The mean value of the peptide}
+
+\item{alpha}{The alpha parameter of the peptide}
 }
 \value{
-A \code{tibble} or \code{data.frame} with the alpha,beta priors
+\code{estimate_gamma_priors} returns a \code{tibble} or \code{data.frame} with the alpha,beta priors estimate.
+
+\code{estimate_gamma_priors} returns estimates of the beta parameter(s)
 }
 \description{
-Estimates the priors for the Bayesian model.
+Estimates the priors for the Bayesian data and decision model.
+\code{estimate_gamma_priors} is a wrapper that adds new columns to the data (one
+for alpha and one for betas).
 }
 \examples{
 # Setup model matrix
@@ -34,5 +43,7 @@ gam_reg <- fit_gamma_regression(yeast_norm, sd ~ mean)
 
 # Estimate priors
 yeast_norm \%>\%
-    estimate_gamma_priors(design, gam_reg)
+    estimate_gamma_priors(gam_reg)
+# Can also explicitly estimate the beta parameters
+estimate_beta(gam_reg, yeast_norm$mean, 1/summary(gamma_reg)$dispersion)
 }

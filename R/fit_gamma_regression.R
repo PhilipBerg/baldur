@@ -30,6 +30,6 @@
 #'
 #' # Fit gamma regression model for the mean-variance trends
 #' gamma_model <- fit_gamma_regression(yeast_norm, sd ~ mean)
-fit_gamma_regression <- function(data, formula = sd ~ mean + c, ...) {
+fit_gamma_regression <- function(data, formula = sd ~ mean, ...) {
   stats::glm(formula, stats::Gamma(log), data)
 }
