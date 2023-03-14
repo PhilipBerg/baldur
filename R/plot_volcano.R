@@ -35,10 +35,10 @@ utils::globalVariables(c("lfc", "err"))
 #' # Fit the gamma regression
 #' gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 #' # Estimate each data point's uncertainty
-#' unc <- estimate_uncertainty(yeast_norm, 'identifier', design, gam)
-#' yeast_norm <- yeast_norm %>%
+#' unc <- estimate_uncertainty(gam, yeast_norm, 'identifier', design)
+#' yeast_norm <- gam %>%
 #'    # Add hyper-priors for sigma
-#'    estimate_gamma_priors(design, gam)
+#'    estimate_gamma_hyperparameters(yeast_norm)
 #' # Setup contrast matrix
 #' contrast <- matrix(1:2, ncol = 2)
 #' \donttest{

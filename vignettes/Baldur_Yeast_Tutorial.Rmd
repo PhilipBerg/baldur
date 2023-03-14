@@ -52,7 +52,7 @@ Then, partitioning and setting up `baldur` after trend-partitioning
 # Fit the gamma regression
 gam_sin <- fit_gamma_regression(yeast_norm, sd ~ mean)
 # Estimate the uncertainty
-unc_sin <- estimate_uncertainty(yeast_norm, 'identifier', yeast_design, gam_sin)
+unc_sin <- estimate_uncertainty(gam_sin, yeast_norm, 'identifier', yeast_design)
 ```
 
 # 3. Run the sampling procedure
@@ -60,9 +60,9 @@ Finally we sample the posterior of each row in the data.
 First we sample assuming a single trend, then using the partitioning.
 ```{r posterior}
 # Single trend
-sin_results <- yeast_norm %>% 
+sin_results <- gam_sin %>% 
   # Add hyper-priors for sigma
-  estimate_gamma_priors(gam_sin) %>% 
+  estimate_gamma_hyperparameters(yeast_norm) %>% 
   # For time purposes we only sample for six rows
   head() %>% 
   sample_posterior(
@@ -88,9 +88,9 @@ In general, a larger `_eff` indicates a better sampling efficiency, and `_rhat` 
 The only thing that needs to be changed is the `clusters` flag:
 ```{r parellel}
 # Single trend
-sin_results <- yeast_norm %>% 
+sin_results <- gam_sin %>% 
   # Add hyper-priors for sigma
-  estimate_gamma_priors(yeast_design, gam_sin) %>% 
+  estimate_gamma_hyperparameters(yeast_norm) %>% 
   # For time purposes we only sample for 20 rows
   head(20) %>% 
   sample_posterior(
