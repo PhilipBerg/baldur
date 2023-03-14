@@ -81,10 +81,10 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' # Fit the gamma regression
 #' gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 #' # Estimate each data point's uncertainty
-#' unc <- estimate_uncertainty(yeast_norm, 'identifier', design, gam)
-#' yeast_norm <- yeast_norm %>%
+#' unc <- estimate_uncertainty(gam, yeast_norm, 'identifier', design)
+#' yeast_norm <- gam %>%
 #'    # Add hyper-priors for sigma
-#'    estimate_gamma_priors(design, gam)
+#'    estimate_gamma_hyperparameters(yeast_norm)
 #' # Setup contrast matrix
 #' contrast <- matrix(1:2, ncol = 2)
 #' \donttest{
@@ -99,7 +99,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'                  # this will greatly reduce the speed of running baldur
 #'   )
 #' }
-sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = empirical_bayes, clusters = 1, robust = FALSE, perc = .05, mu_not = 0, ...){
+sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = empirical_bayes, clusters = 1, mu_not = 0, ...){
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
@@ -143,8 +143,6 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                "C",
                                "contrast_matrix",
                                'bayesian_model',
-                               "robust",
-                               "perc",
                                "mu_not",
                                "rstan_inputs",
                                "stan_nse_wrapper",
@@ -192,8 +190,6 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                                           stan_summary,
                                                           condi,
                                                           C,
-                                                          robust,
-                                                          perc,
                                                           mu_not,
                                                           .id = id_col_name
                                           )
@@ -208,7 +204,7 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
         !!id_col_name := .data[[id_col_name]],
         tmp = purrr::pmap(!!pmap_columns,
                           bayesian_testing,
-                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, robust, perc, mu_not, rstan_inputs, sigma_bar
+                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, mu_not, rstan_inputs, sigma_bar
         )
       ) %>%
       tidyr::unnest(tmp)
@@ -252,15 +248,15 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
   )
 }
 
-estimate_error <- function(posterior, robust, perc, mu_not) {
+estimate_error <- function(posterior, mu_not) {
   s  <- -abs(mean(posterior) - mu_not)/sd(posterior)
   2*pnorm(s)
 }
 
-stan_summary <- function(fit, dat, condi, C, robust, perc, mu_not){
+stan_summary <- function(fit, dat, condi, C,  mu_not){
   lfc_pars <- paste0('y_diff[', seq_len(C), ']')
   err <- rstan::extract(fit, pars = lfc_pars) %>%
-    purrr::map_dbl(estimate_error, robust, perc, mu_not)
+    purrr::map_dbl(estimate_error, mu_not)
   summ <- rstan::summary(fit, pars = c(lfc_pars, 'sigma', 'lp__')) %>%
     magrittr::use_series(summary)
   summ <- summ[
@@ -292,10 +288,10 @@ stan_summary <- function(fit, dat, condi, C, robust, perc, mu_not){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, robust, perc, mu_not, rstan_args, sigma_bar){
+bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, mu_not, rstan_args, sigma_bar){
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
   dat <- generate_stan_data_input(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar)
   purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)$result %>%
-    stan_summary(dat, condi, C, robust, perc, mu_not)
+    stan_summary(dat, condi, C, mu_not)
 }

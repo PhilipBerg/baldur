@@ -2,24 +2,31 @@
 % Please edit documentation in R/estimate_uncertainty.R
 \name{estimate_uncertainty}
 \alias{estimate_uncertainty}
+\alias{estimate_uncertainty.glm}
+\alias{estimate_uncertainty.lgmr}
 \title{Estimate measurement uncertainty}
 \usage{
-estimate_uncertainty(data, identifier, design_matrix, gam_reg)
+estimate_uncertainty(reg, data, identifier, design_matrix)
+
+\method{estimate_uncertainty}{glm}(reg, data, identifier, design_matrix)
+
+\method{estimate_uncertainty}{lgmr}(reg, data, identifier, design_matrix)
 }
 \arguments{
+\item{reg}{A \code{glm} gamma regression or \code{lgmr} object}
+
 \item{data}{A \code{tibble} or \code{data.frame}}
 
 \item{identifier}{Name of the peptide name/id column}
 
 \item{design_matrix}{Cell mean design matrix for the data}
-
-\item{gam_reg}{A gamma regression model}
 }
 \value{
 A matrix with the uncertainty
 }
 \description{
-Estimates the measurement uncertainty for each data point using a Gamma regression.
+Estimates the measurement uncertainty for each data point using
+a Gamma regression.
 }
 \examples{
 #' # Setup model matrix
@@ -36,5 +43,5 @@ calculate_mean_sd_trends(design)
 # Fit the gamma regression
 gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 # Estimate each data point's uncertainty
-unc <- estimate_uncertainty(yeast_norm, 'identifier', design, gam)
+unc <- estimate_uncertainty(gam, yeast_norm, 'identifier', design)
 }

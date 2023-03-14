@@ -72,7 +72,7 @@ We can then estimate the uncertainty for the partitioned data as follows:
 # Fit the gamma regression
 gam_sin <- fit_gamma_regression(ups)
 # Get each data points uncertainty
-unc_sin <- estimate_uncertainty(ups, 'identifier', ups_design, gam_sin)
+unc_sin <- estimate_uncertainty(gam_sin, ups, 'identifier', ups_design)
 ```
 
 # 3. Sampling the posterior with parallel computation
@@ -81,9 +81,9 @@ Finally we sample the posterior of each row in the data.
 The only thing that needs to be changed is the `clusters` flag:
 ```{r parellel}
 # Single trend
-sin_results <- ups %>% 
+sin_results <- gam_sin %>% 
   # Add hyper-priors for sigma
-  estimate_gamma_priors(gam_sin) %>% 
+  estimate_gamma_hyperparameters(ups) %>% 
   # For time purposes we only sample for 10 rows
   head(10) %>% 
   sample_posterior(

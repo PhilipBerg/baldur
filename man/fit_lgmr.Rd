@@ -3,6 +3,7 @@
 \name{fit_lgmr}
 \alias{fit_lgmr}
 \alias{print.lgmr}
+\alias{coef.lgmr}
 \title{Fit Latent Gamma Mixture Regression}
 \usage{
 fit_lgmr(
@@ -12,18 +13,30 @@ fit_lgmr(
   warmup = 1500,
   chains = 5,
   cores = 1,
-  return_stanmodel = FALSE,
+  return_stanfit = FALSE,
   simplify = FALSE,
   ...
 )
 
-\method{print}{lgmr}(x, pars = c("coefficients", "theta"), digits = 3)
+\method{print}{lgmr}(
+  x,
+  pars = c("coefficients", "auxiliary", "theta", "all"),
+  digits = 3,
+  ...
+)
+
+\method{coef}{lgmr}(
+  object,
+  simplify = FALSE,
+  pars = c("coefficients", "auxiliary", "theta", "all"),
+  ...
+)
 }
 \arguments{
 \item{data}{A \code{data.frame} with mean-variance trends to use in the fitting.
 The columns need to have the following hard-coded names: \code{mean} and \code{sd}.}
 
-\item{model}{Defaults to \link{lgmr_model}, can also be user supplied
+\item{model}{Defaults to \link{lgmr_model}, can also be an user supplied
 stan_model}
 
 \item{iter}{Total number of samples to draw}
@@ -34,18 +47,18 @@ stan_model}
 
 \item{cores}{Number of cores to use per chain}
 
-\item{return_stanmodel}{Should the \code{stanfit} object be returned with the
+\item{return_stanfit}{Should the \code{stanfit} object be returned with the
 model?}
 
 \item{simplify}{Should only the mean estimates of the posterior be returned?}
 
 \item{...}{Additional arguments to \code{rstan}'s \link[rstan:stanmodel-method-sampling]{sampling}.}
 
-\item{x}{A \code{lgrm} model.}
+\item{x, object}{An \code{lgmr} model.}
 
-\item{pars}{If you want to print the regression coefficients, theta, or both.}
+\item{pars}{If you want to print/extract the regression coefficients, theta, auxiliary (alpha and NRMSE), or all}
 
-\item{digits}{Number digits to print}
+\item{digits}{Number of digits to print}
 }
 \value{
 A fitted \code{lgmr} model.
