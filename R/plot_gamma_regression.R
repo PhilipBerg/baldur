@@ -1,5 +1,5 @@
 #' @importFrom Rdpack reprompt
-utils::globalVariables(c(".", "sd", "model"))
+utils::globalVariables(c("sd", "model"))
 #' Function for plotting the mean-variance gamma regressions
 #'
 #' Generates a scatter plot with the gamma regressions of the mean-variance

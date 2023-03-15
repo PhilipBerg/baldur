@@ -22,7 +22,7 @@
 #'
 #' @export
 #'
-#'.
+#'
 #' @name estimate_gamma_hyperparameters
 #'
 #' @importFrom dplyr mutate

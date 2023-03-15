@@ -61,11 +61,13 @@ fit_lgmr <- function(data, model, iter = 6000, warmup = 1500, chains = 5, cores 
 
   input_args <- rlang::dots_list()
   stan_args[names(input_args)] <- input_args
-  samp <- rstan::sampling(
-    model, data = input,
-    iter = iter, warmup = warmup,
-    chains = chains, cores = cores,
-    !!!stan_args
+  samp <- rlang::eval_tidy(
+    rlang::call2(rstan::sampling,
+                 model, data = input,
+                 iter = iter, warmup = warmup,
+                 chains = chains, cores = cores,
+                 !!!stan_args
+    )
   )
 
   model_summary <- rstan::summary(samp) %>%
