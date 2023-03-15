@@ -1,4 +1,4 @@
-utils::globalVariables(c("sigma", "err"))
+utils::globalVariables(c(".", "sigma", "err"))
 #' Plot the trend between the log fold-change and sigma
 #'
 #' `plot_sa` returns a `ggplot` with a graphical representation between the

@@ -22,7 +22,6 @@
 #'
 #' @export
 #'
-#'
 #' @name estimate_gamma_hyperparameters
 #'
 #' @importFrom dplyr mutate
@@ -88,14 +87,14 @@ estimate_gamma_hyperparameters.lgmr <- function(reg, data){
 #'
 #' @return `estimate_beta` returns estimates of the beta parameter(s)
 #' @export
-estimate_beta <- function(reg, mean, alpha, m, s, ...){
+estimate_beta <- function(reg, mean, ...){
   UseMethod("estimate_beta")
 }
 
 #' @rdname estimate_gamma_hyperparameters
 #'
 #' @export
-estimate_beta.glm <- function(reg, mean, alpha, m, s, ...){
+estimate_beta.glm <- function(reg, mean, alpha, ...){
   alpha / stats::predict.glm(reg, newdata = data.frame(mean = mean), type = 'response')
 }
 

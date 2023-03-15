@@ -1,4 +1,4 @@
-utils::globalVariables(c("lfc", "err"))
+utils::globalVariables(c(".", "lfc", "err"))
 #' Plot the -log10(err) against the log fold-change
 #'
 #' `plot_volcano` returns a `ggplot` with a graphical representation between the
