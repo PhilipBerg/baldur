@@ -52,7 +52,8 @@ model?}
 
 \item{simplify}{Should only the mean estimates of the posterior be returned?}
 
-\item{...}{Additional arguments to \code{rstan}'s \link[rstan:stanmodel-method-sampling]{sampling}.}
+\item{...}{Additional arguments to \code{rstan}'s \link[rstan:stanmodel-method-sampling]{sampling}.
+Does nothing for \code{print} or \code{coef}.}
 
 \item{x, object}{An \code{lgmr} model.}
 
@@ -74,10 +75,17 @@ colnames(design) <- paste0("ng", c(50, 100))
 \donttest{
 # Normalize data, calculate M-V trend, and fit LGMR model
 yeast_lgmr <- yeast \%>\%
+    # Remove missing values
+    tidyr::drop_na() \%>\%
+    # Normalize
     psrn("identifier") \%>\%
-    # Get mean-variance trends
+    # Add the mean-variance trends
     calculate_mean_sd_trends(design) \%>\%
     # Fit the model
     fit_lgmr(lgmr_model)
+# Print everything excep thetas
+print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
+# Extract the mean of the model parameters posterior
+yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
 }
 }

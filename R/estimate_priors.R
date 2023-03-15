@@ -6,11 +6,15 @@
 #'   objects, the `estimate_beta` function assumes that the data is ordered as
 #'   when the model was fitted. If this is not the case, theta's will be
 #'   incorrectly matched with peptides---resulting in wrong estimates of beta
-#'   parameters. On the other hand, `estimate_gamma_hyperparameters` will
-#'   temporarily sort the data as when fitted and the sort it back as it was
-#'   input to the function.
+#'   parameters. On the other hand, `estimate_gamma_hyperparameters` will (if
+#'   needed) temporarily sort the data as when fitted and the sort it back as it
+#'   was input to the function.
 #' @param reg A `glm` Gamma regression or a `lgmr` object
 #' @param data A `tibble` or `data.frame` to add gamma priors to
+#' @param mean  The mean value of the peptide
+#' @param m The mean of the means
+#' @param s The sd of the means
+#' @param alpha The alpha parameter of the peptide
 #' @param ... Currently not in use
 #'
 #' @return `estimate_gamma_hyperparameters` returns a `tibble` or `data.frame`
@@ -33,12 +37,13 @@
 #'     # Get mean-variance trends
 #'     calculate_mean_sd_trends(design)
 #'
-#' # Fit gamma regression but could also have been a lgmr model
+#' # Fit gamma regression (could also have been a lgmr model)
 #' gam_reg <- fit_gamma_regression(yeast_norm, sd ~ mean)
 #'
 #' # Estimate priors
 #' gam_reg %>%
 #'     estimate_gamma_hyperparameters(yeast_norm)
+#'
 #' # Can also explicitly estimate the beta parameters
 #' # Note this is order sensitive.
 #' estimate_beta(gam_reg, yeast_norm$mean, 1/summary(gam_reg)$dispersion)
@@ -63,7 +68,6 @@ estimate_gamma_hyperparameters.glm <- function(reg, data){
 #' @export
 estimate_gamma_hyperparameters.lgmr <- function(reg, data){
 
-
   mu_inputs <- mu_std_inputs
   pars <- coef(reg, simplify = TRUE, pars = c("all"))
 
@@ -78,28 +82,22 @@ estimate_gamma_hyperparameters.lgmr <- function(reg, data){
     orderer(ori_order)
 }
 
-#' @param mean  The mean value of the peptide
-#'
 #' @rdname estimate_gamma_hyperparameters
 #'
 #' @return `estimate_beta` returns estimates of the beta parameter(s)
 #' @export
-estimate_beta <- function(reg, mean, ...){
+estimate_beta <- function(reg, mean, alpha, m, s, ...){
   UseMethod("estimate_beta")
 }
 
 #' @rdname estimate_gamma_hyperparameters
 #'
-#' @param alpha The alpha parameter of the peptide
 #'
 #' @export
-estimate_beta.glm <- function(reg, mean, alpha, ...){
+estimate_beta.glm <- function(reg, mean, alpha, m, s, ...){
   alpha / stats::predict.glm(reg, newdata = data.frame(mean = mean), type = 'response')
 }
 
-#' @param m The mean of the means
-#' @param s The sd of the means
-#'
 #' @rdname estimate_gamma_hyperparameters
 #'
 #' @export
@@ -111,7 +109,6 @@ estimate_beta.lgmr <- function(reg, mean, m, s, ...){
 orderer <- function(data, order) {
   check_order <- any(data$mean != order)
   if (check_order) {
-    ori_order <- data$mean
     data <- data[match(order, data$mean),]
   }
   return(data)

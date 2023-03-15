@@ -13,6 +13,7 @@ utils::globalVariables(c("reg", "coef"))
 #'   model?
 #' @param simplify Should only the mean estimates of the posterior be returned?
 #' @param ... Additional arguments to `rstan`'s [sampling][rstan::sampling()].
+#' Does nothing for `print` or `coef`.
 #'
 #' @return A fitted `lgmr` model.
 #' @export
@@ -26,11 +27,18 @@ utils::globalVariables(c("reg", "coef"))
 #'\donttest{
 #' # Normalize data, calculate M-V trend, and fit LGMR model
 #' yeast_lgmr <- yeast %>%
+#'     # Remove missing values
+#'     tidyr::drop_na() %>%
+#'     # Normalize
 #'     psrn("identifier") %>%
-#'     # Get mean-variance trends
+#'     # Add the mean-variance trends
 #'     calculate_mean_sd_trends(design) %>%
 #'     # Fit the model
 #'     fit_lgmr(lgmr_model)
+#' # Print everything excep thetas
+#' print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
+#' # Extract the mean of the model parameters posterior
+#' yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
 #' }
 fit_lgmr <- function(data, model, iter = 6000, warmup = 1500, chains = 5, cores = 1, return_stanfit = FALSE, simplify = FALSE, ...) {
   if (!"sd" %in% names(data)) {
@@ -45,18 +53,19 @@ fit_lgmr <- function(data, model, iter = 6000, warmup = 1500, chains = 5, cores 
     )
   )
 
-  input_args <- rlang::dots_list()
-  stan_args[names(input_args)] <- input_args
   n <- nrow(data)
   input <- list(
     N = n,
     y = data$sd, x = data$mean
   )
 
+  input_args <- rlang::dots_list()
+  stan_args[names(input_args)] <- input_args
   samp <- rstan::sampling(
     model, data = input,
     iter = iter, warmup = warmup,
-    chains = chains, cores = cores
+    chains = chains, cores = cores,
+    !!!stan_args
   )
 
   model_summary <- rstan::summary(samp) %>%

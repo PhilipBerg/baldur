@@ -15,9 +15,9 @@ estimate_gamma_hyperparameters(reg, data)
 
 \method{estimate_gamma_hyperparameters}{lgmr}(reg, data)
 
-estimate_beta(reg, mean, ...)
+estimate_beta(reg, mean, alpha, m, s, ...)
 
-\method{estimate_beta}{glm}(reg, mean, alpha, ...)
+\method{estimate_beta}{glm}(reg, mean, alpha, m, s, ...)
 
 \method{estimate_beta}{lgmr}(reg, mean, m, s, ...)
 }
@@ -28,13 +28,13 @@ estimate_beta(reg, mean, ...)
 
 \item{mean}{The mean value of the peptide}
 
-\item{...}{Currently not in use}
-
 \item{alpha}{The alpha parameter of the peptide}
 
 \item{m}{The mean of the means}
 
 \item{s}{The sd of the means}
+
+\item{...}{Currently not in use}
 }
 \value{
 \code{estimate_gamma_hyperparameters} returns a \code{tibble} or \code{data.frame}
@@ -49,9 +49,9 @@ to the data (one for alpha and one for betas). Note that for \code{lgmr}
 objects, the \code{estimate_beta} function assumes that the data is ordered as
 when the model was fitted. If this is not the case, theta's will be
 incorrectly matched with peptides---resulting in wrong estimates of beta
-parameters. On the other hand, \code{estimate_gamma_hyperparameters} will
-temporarily sort the data as when fitted and the sort it back as it was
-input to the function.
+parameters. On the other hand, \code{estimate_gamma_hyperparameters} will (if
+needed) temporarily sort the data as when fitted and the sort it back as it
+was input to the function.
 }
 \examples{
 # Setup model matrix
@@ -64,12 +64,13 @@ yeast_norm <- yeast \%>\%
     # Get mean-variance trends
     calculate_mean_sd_trends(design)
 
-# Fit gamma regression but could also have been a lgmr model
+# Fit gamma regression (could also have been a lgmr model)
 gam_reg <- fit_gamma_regression(yeast_norm, sd ~ mean)
 
 # Estimate priors
 gam_reg \%>\%
     estimate_gamma_hyperparameters(yeast_norm)
+
 # Can also explicitly estimate the beta parameters
 # Note this is order sensitive.
 estimate_beta(gam_reg, yeast_norm$mean, 1/summary(gam_reg)$dispersion)

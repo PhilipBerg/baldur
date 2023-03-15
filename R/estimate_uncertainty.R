@@ -25,12 +25,12 @@
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' yeast_norm <- yeast %>%
-#' # Remove missing data
-#' tidyr::drop_na() %>%
+#'   # Remove missing data
+#'   tidyr::drop_na() %>%
 #'   # Normalize data
-#' psrn('identifier') %>%
-#' # Add mean-variance trends
-#' calculate_mean_sd_trends(design)
+#'   psrn('identifier') %>%
+#'   # Add mean-variance trends
+#'   calculate_mean_sd_trends(design)
 #' # Fit the gamma regression
 #' gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 #' # Estimate each data point's uncertainty
