@@ -19,8 +19,10 @@
 #'
 #' @return `estimate_gamma_hyperparameters` returns a `tibble` or `data.frame`
 #'   with the alpha,beta hyperparameters estimates as new columns.
+#'
 #' @export
 #'
+#'.
 #' @name estimate_gamma_hyperparameters
 #'
 #' @importFrom dplyr mutate
@@ -68,7 +70,7 @@ estimate_gamma_hyperparameters.glm <- function(reg, data){
 #' @export
 estimate_gamma_hyperparameters.lgmr <- function(reg, data){
 
-  mu_inputs <- mu_std_inputs
+  mu_inputs <- mu_std_inputs(data)
   pars <- coef(reg, simplify = TRUE, pars = c("all"))
 
   ori_order <- data$mean
@@ -91,7 +93,6 @@ estimate_beta <- function(reg, mean, alpha, m, s, ...){
 }
 
 #' @rdname estimate_gamma_hyperparameters
-#'
 #'
 #' @export
 estimate_beta.glm <- function(reg, mean, alpha, m, s, ...){

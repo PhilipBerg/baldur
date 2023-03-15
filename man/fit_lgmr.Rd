@@ -53,7 +53,7 @@ model?}
 \item{simplify}{Should only the mean estimates of the posterior be returned?}
 
 \item{...}{Additional arguments to \code{rstan}'s \link[rstan:stanmodel-method-sampling]{sampling}.
-Does nothing for \code{print} or \code{coef}.}
+Does nothing for \code{print} or \code{coef} only for \code{fit_lgmr}.}
 
 \item{x, object}{An \code{lgmr} model.}
 

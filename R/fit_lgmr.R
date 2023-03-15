@@ -13,7 +13,7 @@ utils::globalVariables(c("reg", "coef"))
 #'   model?
 #' @param simplify Should only the mean estimates of the posterior be returned?
 #' @param ... Additional arguments to `rstan`'s [sampling][rstan::sampling()].
-#' Does nothing for `print` or `coef`.
+#' Does nothing for `print` or `coef` only for `fit_lgmr`.
 #'
 #' @return A fitted `lgmr` model.
 #' @export

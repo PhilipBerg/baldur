@@ -41,6 +41,7 @@ estimate_uncertainty <- function(reg, data, identifier, design_matrix){
 }
 
 #' @rdname estimate_uncertainty
+#'
 #' @export
 estimate_uncertainty.glm <- function(reg, data, identifier, design_matrix){
   if('c' %in% names(data)){
@@ -71,6 +72,7 @@ estimate_uncertainty.glm <- function(reg, data, identifier, design_matrix){
 }
 
 #' @rdname estimate_uncertainty
+#'
 #' @export
 estimate_uncertainty.lgmr <- function(reg, data, identifier, design_matrix){
   pars <- coef.lgmr(reg, simplify = TRUE, pars = c('coef', 'theta'))
