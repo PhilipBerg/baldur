@@ -99,15 +99,15 @@ fit_lgmr <- function(data, model, iter = 6000, warmup = 1500, chains = 5, cores 
 #'
 #' @rdname fit_lgmr
 #' @export
-print.lgmr <- function(x, pars = c("coefficients", "auxiliary", "theta", "all"), digits = 3, ...) {
+print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary", "theta", "all"), digits = 3, ...) {
 
-  if (pars == "all") {
+  pars <- match.arg(pars, c("coefficients", "auxiliary", "theta", "all"), several.ok = TRUE)
+  if ("all" %in% pars) {
     pars <- c("auxiliary", "coefficients", "theta")
   }
-  mu <- round(x$coef[, "mean"], digits)
+  x <- coef(x, simplify, pars)
 
   cat("\nLGMR Model\n")
-  pars <- match.arg(pars, several.ok = TRUE)
   cat("\tmu=", "exp(", mu["I"],
       " - ",
       mu["S"], " f(bar_y)) + kappa exp(",
@@ -158,15 +158,15 @@ print.lgmr <- function(x, pars = c("coefficients", "auxiliary", "theta", "all"),
 #' @export
 coef.lgmr <- function(object, simplify = FALSE, pars = c("coefficients", "auxiliary", "theta", "all"), ...) {
 
-  pars <- match.arg(pars)
+  if ("all" %in% pars) {
+    pars <- c("auxiliary", "coefficients", "theta")
+  } else {
+    pars <- match.arg(pars, several.ok = TRUE)
+  }
   if (simplify & !object$simplify) {
     f <- function(x) x[, "mean"]
   } else {
     f <- function(x) x
-  }
-
-  if (pars == "all") {
-    pars <- c("auxiliary", "coefficients", "theta")
   }
 
   vars <- dplyr::case_when(

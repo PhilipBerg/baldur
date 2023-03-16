@@ -2,11 +2,12 @@
 % Please edit documentation in R/weakly_informative.R
 \name{weakly_informative}
 \alias{weakly_informative}
-\title{Doc for weakly_informative
-... // however many lines of doc
-...}
+\title{Baldur's weakly informative prior for the mean in conditions}
 \description{
-Doc for weakly_informative
-... // however many lines of doc
-...
+Here we will model the mean of the prior with a weakly informative (WI) prior.
+We will assume that, in essence, nothing is know about the mean.
+Following from
+}
+\details{
+\deqn{\boldsymbol{Y}\sim\mathcal{N}(\mu_0 + \boldsymbol{\eta}\sigma,\sigma\boldsymbol{u})}
 }

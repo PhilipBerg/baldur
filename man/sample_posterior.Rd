@@ -12,7 +12,7 @@ sample_posterior(
   uncertainty_matrix,
   bayesian_model = empirical_bayes,
   clusters = 1,
-  mu_not = 0,
+  h_not = 0,
   ...
 )
 }
@@ -27,14 +27,14 @@ sample_posterior(
 the first column is the index of the column in the design matrix that
 should be compared to the second column}
 
-\item{uncertainty_matrix}{A matrix of observation uncertainty}
+\item{uncertainty_matrix}{A matrix of observation specific uncertainties}
 
 \item{bayesian_model}{Which Bayesian model to use. Defaults to
 \link{empirical_bayes} but also allows \link{weakly_informative}}
 
-\item{clusters}{The number of parallel threads to run on.}
+\item{clusters}{The number of parallel threads/workers to run on.}
 
-\item{mu_not}{The value of the null hypothesis for the difference in means}
+\item{h_not}{The value of the null hypothesis for the difference in means}
 
 \item{...}{Additional arguments passed to
 \code{rstan::\link[rstan:sampling]{sampling}}. Note that verbose will
@@ -55,7 +55,19 @@ the chains and should be smaller than 1.05.
 }
 \description{
 Function to sample the posterior of the Bayesian data and
-decision model.
+decision model. It first produces the needed inputs for Stan's \code{\link[=sampling]{sampling()}}
+for each peptide (or protein, PTM, etc.). It then runs the sampling for the
+data and decision model. From the posterior, it then collects estimates and
+sampling statistics from the posterior of data model and integrates the
+decision distribution D. It then returns a \code{\link[=tibble]{tibble()}} with all the
+information for each peptide (see ... below).
+There are major time gains to be made by running this procedure in parallel.
+\code{sample_posterior} has an efficient wrapper around \code{multipldyr}.
+This will let you to evenly distribute all peptides evenly to each worker.
+E.g., two workers will each run half of the peptides in parallel.
+}
+\details{
+Model description here
 }
 \examples{
 # (Please see the vignette for a tutorial)

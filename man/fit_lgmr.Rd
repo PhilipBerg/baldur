@@ -20,6 +20,7 @@ fit_lgmr(
 
 \method{print}{lgmr}(
   x,
+  simplify = FALSE,
   pars = c("coefficients", "auxiliary", "theta", "all"),
   digits = 3,
   ...

@@ -15,9 +15,9 @@ estimate_gamma_hyperparameters(reg, data)
 
 \method{estimate_gamma_hyperparameters}{lgmr}(reg, data)
 
-estimate_beta(reg, mean, alpha, m, s, ...)
+estimate_beta(reg, mean, ...)
 
-\method{estimate_beta}{glm}(reg, mean, alpha, m, s, ...)
+\method{estimate_beta}{glm}(reg, mean, alpha, ...)
 
 \method{estimate_beta}{lgmr}(reg, mean, m, s, ...)
 }
@@ -28,13 +28,13 @@ estimate_beta(reg, mean, alpha, m, s, ...)
 
 \item{mean}{The mean value of the peptide}
 
+\item{...}{Currently not in use}
+
 \item{alpha}{The alpha parameter of the peptide}
 
 \item{m}{The mean of the means}
 
 \item{s}{The sd of the means}
-
-\item{...}{Currently not in use}
 }
 \value{
 \code{estimate_gamma_hyperparameters} returns a \code{tibble} or \code{data.frame}

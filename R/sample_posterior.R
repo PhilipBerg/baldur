@@ -2,7 +2,18 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' Sample the Posterior of the Bayesian model
 #'
 #' @description Function to sample the posterior of the Bayesian data and
-#'   decision model.
+#'   decision model. It first produces the needed inputs for Stan's [sampling()]
+#'   for each peptide (or protein, PTM, etc.). It then runs the sampling for the
+#'   data and decision model. From the posterior, it then collects estimates and
+#'   sampling statistics from the posterior of data model and integrates the
+#'   decision distribution D. It then returns a [tibble()] with all the
+#'   information for each peptide (see ... below).
+#'   There are major time gains to be made by running this procedure in parallel.
+#'   `sample_posterior` has an efficient wrapper around `multipldyr`.
+#'   This will let you to evenly distribute all peptides evenly to each worker.
+#'   E.g., two workers will each run half of the peptides in parallel.
+#'
+#' @details Model description here
 #'
 #' @param data A `tibble` or `data.frame` with alpha,beta priors annotated
 #' @param id_col_name A character of the id column
@@ -10,11 +21,11 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @param contrast_matrix A contrast matrix of the decisions to test such that
 #'   the first column is the index of the column in the design matrix that
 #'   should be compared to the second column
-#' @param uncertainty_matrix A matrix of observation uncertainty
+#' @param uncertainty_matrix A matrix of observation specific uncertainties
 #' @param bayesian_model Which Bayesian model to use. Defaults to
 #'   [empirical_bayes] but also allows [weakly_informative]
-#' @param clusters The number of parallel threads to run on.
-#' @param mu_not The value of the null hypothesis for the difference in means
+#' @param clusters The number of parallel threads/workers to run on.
+#' @param h_not The value of the null hypothesis for the difference in means
 #' @param ... Additional arguments passed to
 #'   \code{rstan::\link[rstan:sampling]{sampling}}. Note that verbose will
 #'   always be forced to `FALSE`
@@ -99,7 +110,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'                  # this will greatly reduce the speed of running baldur
 #'   )
 #' }
-sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = empirical_bayes, clusters = 1, mu_not = 0, ...){
+sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, bayesian_model = empirical_bayes, clusters = 1, h_not = 0, ...){
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
@@ -143,7 +154,7 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                "C",
                                "contrast_matrix",
                                'bayesian_model',
-                               "mu_not",
+                               "h_not",
                                "rstan_inputs",
                                "stan_nse_wrapper",
                                "sigma_bar"
@@ -190,7 +201,7 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
                                                           stan_summary,
                                                           condi,
                                                           C,
-                                                          mu_not,
+                                                          h_not,
                                                           .id = id_col_name
                                           )
     ) %>%
@@ -204,7 +215,7 @@ sample_posterior <- function(data, id_col_name, design_matrix, contrast_matrix, 
         !!id_col_name := .data[[id_col_name]],
         tmp = purrr::pmap(!!pmap_columns,
                           bayesian_testing,
-                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, mu_not, rstan_inputs, sigma_bar
+                          ori_data, id_col_name, design_matrix, contrast_matrix, bayesian_model, N, K, C, uncertainty_matrix, h_not, rstan_inputs, sigma_bar
         )
       ) %>%
       tidyr::unnest(tmp)
@@ -243,20 +254,19 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
     alpha = alpha,
     beta_gamma = beta,
     mu_not = ybar,
-    u = u,
-    sigma_mu_not = sigma_bar
+    u = u
   )
 }
 
-estimate_error <- function(posterior, mu_not) {
-  s  <- -abs(mean(posterior) - mu_not)/sd(posterior)
+estimate_error <- function(posterior, h_not) {
+  s  <- -abs(mean(posterior) - h_not)/sd(posterior)
   2*pnorm(s)
 }
 
-stan_summary <- function(fit, dat, condi, C,  mu_not){
+stan_summary <- function(fit, dat, condi, C,  h_not){
   lfc_pars <- paste0('y_diff[', seq_len(C), ']')
   err <- rstan::extract(fit, pars = lfc_pars) %>%
-    purrr::map_dbl(estimate_error, mu_not)
+    purrr::map_dbl(estimate_error, h_not)
   summ <- rstan::summary(fit, pars = c(lfc_pars, 'sigma', 'lp__')) %>%
     magrittr::use_series(summary)
   summ <- summ[
@@ -288,10 +298,10 @@ stan_summary <- function(fit, dat, condi, C,  mu_not){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, mu_not, rstan_args, sigma_bar){
+bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args, sigma_bar){
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
   dat <- generate_stan_data_input(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar)
   purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)$result %>%
-    stan_summary(dat, condi, C, mu_not)
+    stan_summary(dat, condi, C, h_not)
 }
