@@ -106,6 +106,7 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
   if ("all" %in% pars) {
     pars <- c("auxiliary", "coefficients", "theta")
   }
+  mu <- coef(x, TRUE, "coefficients")
   x <- coef(x, simplify, pars)
 
   cat("\nLGMR Model\n")
