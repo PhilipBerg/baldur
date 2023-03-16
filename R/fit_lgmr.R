@@ -101,6 +101,7 @@ fit_lgmr <- function(data, model, iter = 6000, warmup = 1500, chains = 5, cores 
 #' @export
 print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary", "theta", "all"), digits = 3, ...) {
 
+  mu <- coef(x, TRUE, "coefficients")
   pars <- match.arg(pars, c("coefficients", "auxiliary", "theta", "all"), several.ok = TRUE)
   if ("all" %in% pars) {
     pars <- c("auxiliary", "coefficients", "theta")
