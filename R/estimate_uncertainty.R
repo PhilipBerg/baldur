@@ -20,7 +20,7 @@
 #' @name estimate_uncertainty
 #'
 #' @examples
-#' #' # Setup model matrix
+#' # Setup model matrix
 #' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
@@ -44,19 +44,11 @@ estimate_uncertainty <- function(reg, data, identifier, design_matrix){
 #'
 #' @export
 estimate_uncertainty.glm <- function(reg, data, identifier, design_matrix){
-  if('c' %in% names(data)){
-    pred <- ~ stats::predict.glm(
-      reg,
-      newdata = data.frame(mean = ., c = c),
-      type = "response"
-    )
-  } else {
-    pred <- ~ stats::predict.glm(
-      reg,
-      newdata = data.frame(mean = .),
-      type = "response"
-    )
-  }
+  pred <- ~ stats::predict.glm(
+    reg,
+    newdata = data.frame(mean = .),
+    type = "response"
+  )
   condi_regex <- colnames(design_matrix) %>%
     paste0(collapse = '|')
 
@@ -82,7 +74,7 @@ estimate_uncertainty.lgmr <- function(reg, data, identifier, design_matrix){
   ori_order <- data$mean
   data <- orderer(data, reg$data$mean)
 
-  mu_inputs <- mu_std_inputs
+  mu_inputs <- mu_std_inputs(data)
 
   data %>%
     dplyr::mutate(

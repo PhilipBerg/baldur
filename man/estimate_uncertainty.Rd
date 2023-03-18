@@ -29,7 +29,7 @@ Estimates the measurement uncertainty for each data point using
 a Gamma regression.
 }
 \examples{
-#' # Setup model matrix
+# Setup model matrix
 design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))
 

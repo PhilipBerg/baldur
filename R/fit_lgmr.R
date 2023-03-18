@@ -40,7 +40,7 @@ utils::globalVariables(c("reg", "coef"))
 #' # Extract the mean of the model parameters posterior
 #' yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
 #' }
-fit_lgmr <- function(data, model, iter = 6000, warmup = 1500, chains = 5, cores = 1, return_stanfit = FALSE, simplify = FALSE, ...) {
+fit_lgmr <- function(data, model = lgmr_model, iter = 6000, warmup = 1500, chains = 5, cores = 1, return_stanfit = FALSE, simplify = FALSE, ...) {
   if (!"sd" %in% names(data)) {
     stop("sd is not a column in the data\n Did you forget to calculate the Mean-Variance trend?")
   } else if(!"mean" %in% names(data)) {
@@ -79,10 +79,10 @@ fit_lgmr <- function(data, model, iter = 6000, warmup = 1500, chains = 5, cores 
   fitted_model$theta      <- model_summary[stringr::str_detect(rownames(model_summary), "theta"),]
   fitted_model$stan_model <- model
   fitted_model$data       <- dplyr::select(data, mean, sd)
+  fitted_model$simplify   <- simplify
 
   if (simplify) {
     fitted_model <- purrr::map(fitted_model, ~ .x[,"mean"])
-    fitted_model$simplify <- simplify
   }
 
   if (return_stanfit) {
@@ -134,7 +134,7 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
         "Coefficients:\n"
     )
     print.default(
-      x$reg,
+      x$coef,
       digits = digits,
       print.gap = 2L,
       quote = FALSE
@@ -173,7 +173,7 @@ coef.lgmr <- function(object, simplify = FALSE, pars = c("coefficients", "auxili
   vars <- dplyr::case_when(
     pars == "coefficients" ~ 'coef',
     pars == "auxiliary" ~ 'aux',
-    pars == "theta" ~ 'theat'
+    pars == "theta" ~ 'theta'
   ) %>%
     setNames(., .) %>%
     map(
@@ -181,7 +181,7 @@ coef.lgmr <- function(object, simplify = FALSE, pars = c("coefficients", "auxili
     )
 
   if (length(vars) == 1) {
-    vars <- unlist(vars)
+    vars <- vars[[1]]
   }
 
   return(vars)

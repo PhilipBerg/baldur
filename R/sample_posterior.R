@@ -100,7 +100,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' contrast <- matrix(1:2, ncol = 2)
 #' \donttest{
 #' yeast_norm %>%
-#'   head() %>% # Just runnig a few for the example
+#'   head() %>% # Just running a few for the example
 #'   sample_posterior(
 #'     'identifier',
 #'     design,

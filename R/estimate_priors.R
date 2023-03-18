@@ -121,7 +121,7 @@ mu_std_inputs <- function(data) {
   }
 
   m <- mean(data$mean)
-  s <- sd(data$s)
+  s <- sd(data$sd)
 
   c(m, s)
 }

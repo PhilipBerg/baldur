@@ -1,0 +1,147 @@
+---
+title: "Baldur Yeast Tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Baldur Yeast Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# 1. Setup
+This tutorial is quite fast and on a very simple data set (2 conditions only), for a more complicated tutorial for setup please see `vignette('baldur_ups_tutorial')`.
+First we load `baldur` and setup the model dependent variables we need, then normalize the data and add the mean-variance trends.
+```{r setup}
+library(baldur)
+# Setup design matrix
+yeast_design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+colnames(yeast_design) <- paste0('ng', c(50, 100))
+# Compare the first and second column of the design matrix
+# with the following contrast matrix
+yeast_contrast <- matrix(1:2, nrow = 1)
+
+# Since baldur itself does not deal with missing data we remove the
+# rows that have missing data for the purpose of the tutorial.
+# Else, one would replace the filtering step with imputation but that is outside
+# the scope of baldur
+yeast_norm <- yeast %>%
+  # Remove missing data
+  tidyr::drop_na() %>%
+  # Normalize data (this might already have been done if imputation was performed)
+  psrn('identifier') %>%
+  # Add mean-variance trends
+  calculate_mean_sd_trends(yeast_design)
+```
+Importantly, note that the column names of the design matrix are unique subsets of the names of the columns within the conditions:
+```{r design}
+colnames(yeast)
+colnames(yeast_design)
+```
+This is essential for `baldur` to know which columns to use in calculations and to perform transformations.
+
+# 2. Trend-partitioning and uncertainty estimation
+Next is to infer the mixture of the data and to estimate the parameters needed for `baldur`.
+First we will setup the needed variables for using `baldur` without partitioning the data.
+Then, partitioning and setting up `baldur` after trend-partitioning
+```{r cluster}
+# Fit the gamma regression
+gr_model <- fit_gamma_regression(yeast_norm, sd ~ mean)
+# Estimate the uncertainty
+unc_gr <- estimate_uncertainty(gr_model, yeast_norm, 'identifier', yeast_design)
+```
+
+# 3. Run the sampling procedure
+Finally we sample the posterior of each row in the data.
+First we sample assuming a single trend, then using the partitioning.
+```{r posterior}
+# Single trend
+gr_results <- gr_model %>%
+  # Add hyper-priors for sigma
+  estimate_gamma_hyperparameters(yeast_norm) %>%
+  sample_posterior(
+    'identifier',
+    yeast_design,
+    yeast_contrast,
+    unc_gr,
+    clusters = 10 # I highly recommend using parallel workers/clusters
+  )               # this will greatly reduce the speed of running baldur
+# The top hits then looks as follows:
+gr_results %>%
+  dplyr::arrange(err)
+
+```
+Here `err` is the probability of error, i.e., the two tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, `sigma` is the common variance, and `lp` is the log-posterior.
+Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0, and 97.5, percentiles, respectively.
+The suffixes `_eff` and `_rhat` are the diagnostic variables returned by `rstan` (please see the Stan manual for details).
+In general, a larger `_eff` indicates a better sampling efficiency, and `_rhat` compares the mixing within chains against between the chains and should be smaller than 1.05.
+
+# 4. Running Baldur with Latent Gamma Regression estimation
+First we fit the LGMR model:
+```{r lgmr}
+yeast_lgmr <- fit_lgmr(yeast_norm, lgmr_model, cores = 5)
+```
+
+We can print the model with `print` and extract parameters of interest with `coef`:
+```{r lgmr_outputs}
+print(yeast_lgmr)
+# Extract the regression, alpha, and theta parameters and the NRMSE.
+yeast_lgmr_coef <- coef(yeast_lgmr, pars = c("all"))
+```
+
+We can then estimate the uncertainty similar to the GR case:
+```{r lgmr_unc}
+unc_lgmr <- estimate_uncertainty(yeast_lgmr, yeast_norm, 'identifier', yeast_design)
+```
+
+Then running the data and decision model:
+```{r lgmr_results}
+# Single trend
+lgmr_results <- yeast_lgmr %>%
+  # Add hyper-priors for sigma
+  estimate_gamma_hyperparameters(yeast_norm) %>%
+  sample_posterior(
+    'identifier',
+    yeast_design,
+    yeast_contrast,
+    unc_lgmr,
+    clusters = 10
+  )
+```
+
+# 5. Visualization of the results
+`baldur` have two ways of visualizing the results 1) plotting sigma vs LFC and 2) Volcano plots.
+To plot sigma against LFC we use `plot_sa`:
+```{r plotting_sa, fig.show='hold', fig.width=7.2, fig.height = 7.2}
+gr_results %>%
+  plot_sa(
+    alpha = .05, # Level of significance
+    lfc = 1      # Add LFC lines
+  )
+
+lgmr_results %>%
+  plot_sa(
+    alpha = .05, # Level of significance
+    lfc = 1      # Add LFC lines
+  )
+```
+
+While it is hard to see with this few examples, in general a good decision is indicated by a lack of a trend between $\sigma$ and LFC.
+To make a volcano plot one uses `plot_volcano` in a similar fashion to `plot_sa`:
+```{r plotting_volc, fig.show='hold', fig.width=7.2, fig.height = 7.2}
+gr_results %>%
+  plot_volcano(
+    alpha = .05, # Level of significance
+    lfc = 1      # Add LFC lines
+  )
+
+lgmr_results %>%
+  plot_volcano(
+    alpha = .05, # Level of significance
+    lfc = 1      # Add LFC lines
+  )
+```
