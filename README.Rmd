@@ -34,6 +34,8 @@ Or you can install the development version of `baldur` from this github:
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 ```
 
+Note that Ubuntu operating systems can require `pandoc` [https://pandoc.org/](https://pandoc.org/) to compile the vignettes.
+
 ## Example
 
 Please see the vignettes for an examples `vignette('baldur_yeast_tutorial')` and `vignette('baldur_ups_tutorial')`.

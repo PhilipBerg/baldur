@@ -84,7 +84,7 @@ The only thing that needs to be changed is the `clusters` flag:
 gr_results <- gr %>%
   # Add hyper-priors for sigma
   estimate_gamma_hyperparameters(ups) %>%
-  sample_posterior(
+  infer_data_and_descision_model(
     'identifier',
     ups_design,
     ups_contrast,
@@ -113,7 +113,7 @@ unc_lgmr <- estimate_uncertainty(ups_lgmr, ups, 'identifier', ups_design)
 lgmr_results <- ups_lgmr %>%
   # Add hyper-priors for sigma
   estimate_gamma_hyperparameters(ups) %>%
-  sample_posterior(
+  infer_data_and_descision_model(
     'identifier',
     ups_design,
     ups_contrast,

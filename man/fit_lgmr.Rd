@@ -8,7 +8,7 @@
 \usage{
 fit_lgmr(
   data,
-  model,
+  model = lgmr_model,
   iter = 6000,
   warmup = 1500,
   chains = 5,

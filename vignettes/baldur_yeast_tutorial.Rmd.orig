@@ -63,7 +63,7 @@ First we sample assuming a single trend, then using the partitioning.
 gr_results <- gr_model %>%
   # Add hyper-priors for sigma
   estimate_gamma_hyperparameters(yeast_norm) %>%
-  sample_posterior(
+  infer_data_and_descision_model(
     'identifier',
     yeast_design,
     yeast_contrast,
@@ -104,7 +104,7 @@ Then running the data and decision model:
 lgmr_results <- yeast_lgmr %>%
   # Add hyper-priors for sigma
   estimate_gamma_hyperparameters(yeast_norm) %>%
-  sample_posterior(
+  infer_data_and_descision_model(
     'identifier',
     yeast_design,
     yeast_contrast,

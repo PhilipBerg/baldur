@@ -4,19 +4,26 @@ data {
   int C;              // number of comparisons to perform
   matrix[N, K] x;     // design matrix
   vector[N] y;        // data
-  int c[C, 2];        // Comparisons to perform
+  matrix[C, K] c;     // contrast matrix
   real alpha;         // alpha prior for gamma
   real beta_gamma;    // beta prior for gamma
   vector[N] u;        // uncertainty
 }
+
 transformed data{
-  vector[K] n_k;     // per condition measurements
-  vector[C] n_c;     // per comparison measurements
+  vector[K] n_k;      // per condition measurements
+  vector[C] n_c;      // per comparison measurements
+  matrix[C, K] abs_c; // abs of C for n_c calculation
   for (i in 1:K) {
     n_k[i] = 1/sum(x[,i]);
+    for (j in 1:C) {
+      abs_c[j, i] = abs(c[j, i]);
+    }
   }
-  n_c = sqrt((n_k[c[, 1]] + n_k[c[, 2]]));
+  n_c = abs_c * n_k;
+  n_c = sqrt(n_c);
 }
+
 parameters {
   vector[K] mu;           // coefficients for predictors
   real<lower=0> sigma;    // error scale
@@ -24,12 +31,14 @@ parameters {
   vector[K] eta;          // Error in mean
   vector[K] prior_mu_not; // Estimation error
 }
+
 transformed parameters{
   vector[C] mu_diff;      // differences in means
   vector[C] sigma_lfc;    // variance of ybars
-  mu_diff = mu[c[, 1]] - mu[c[, 2]];
+  mu_diff = c*mu;
   sigma_lfc = sigma * n_c;
 }
+
 model {
   sigma        ~ gamma(alpha, beta_gamma);                    // variance
   eta          ~ normal(0, 1);                                // NCP auxilary variable

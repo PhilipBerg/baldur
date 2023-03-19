@@ -9,8 +9,10 @@
 #' please cite the same paper.
 #' @format A data frame with 2235 rows and 7 variables: \describe{
 #'   \item{identifier}{id column for features, true positives contains YEAST and
-#'   true negatives contains Cre} \item{ng50_1}{First biological replicates with
-#'   true positives spiked-in from 50 ng yeast cells} \item{ng50_2}{Second
+#'   true negatives contains Cre}
+#'    \item{ng50_1}{First biological replicates with
+#'   true positives spiked-in from 50 ng yeast cells}
+#'   \item{ng50_2}{Second
 #'   biological replicates with true positives spiked-in from 50 ng yeast cells}
 #'   \item{ng50_3}{Third biological replicates with true positives spiked-in
 #'   from 50 ng yeast cells} \item{ng100_1}{First biological replicates with

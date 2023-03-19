@@ -75,23 +75,23 @@ using stan::math::pow;
 stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
-                                                      " (in 'string', line 22, column 2 to column 15)",
-                                                      " (in 'string', line 23, column 2 to column 22)",
-                                                      " (in 'string', line 24, column 2 to column 17)",
-                                                      " (in 'string', line 25, column 2 to column 16)",
-                                                      " (in 'string', line 26, column 2 to column 25)",
-                                                      " (in 'string', line 29, column 2 to column 20)",
-                                                      " (in 'string', line 30, column 2 to column 25)",
-                                                      " (in 'string', line 31, column 2 to column 22)",
-                                                      " (in 'string', line 32, column 2 to column 36)",
-                                                      " (in 'string', line 33, column 2 to column 31)",
-                                                      " (in 'string', line 34, column 2 to column 26)",
-                                                      " (in 'string', line 37, column 2 to column 42)",
-                                                      " (in 'string', line 38, column 2 to column 30)",
-                                                      " (in 'string', line 39, column 2 to column 46)",
-                                                      " (in 'string', line 40, column 2 to column 57)",
-                                                      " (in 'string', line 41, column 2 to column 41)",
-                                                      " (in 'string', line 42, column 2 to column 44)",
+                                                      " (in 'string', line 27, column 2 to column 15)",
+                                                      " (in 'string', line 28, column 2 to column 22)",
+                                                      " (in 'string', line 29, column 2 to column 17)",
+                                                      " (in 'string', line 30, column 2 to column 16)",
+                                                      " (in 'string', line 31, column 2 to column 25)",
+                                                      " (in 'string', line 34, column 2 to column 20)",
+                                                      " (in 'string', line 35, column 2 to column 25)",
+                                                      " (in 'string', line 36, column 2 to column 22)",
+                                                      " (in 'string', line 37, column 2 to column 17)",
+                                                      " (in 'string', line 38, column 2 to column 31)",
+                                                      " (in 'string', line 39, column 2 to column 26)",
+                                                      " (in 'string', line 42, column 2 to column 42)",
+                                                      " (in 'string', line 43, column 2 to column 30)",
+                                                      " (in 'string', line 44, column 2 to column 46)",
+                                                      " (in 'string', line 45, column 2 to column 57)",
+                                                      " (in 'string', line 46, column 2 to column 41)",
+                                                      " (in 'string', line 47, column 2 to column 44)",
                                                       " (in 'string', line 2, column 2 to column 17)",
                                                       " (in 'string', line 3, column 2 to column 17)",
                                                       " (in 'string', line 4, column 2 to column 8)",
@@ -100,8 +100,9 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 5, column 2 to column 17)",
                                                       " (in 'string', line 6, column 9 to column 10)",
                                                       " (in 'string', line 6, column 2 to column 14)",
-                                                      " (in 'string', line 7, column 8 to column 9)",
-                                                      " (in 'string', line 7, column 2 to column 14)",
+                                                      " (in 'string', line 7, column 9 to column 10)",
+                                                      " (in 'string', line 7, column 12 to column 13)",
+                                                      " (in 'string', line 7, column 2 to column 17)",
                                                       " (in 'string', line 8, column 2 to column 13)",
                                                       " (in 'string', line 9, column 2 to column 18)",
                                                       " (in 'string', line 10, column 9 to column 10)",
@@ -112,17 +113,24 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 14, column 2 to column 16)",
                                                       " (in 'string', line 15, column 9 to column 10)",
                                                       " (in 'string', line 15, column 2 to column 16)",
-                                                      " (in 'string', line 17, column 4 to column 26)",
-                                                      " (in 'string', line 16, column 17 to line 18, column 3)",
-                                                      " (in 'string', line 16, column 2 to line 18, column 3)",
-                                                      " (in 'string', line 19, column 2 to column 42)",
-                                                      " (in 'string', line 22, column 9 to column 10)",
-                                                      " (in 'string', line 24, column 14 to column 15)",
-                                                      " (in 'string', line 25, column 9 to column 10)",
-                                                      " (in 'string', line 26, column 9 to column 10)",
-                                                      " (in 'string', line 29, column 9 to column 10)",
+                                                      " (in 'string', line 16, column 9 to column 10)",
+                                                      " (in 'string', line 16, column 12 to column 13)",
+                                                      " (in 'string', line 16, column 2 to column 21)",
+                                                      " (in 'string', line 18, column 4 to column 26)",
+                                                      " (in 'string', line 20, column 6 to column 33)",
+                                                      " (in 'string', line 19, column 19 to line 21, column 5)",
+                                                      " (in 'string', line 19, column 4 to line 21, column 5)",
+                                                      " (in 'string', line 17, column 17 to line 22, column 3)",
+                                                      " (in 'string', line 17, column 2 to line 22, column 3)",
+                                                      " (in 'string', line 23, column 2 to column 20)",
+                                                      " (in 'string', line 24, column 2 to column 18)",
+                                                      " (in 'string', line 27, column 9 to column 10)",
+                                                      " (in 'string', line 29, column 14 to column 15)",
                                                       " (in 'string', line 30, column 9 to column 10)",
-                                                      " (in 'string', line 31, column 9 to column 10)"};
+                                                      " (in 'string', line 31, column 9 to column 10)",
+                                                      " (in 'string', line 34, column 9 to column 10)",
+                                                      " (in 'string', line 35, column 9 to column 10)",
+                                                      " (in 'string', line 36, column 9 to column 10)"};
 #include <stan_meta_header.hpp>
 class model_empirical_bayes final : public model_base_crtp<model_empirical_bayes> {
 private:
@@ -131,13 +139,14 @@ private:
   int C;
   Eigen::Matrix<double, -1, -1> x;
   Eigen::Matrix<double, -1, 1> y;
-  std::vector<std::vector<int>> c;
+  Eigen::Matrix<double, -1, -1> c;
   double alpha;
   double beta_gamma;
   Eigen::Matrix<double, -1, 1> u;
   Eigen::Matrix<double, -1, 1> mu_not;
   Eigen::Matrix<double, -1, 1> n_k;
   Eigen::Matrix<double, -1, 1> n_c;
+  Eigen::Matrix<double, -1, -1> abs_c;
  
 public:
   ~model_empirical_bayes() { }
@@ -247,46 +256,49 @@ public:
       current_statement__ = 26;
       validate_non_negative_index("c", "C", C);
       current_statement__ = 27;
-      context__.validate_dims("data initialization","c","int",
-          context__.to_vec(C, 2));
-      c = std::vector<std::vector<int>>(C, std::vector<int>(2, std::numeric_limits<int>::min()));
+      validate_non_negative_index("c", "K", K);
+      current_statement__ = 28;
+      context__.validate_dims("data initialization","c","double",
+          context__.to_vec(C, K));
+      c = Eigen::Matrix<double, -1, -1>(C, K);
+      stan::math::fill(c, std::numeric_limits<double>::quiet_NaN());
       
       {
-        std::vector<int> c_flat__;
-        current_statement__ = 27;
-        assign(c_flat__, nil_index_list(), context__.vals_i("c"),
+        std::vector<local_scalar_t__> c_flat__;
+        current_statement__ = 28;
+        assign(c_flat__, nil_index_list(), context__.vals_r("c"),
           "assigning variable c_flat__");
-        current_statement__ = 27;
+        current_statement__ = 28;
         pos__ = 1;
-        current_statement__ = 27;
-        for (int sym1__ = 1; sym1__ <= 2; ++sym1__) {
-          current_statement__ = 27;
+        current_statement__ = 28;
+        for (int sym1__ = 1; sym1__ <= K; ++sym1__) {
+          current_statement__ = 28;
           for (int sym2__ = 1; sym2__ <= C; ++sym2__) {
-            current_statement__ = 27;
+            current_statement__ = 28;
             assign(c,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),
               c_flat__[(pos__ - 1)], "assigning variable c");
-            current_statement__ = 27;
+            current_statement__ = 28;
             pos__ = (pos__ + 1);}}
       }
-      current_statement__ = 28;
+      current_statement__ = 29;
       context__.validate_dims("data initialization","alpha","double",
           context__.to_vec());
       alpha = std::numeric_limits<double>::quiet_NaN();
       
-      current_statement__ = 28;
-      alpha = context__.vals_r("alpha")[(1 - 1)];
       current_statement__ = 29;
+      alpha = context__.vals_r("alpha")[(1 - 1)];
+      current_statement__ = 30;
       context__.validate_dims("data initialization","beta_gamma","double",
           context__.to_vec());
       beta_gamma = std::numeric_limits<double>::quiet_NaN();
       
-      current_statement__ = 29;
-      beta_gamma = context__.vals_r("beta_gamma")[(1 - 1)];
       current_statement__ = 30;
-      validate_non_negative_index("u", "N", N);
+      beta_gamma = context__.vals_r("beta_gamma")[(1 - 1)];
       current_statement__ = 31;
+      validate_non_negative_index("u", "N", N);
+      current_statement__ = 32;
       context__.validate_dims("data initialization","u","double",
           context__.to_vec(N));
       u = Eigen::Matrix<double, -1, 1>(N);
@@ -294,22 +306,22 @@ public:
       
       {
         std::vector<local_scalar_t__> u_flat__;
-        current_statement__ = 31;
+        current_statement__ = 32;
         assign(u_flat__, nil_index_list(), context__.vals_r("u"),
           "assigning variable u_flat__");
-        current_statement__ = 31;
+        current_statement__ = 32;
         pos__ = 1;
-        current_statement__ = 31;
+        current_statement__ = 32;
         for (int sym1__ = 1; sym1__ <= N; ++sym1__) {
-          current_statement__ = 31;
+          current_statement__ = 32;
           assign(u, cons_list(index_uni(sym1__), nil_index_list()),
             u_flat__[(pos__ - 1)], "assigning variable u");
-          current_statement__ = 31;
+          current_statement__ = 32;
           pos__ = (pos__ + 1);}
       }
-      current_statement__ = 32;
-      validate_non_negative_index("mu_not", "K", K);
       current_statement__ = 33;
+      validate_non_negative_index("mu_not", "K", K);
+      current_statement__ = 34;
       context__.validate_dims("data initialization","mu_not","double",
           context__.to_vec(K));
       mu_not = Eigen::Matrix<double, -1, 1>(K);
@@ -317,71 +329,80 @@ public:
       
       {
         std::vector<local_scalar_t__> mu_not_flat__;
-        current_statement__ = 33;
+        current_statement__ = 34;
         assign(mu_not_flat__, nil_index_list(), context__.vals_r("mu_not"),
           "assigning variable mu_not_flat__");
-        current_statement__ = 33;
+        current_statement__ = 34;
         pos__ = 1;
-        current_statement__ = 33;
+        current_statement__ = 34;
         for (int sym1__ = 1; sym1__ <= K; ++sym1__) {
-          current_statement__ = 33;
+          current_statement__ = 34;
           assign(mu_not, cons_list(index_uni(sym1__), nil_index_list()),
             mu_not_flat__[(pos__ - 1)], "assigning variable mu_not");
-          current_statement__ = 33;
+          current_statement__ = 34;
           pos__ = (pos__ + 1);}
       }
-      current_statement__ = 34;
-      validate_non_negative_index("n_k", "K", K);
       current_statement__ = 35;
+      validate_non_negative_index("n_k", "K", K);
+      current_statement__ = 36;
       n_k = Eigen::Matrix<double, -1, 1>(K);
       stan::math::fill(n_k, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 36;
-      validate_non_negative_index("n_c", "C", C);
       current_statement__ = 37;
+      validate_non_negative_index("n_c", "C", C);
+      current_statement__ = 38;
       n_c = Eigen::Matrix<double, -1, 1>(C);
       stan::math::fill(n_c, std::numeric_limits<double>::quiet_NaN());
       
+      current_statement__ = 39;
+      validate_non_negative_index("abs_c", "C", C);
       current_statement__ = 40;
+      validate_non_negative_index("abs_c", "K", K);
+      current_statement__ = 41;
+      abs_c = Eigen::Matrix<double, -1, -1>(C, K);
+      stan::math::fill(abs_c, std::numeric_limits<double>::quiet_NaN());
+      
+      current_statement__ = 47;
       for (int i = 1; i <= K; ++i) {
-        current_statement__ = 38;
+        current_statement__ = 42;
         assign(n_k, cons_list(index_uni(i), nil_index_list()),
           (1 /
             sum(
               rvalue(x,
                 cons_list(index_omni(),
                   cons_list(index_uni(i), nil_index_list())), "x"))),
-          "assigning variable n_k");}
-      current_statement__ = 41;
-      assign(n_c, nil_index_list(),
-        stan::math::sqrt(
-          add(
-            rvalue(n_k,
-              cons_list(
-                index_multi(rvalue(c,
-                              cons_list(index_omni(),
-                                cons_list(index_uni(1), nil_index_list())),
-                              "c")), nil_index_list()), "n_k"),
-            rvalue(n_k,
-              cons_list(
-                index_multi(rvalue(c,
-                              cons_list(index_omni(),
-                                cons_list(index_uni(2), nil_index_list())),
-                              "c")), nil_index_list()), "n_k"))),
-        "assigning variable n_c");
-      current_statement__ = 42;
-      validate_non_negative_index("mu", "K", K);
-      current_statement__ = 43;
-      validate_non_negative_index("y_diff", "C", C);
-      current_statement__ = 44;
-      validate_non_negative_index("eta", "K", K);
-      current_statement__ = 45;
-      validate_non_negative_index("prior_mu_not", "K", K);
-      current_statement__ = 46;
-      validate_non_negative_index("mu_diff", "C", C);
-      current_statement__ = 47;
-      validate_non_negative_index("sigma_mu_not", "K", K);
+          "assigning variable n_k");
+        current_statement__ = 45;
+        for (int j = 1; j <= C; ++j) {
+          current_statement__ = 43;
+          assign(abs_c,
+            cons_list(index_uni(j),
+              cons_list(index_uni(i), nil_index_list())),
+            stan::math::abs(
+              rvalue(c,
+                cons_list(index_uni(j),
+                  cons_list(index_uni(i), nil_index_list())), "c")),
+            "assigning variable abs_c");}}
       current_statement__ = 48;
+      assign(n_c, nil_index_list(), multiply(abs_c, n_k),
+        "assigning variable n_c");
+      current_statement__ = 49;
+      assign(n_c, nil_index_list(),
+        stan::math::sqrt(stan::model::deep_copy(n_c)),
+        "assigning variable n_c");
+      current_statement__ = 50;
+      validate_non_negative_index("mu", "K", K);
+      current_statement__ = 51;
+      validate_non_negative_index("y_diff", "C", C);
+      current_statement__ = 52;
+      validate_non_negative_index("eta", "K", K);
+      current_statement__ = 53;
+      validate_non_negative_index("prior_mu_not", "K", K);
+      current_statement__ = 54;
+      validate_non_negative_index("mu_diff", "C", C);
+      current_statement__ = 55;
+      validate_non_negative_index("sigma_mu_not", "K", K);
+      current_statement__ = 56;
       validate_non_negative_index("sigma_lfc", "C", C);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -469,20 +490,7 @@ public:
       stan::math::fill(sigma_lfc, DUMMY_VAR__);
       
       current_statement__ = 9;
-      assign(mu_diff, nil_index_list(),
-        subtract(
-          rvalue(mu,
-            cons_list(
-              index_multi(rvalue(c,
-                            cons_list(index_omni(),
-                              cons_list(index_uni(1), nil_index_list())),
-                            "c")), nil_index_list()), "mu"),
-          rvalue(mu,
-            cons_list(
-              index_multi(rvalue(c,
-                            cons_list(index_omni(),
-                              cons_list(index_uni(2), nil_index_list())),
-                            "c")), nil_index_list()), "mu")),
+      assign(mu_diff, nil_index_list(), multiply(c, mu),
         "assigning variable mu_diff");
       current_statement__ = 10;
       assign(sigma_mu_not, nil_index_list(), multiply((2 * sigma), n_k),
@@ -595,20 +603,7 @@ public:
         return ;
       } 
       current_statement__ = 9;
-      assign(mu_diff, nil_index_list(),
-        subtract(
-          rvalue(mu,
-            cons_list(
-              index_multi(rvalue(c,
-                            cons_list(index_omni(),
-                              cons_list(index_uni(1), nil_index_list())),
-                            "c")), nil_index_list()), "mu"),
-          rvalue(mu,
-            cons_list(
-              index_multi(rvalue(c,
-                            cons_list(index_omni(),
-                              cons_list(index_uni(2), nil_index_list())),
-                            "c")), nil_index_list()), "mu")),
+      assign(mu_diff, nil_index_list(), multiply(c, mu),
         "assigning variable mu_diff");
       current_statement__ = 10;
       assign(sigma_mu_not, nil_index_list(), multiply((2 * sigma), n_k),
