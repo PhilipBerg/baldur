@@ -7,11 +7,12 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   data and decision model. From the posterior, it then collects estimates and
 #'   sampling statistics from the posterior of data model and integrates the
 #'   decision distribution D. It then returns a [tibble()] with all the
-#'   information for each peptide's posterior (see **Value** below). There are major time gains to
-#'   be made by running this procedure in parallel. `infer_data_and_descision_model` has an
-#'   efficient wrapper around `multipldyr`. This will let you to evenly
-#'   distribute all peptides evenly to each worker. E.g., two workers will each
-#'   run half of the peptides in parallel.
+#'   information for each peptide's posterior (see **Value** below). There are
+#'   major time gains to be made by running this procedure in parallel.
+#'   `infer_data_and_decision_model` has an efficient wrapper around
+#'   `multipldyr`. This will let you to evenly distribute all peptides evenly to
+#'   each worker. E.g., two workers will each run half of the peptides in
+#'   parallel.
 #'
 #' @details Model description here
 #'
@@ -35,8 +36,8 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @return A [tibble()] or [data.frame()] annotated  with statistics of the
 #'   posterior and p(error). `err` is the probability of error, i.e., the two
 #'   tail-density supporting the null-hypothesis, `lfc` is the estimated
-#'   \eqn{\log_2}-fold change, `sigma` is the common #' variance, and `lp` is the
-#'   log-posterior. Columns without suffix shows the mean estimate from the
+#'   \eqn{\log_2}-fold change, `sigma` is the common #' variance, and `lp` is
+#'   the log-posterior. Columns without suffix shows the mean estimate from the
 #'   posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0,
 #'   and 97.5, percentiles, respectively. The suffixes `_eff` and `_rhat` are
 #'   the diagnostic variables returned by `rstan` (please see the Stan manual
@@ -103,7 +104,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' \donttest{
 #' yeast_norm %>%
 #'   head() %>% # Just running a few for the example
-#'   infer_data_and_descision_model(
+#'   infer_data_and_decision_model(
 #'     'identifier',
 #'     design,
 #'     contrast,
@@ -112,7 +113,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'                  # this will greatly reduce the speed of running baldur
 #'   )
 #' }
-infer_data_and_descision_model <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
+infer_data_and_decision_model <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
@@ -121,6 +122,10 @@ infer_data_and_descision_model <- function(data, id_col_name, design_matrix, con
   sigma_bar <- sd(data$mean)
   ori_data <- data
   pmap_columns <- rlang::expr(list(!!rlang::sym(id_col_name), alpha, beta))
+  if (clusters > nrow(data)) {
+    warning("You have more workers than rows in your data, setting workers to the number of rows in the data.")
+    clusters <- nrow(data)
+  }
   if(clusters != 1){
     cl <- multidplyr::new_cluster(clusters)
     suppressWarnings(
@@ -162,22 +167,20 @@ infer_data_and_descision_model <- function(data, id_col_name, design_matrix, con
                                "sigma_bar"
                              )
     )
-    model_check <- stringr::word(deparse(substitute(stan_model)), 2, sep = '\\$')
-    if(!is.na(model_check)){
-      multidplyr::cluster_copy(cl,
-                               paste0(
-                                 "rstantools_model_",
-                                 stringr::word(deparse(substitute(stan_model)), 2, sep = '\\$')
-                               )
-      )
-    }
-    multidplyr::cluster_assign_partition(cl, id = ori_data$identifier, alpha = ori_data$alpha, beta = ori_data$beta)
+
+    multidplyr::cluster_assign_partition(cl,
+                                         id = ori_data$identifier,
+                                         alpha = ori_data$alpha,
+                                         beta = ori_data$beta
+    )
     multidplyr::cluster_assign(cl,
                                condi = colnames(design_matrix),
-                               condi_regex = paste0(colnames(design_matrix), collapse = '|')
+                               condi_regex = paste0(colnames(design_matrix), collapse = '|'
+                               )
     )
     multidplyr::cluster_send(cl,
-                             dat <- purrr::pmap(list(stats::setNames(id, id), alpha, beta),
+                             dat <- purrr::pmap(list(stats::setNames(id, id),
+                                                     alpha, beta),
                                                 ~ generate_stan_data_input(
                                                   ..1,
                                                   id_col_name,
@@ -217,7 +220,9 @@ infer_data_and_descision_model <- function(data, id_col_name, design_matrix, con
         !!id_col_name := .data[[id_col_name]],
         tmp = purrr::pmap(!!pmap_columns,
                           bayesian_testing,
-                          ori_data, id_col_name, design_matrix, contrast_matrix, stan_model, N, K, C, uncertainty_matrix, h_not, rstan_inputs, sigma_bar
+                          ori_data, id_col_name, design_matrix, contrast_matrix,
+                          stan_model, N, K, C, uncertainty_matrix, h_not,
+                          rstan_inputs, sigma_bar
         )
       ) %>%
       tidyr::unnest(tmp)

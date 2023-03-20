@@ -31,10 +31,17 @@ ups <- ups %>%
   psrn('identifier') %>%
   calculate_mean_sd_trends(ups_design)
 
-# For the contrast, we want to compare all conditions against each other.
+# For the contrast, we want to compare all conditions against each other, and in addtion, suppose we would like to know the difference between the mean of condition 1 and 3 against 2 ([fmol25 + fmol100]/2 - fmol50).
 # This can easily be achieved with the following:
-ups_contrast <- combn(1:3, 2) %>%
-  t()
+ups_contrast <- matrix(
+  c(
+    1,   -1,   0,
+    1,    0,  -1,
+    0,    1,  -1,
+    0.5, -1, 0.5
+  ), ncol = ncol(ups_design),
+  byrow = TRUE
+)
 ```
 Lets go over the design and contrast matrix.
 First, lets not how the design matrix uses subsets of the real columns of each condition:
@@ -52,27 +59,32 @@ Next, the contrast matrix:
 
 ```r
 ups_contrast
-#>      [,1] [,2]
-#> [1,]    1    2
-#> [2,]    1    3
-#> [3,]    2    3
+#>      [,1] [,2] [,3]
+#> [1,]  1.0   -1  0.0
+#> [2,]  1.0    0 -1.0
+#> [3,]  0.0    1 -1.0
+#> [4,]  0.5   -1  0.5
 ```
 First, note how the contrast only has two columns; currently `baldur` only allows pair-wise comparisons.
 Lets go over the rows, the first row tells us that the first column of the design matrix should be compared against the second.
 I.e., the first row means `fmol25 - fmol50`.
 The second row shows that the first column should be compared against the third, i.e., `fmol25 - fmol100`.
-Finally, the last row shows that the second column should be compared against the third (`fmol50 - fmol100`).
+The third row shows that the second column should be compared against the third (`fmol50 - fmol100`).
+And, of course, the last row shows the mean of condition one and three vs condition two.
 
 # 2. Mean-Variance trends and Gamma Regression fitting
-First, I would like to note to the reader that the remainder of the tutorial will look very similar to `vignette("baldur_yeast_tutorial")`.
+First, I would like to note that reader that the remainder of the tutorial will look very similar to `vignette("baldur_yeast_tutorial")`.
 The next step in `baldur` is to partition the trends in the mean and variance, and then to estimate the uncertainty of each measurement.
+
+The trends before and after partitioning can then be visualized with `plot_gamma_regression`:
 
 ```r
 plot_gamma(ups)
 ```
 
-![plot of chunk plot_gam](figure/plot_gam-1.png)
-We can then estimate the uncertainty for the data as follows:
+![plot of chunk plot_gam](plot_gam-1.png)
+and the two individual plots can be plotted with `plot_gamma` and `plot_gamma_partition`.
+We can then estimate the uncertainty for the partitioned data as follows:
 
 ```r
 # Fit the gamma regression
@@ -91,7 +103,7 @@ The only thing that needs to be changed is the `clusters` flag:
 gr_results <- gr %>%
   # Add hyper-priors for sigma
   estimate_gamma_hyperparameters(ups) %>%
-  sample_posterior(
+  infer_data_and_decision_model(
     'identifier',
     ups_design,
     ups_contrast,
@@ -111,12 +123,14 @@ First we fit the regression model using the `fit_lgmr` function:
 
 ```r
 ups_lgmr <- fit_lgmr(ups, cores = 5)
-#> Warning: There were 1 divergent transitions after warmup. See
+#> Warning: There were 3 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.
+#> Warning: There were 19 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
+#> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded
 #> Warning: Examine the pairs() plot to diagnose sampling problems
 ```
-We can the estimate the uncertanties and hyperparameters for the data and decision model and run them as for the GR model:
+We can the estimate the uncertainties and hyperparameters for the data and decision model and run them as for the GR model:
 
 
 ```r
@@ -126,7 +140,7 @@ unc_lgmr <- estimate_uncertainty(ups_lgmr, ups, 'identifier', ups_design)
 lgmr_results <- ups_lgmr %>%
   # Add hyper-priors for sigma
   estimate_gamma_hyperparameters(ups) %>%
-  sample_posterior(
+  infer_data_and_decision_model(
     'identifier',
     ups_design,
     ups_contrast,
@@ -153,8 +167,9 @@ lgmr_results %>%
   )
 ```
 
-![plot of chunk plotting_sa](figure/plotting_sa-1.png)![plot of chunk plotting_sa](figure/plotting_sa-2.png)
+![plot of chunk plotting_sa](plotting_sa-1.png)![plot of chunk plotting_sa](plotting_sa-2.png)
 In general, a good decision is indicated by a lack of a trend between $\sigma$ and LFC.
+We can see that Baludr with the LGMR model (second plot) has a lower trend compared to GR model (first plot) for which there is a trend for $\sigma$ to increase with LFC.
 
 
 To make a volcano plot one uses `plot_volcano` in a similar fashion to `plot_sa`:
@@ -171,4 +186,4 @@ lgmr_results %>%
   )
 ```
 
-![plot of chunk plotting_volc](figure/plotting_volc-1.png)![plot of chunk plotting_volc](figure/plotting_volc-2.png)
+![plot of chunk plotting_volc](plotting_volc-1.png)![plot of chunk plotting_volc](plotting_volc-2.png)

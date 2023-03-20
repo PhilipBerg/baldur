@@ -23,7 +23,7 @@ yeast_design <- model.matrix(~0+factor(rep(1:2, each = 3)))
 colnames(yeast_design) <- paste0('ng', c(50, 100))
 # Compare the first and second column of the design matrix
 # with the following contrast matrix
-yeast_contrast <- matrix(1:2, nrow = 1)
+yeast_contrast <- matrix(c(-1, 1), nrow = 1)
 
 # Since baldur itself does not deal with missing data we remove the
 # rows that have missing data for the purpose of the tutorial.
