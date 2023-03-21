@@ -73,7 +73,7 @@ fit_lgmr <- function(data, model = lgmr_model, iter = 6000, warmup = 1500, chain
   model_summary <- rstan::summary(samp) %>%
     use_series(summary)
 
-  fitted_model            <- structure(list(), class = "lgmr")
+  fitted_model            <- list()
   fitted_model$coef       <- model_summary[rownames(model_summary) %in% c("I", "S", "I_L", "S_L"),]
   fitted_model$aux        <- model_summary[rownames(model_summary) %in% c("alpha", "nrmse"),]
   fitted_model$theta      <- model_summary[stringr::str_detect(rownames(model_summary), "theta"),]
@@ -88,6 +88,8 @@ fit_lgmr <- function(data, model = lgmr_model, iter = 6000, warmup = 1500, chain
   if (return_stanfit) {
     fitted_model$stanfit <- samp
   }
+
+  fitted_model            <- structure(fitted_model, class = "lgmr")
 
   return(fitted_model)
 }
