@@ -2,7 +2,8 @@
 % Please edit documentation in R/sample_posterior.R
 \name{infer_data_and_decision_model}
 \alias{infer_data_and_decision_model}
-\title{Sample the Posterior of the data and decision model}
+\title{Sample the Posterior of the data and decision model and generate point
+estimates}
 \usage{
 infer_data_and_decision_model(
   data,
@@ -23,11 +24,12 @@ infer_data_and_decision_model(
 
 \item{design_matrix}{A design matrix for the data (see example)}
 
-\item{contrast_matrix}{A contrast matrix of the decisions to test. Rows
+\item{contrast_matrix}{A contrast matrix of the decisions to test. Columns
 should sum to \code{0} and only mean comparisons are allowed. That is, the
-positive and negative values in each row has to sum to \code{abs(1)}. E.g., a
-row can be \code{[}0.5, 0.5, -1\verb{]} but not \code{[}1, 1, -1\verb{]} or \code{[}0.5, 0.5, -2\verb{]}.
-That is, \code{sum(sign(x)*x)=2} where \code{x} is a row in the contrast matrix.}
+absolute value of the positive and negative values in each column has to
+sum to \code{2}. E.g., a column can be \code{[}0.5, 0.5, -1\verb{]}\eqn{^T} but not \code{[}1,
+1, -1\verb{]} or \code{[}0.5, 0.5, -2\verb{]}. That is, \code{sum(abs(x))=2} where \code{x} is a
+column in the contrast matrix.}
 
 \item{uncertainty_matrix}{A matrix of observation specific uncertainties}
 
@@ -46,14 +48,14 @@ always be forced to \code{FALSE} to avoid console flooding.}
 A \code{\link[=tibble]{tibble()}} or \code{\link[=data.frame]{data.frame()}} annotated  with statistics of the
 posterior and p(error). \code{err} is the probability of error, i.e., the two
 tail-density supporting the null-hypothesis, \code{lfc} is the estimated
-\eqn{\log_2}-fold change, \code{sigma} is the common #' variance, and \code{lp} is
-the log-posterior. Columns without suffix shows the mean estimate from the
+\eqn{\log_2}-fold change, \code{sigma} is the common variance, and \code{lp} is the
+log-posterior. Columns without suffix shows the mean estimate from the
 posterior, while the suffixes \verb{_025}, \verb{_50}, and \verb{_975}, are the 2.5, 50.0,
 and 97.5, percentiles, respectively. The suffixes \verb{_eff} and \verb{_rhat} are
-the diagnostic variables returned by \code{rstan} (please see the Stan manual
-for more details). In general, a larger \verb{_eff} indicates a better sampling
-efficiency, and \verb{_rhat} compares the mixing within chains against between
-the chains and should be smaller than 1.05.
+the diagnostic variables returned by \code{Stan}. In general, a larger \verb{_eff}
+indicates effective sample size and \verb{_rhat} indicates the mixing
+within chains and between the chains and should be smaller than 1.05
+(please see the Stan manual for more details).
 }
 \description{
 Function to sample the posterior of the Bayesian data and
@@ -93,7 +95,7 @@ yeast_norm <- gam \%>\%
    # Add hyper-priors for sigma
    estimate_gamma_hyperparameters(yeast_norm)
 # Setup contrast matrix
-contrast <- matrix(c(-1, 1), ncol = 2)
+contrast <- matrix(c(-1, 1)
 \donttest{
 yeast_norm \%>\%
   head() \%>\% # Just running a few for the example

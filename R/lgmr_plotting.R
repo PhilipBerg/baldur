@@ -1,9 +1,9 @@
-#' Title
+#' Visualization of LGMR models
 #'
 #' @name lgmr_plotting
-#' @param model
+#' @param model A LGMR model object
 #'
-#' @return
+#' @return A ggplot object
 #' @export
 #'
 #' @examples
@@ -38,24 +38,17 @@ plot_lgrm_regression <- function(model) {
     )
 }
 
-#' Vector Field Representation Of The LGMR Model
-#'
 #' @rdname lgmr_plotting
 #'
-#' @param model
-#' @param n
-#' @param rng
+#' @param n Number of interpolation points for each peptides regression
+#' @param rng The proportional range of each peptides regression.
+#'   E.g., a value of 10 will make each line span 1 % of the x-axis.
 #'
-#' @return
 #' @export
 #'
 #' @examples
-plot_regression_field <- function(model, n = 10, rng = NULL) {
-  if(is.null(rng)) {
-    rng <- diff(range(data$mean))/10
-  } else if (is.numeric(rng)) {
-    rng <- diff(range(data$mean))/rng
-  }
+plot_regression_field <- function(model, n = 10, rng = 10) {
+  rng <- diff(range(data$mean))/rng
 
   mu_inputs <- mu_std_inputs(model$data)
 

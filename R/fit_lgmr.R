@@ -77,13 +77,13 @@ fit_lgmr <- function(data, model = lgmr_model, iter = 6000, warmup = 1500, chain
   fitted_model$coef       <- model_summary[rownames(model_summary) %in% c("I", "S", "I_L", "S_L"),]
   fitted_model$aux        <- model_summary[rownames(model_summary) %in% c("alpha", "nrmse"),]
   fitted_model$theta      <- model_summary[stringr::str_detect(rownames(model_summary), "theta"),]
-  fitted_model$stan_model <- model
-  fitted_model$data       <- dplyr::select(data, mean, sd)
-  fitted_model$simplify   <- simplify
-
   if (simplify) {
     fitted_model <- purrr::map(fitted_model, ~ .x[,"mean"])
   }
+
+  fitted_model$stan_model <- model
+  fitted_model$data       <- dplyr::select(data, mean, sd)
+  fitted_model$simplify   <- simplify
 
   if (return_stanfit) {
     fitted_model$stanfit <- samp
