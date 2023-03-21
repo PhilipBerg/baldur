@@ -186,7 +186,7 @@ mu_fun <- function(theta, reg_pars, y_bar, m, s){
     0.001 * exp(theta * (reg_pars["I_L"] - reg_pars["S_L"] * y_bar_star))
 }
 
-match_pars <- function(pars) {
+match_pars <- function(pars = c("coefficients", "auxiliary", "theta", "all")) {
   if ("all" %in% pars) {
     c("auxiliary", "coefficients", "theta")
   } else {

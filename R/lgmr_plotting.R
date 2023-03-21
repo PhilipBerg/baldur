@@ -1,7 +1,7 @@
 #' Visualization of LGMR models
 #'
 #' @name lgmr_plotting
-#' @param model A LGMR model object
+#' @param model An LGMR model object
 #'
 #' @return A ggplot object
 #' @export
