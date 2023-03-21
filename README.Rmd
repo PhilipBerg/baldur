@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
+![cran-badge](http://www.r-pkg.org/badges/version/baldur)
 
 # Baldur
 
@@ -26,7 +27,7 @@ Importantly, you first need to follow the instructions for installing `rstan` [h
 Then you can install `baldur` accordingly:
 For the stable release please install from CRAN:
 ```{r}
-install.package('baldur')
+install.packages('baldur') # Once on CRAN
 ```
 
 Or you can install the development version of `baldur` from this github:

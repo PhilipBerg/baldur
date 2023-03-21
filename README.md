@@ -1,25 +1,38 @@
-![cran-badge](http://www.r-pkg.org/badges/version/baldur)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+![cran-badge](http://www.r-pkg.org/badges/version/baldur)
 
 # Baldur
 
-The goal of Baldur is to shine light on your proteomics data.
+The goal of Baldur is to shine light on your proteomics data. Baldur is
+a hierarchical Bayesian model that uses an empirical Bayes method to
+estimate hyperparamters for the variance and measurement specific
+uncertainty. It then estimates the posterior of the difference in means
+between different conditions for each peptide/protein/PTM. Finally, it
+integrates the posterior to estimate the probability of error.
 
 ## Installation
 
 You can install the development version of `baldur` from this github or
 the stable version from CRAN. Importantly, you first need to follow the
 instructions for installing `rstan`
-<https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started>. Then you
-can install `baldur` as accordingly:
+<https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started> and make
+sure that is working. Then you can install `baldur` accordingly: For the
+stable release please install from CRAN:
 
-You can install the development version of `baldur` from this GitHub:
-
-```{r}
-devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
-# or
-install.package('baldur') # Once on CRAN
+``` r
+ # Once on CRAN install.packages('baldur')
 ```
+
+Or you can install the development version of `baldur` from this github:
+
+``` r
+devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
+```
+
+Note that Ubuntu operating systems can require `pandoc`
+<https://pandoc.org/> to compile the vignettes.
 
 ## Example
 

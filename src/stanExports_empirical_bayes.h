@@ -80,18 +80,15 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 29, column 2 to column 17)",
                                                       " (in 'string', line 30, column 2 to column 16)",
                                                       " (in 'string', line 31, column 2 to column 25)",
-                                                      " (in 'string', line 34, column 2 to column 20)",
-                                                      " (in 'string', line 35, column 2 to column 25)",
-                                                      " (in 'string', line 36, column 2 to column 22)",
-                                                      " (in 'string', line 37, column 2 to column 17)",
-                                                      " (in 'string', line 38, column 2 to column 31)",
-                                                      " (in 'string', line 39, column 2 to column 26)",
-                                                      " (in 'string', line 42, column 2 to column 42)",
-                                                      " (in 'string', line 43, column 2 to column 30)",
-                                                      " (in 'string', line 44, column 2 to column 46)",
-                                                      " (in 'string', line 45, column 2 to column 57)",
-                                                      " (in 'string', line 46, column 2 to column 41)",
-                                                      " (in 'string', line 47, column 2 to column 44)",
+                                                      " (in 'string', line 34, column 2 to column 34)",
+                                                      " (in 'string', line 35, column 2 to column 41)",
+                                                      " (in 'string', line 36, column 2 to column 37)",
+                                                      " (in 'string', line 39, column 2 to column 36)",
+                                                      " (in 'string', line 40, column 2 to column 30)",
+                                                      " (in 'string', line 41, column 2 to column 46)",
+                                                      " (in 'string', line 42, column 2 to column 59)",
+                                                      " (in 'string', line 43, column 2 to column 43)",
+                                                      " (in 'string', line 44, column 2 to column 44)",
                                                       " (in 'string', line 2, column 2 to column 17)",
                                                       " (in 'string', line 3, column 2 to column 17)",
                                                       " (in 'string', line 4, column 2 to column 8)",
@@ -104,15 +101,15 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 7, column 12 to column 13)",
                                                       " (in 'string', line 7, column 2 to column 17)",
                                                       " (in 'string', line 8, column 2 to column 13)",
-                                                      " (in 'string', line 9, column 2 to column 18)",
+                                                      " (in 'string', line 9, column 2 to column 12)",
                                                       " (in 'string', line 10, column 9 to column 10)",
                                                       " (in 'string', line 10, column 2 to column 14)",
                                                       " (in 'string', line 11, column 9 to column 10)",
                                                       " (in 'string', line 11, column 2 to column 19)",
                                                       " (in 'string', line 14, column 9 to column 10)",
                                                       " (in 'string', line 14, column 2 to column 16)",
-                                                      " (in 'string', line 15, column 9 to column 10)",
-                                                      " (in 'string', line 15, column 2 to column 16)",
+                                                      " (in 'string', line 15, column 13 to column 14)",
+                                                      " (in 'string', line 15, column 2 to column 20)",
                                                       " (in 'string', line 16, column 9 to column 10)",
                                                       " (in 'string', line 16, column 12 to column 13)",
                                                       " (in 'string', line 16, column 2 to column 21)",
@@ -122,13 +119,13 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 19, column 4 to line 21, column 5)",
                                                       " (in 'string', line 17, column 17 to line 22, column 3)",
                                                       " (in 'string', line 17, column 2 to line 22, column 3)",
-                                                      " (in 'string', line 23, column 2 to column 20)",
+                                                      " (in 'string', line 23, column 2 to column 21)",
                                                       " (in 'string', line 24, column 2 to column 18)",
                                                       " (in 'string', line 27, column 9 to column 10)",
                                                       " (in 'string', line 29, column 14 to column 15)",
                                                       " (in 'string', line 30, column 9 to column 10)",
                                                       " (in 'string', line 31, column 9 to column 10)",
-                                                      " (in 'string', line 34, column 9 to column 10)",
+                                                      " (in 'string', line 34, column 13 to column 14)",
                                                       " (in 'string', line 35, column 9 to column 10)",
                                                       " (in 'string', line 36, column 9 to column 10)"};
 #include <stan_meta_header.hpp>
@@ -141,11 +138,11 @@ private:
   Eigen::Matrix<double, -1, 1> y;
   Eigen::Matrix<double, -1, -1> c;
   double alpha;
-  double beta_gamma;
+  double beta;
   Eigen::Matrix<double, -1, 1> u;
   Eigen::Matrix<double, -1, 1> mu_not;
   Eigen::Matrix<double, -1, 1> n_k;
-  Eigen::Matrix<double, -1, 1> n_c;
+  Eigen::Matrix<double, 1, -1> n_c;
   Eigen::Matrix<double, -1, -1> abs_c;
  
 public:
@@ -174,38 +171,38 @@ public:
       pos__ = std::numeric_limits<int>::min();
       
       pos__ = 1;
-      current_statement__ = 18;
+      current_statement__ = 15;
       context__.validate_dims("data initialization","N","int",
           context__.to_vec());
       N = std::numeric_limits<int>::min();
       
-      current_statement__ = 18;
+      current_statement__ = 15;
       N = context__.vals_i("N")[(1 - 1)];
-      current_statement__ = 18;
-      current_statement__ = 18;
+      current_statement__ = 15;
+      current_statement__ = 15;
       check_greater_or_equal(function__, "N", N, 0);
-      current_statement__ = 19;
+      current_statement__ = 16;
       context__.validate_dims("data initialization","K","int",
           context__.to_vec());
       K = std::numeric_limits<int>::min();
       
-      current_statement__ = 19;
+      current_statement__ = 16;
       K = context__.vals_i("K")[(1 - 1)];
-      current_statement__ = 19;
-      current_statement__ = 19;
+      current_statement__ = 16;
+      current_statement__ = 16;
       check_greater_or_equal(function__, "K", K, 0);
-      current_statement__ = 20;
+      current_statement__ = 17;
       context__.validate_dims("data initialization","C","int",
           context__.to_vec());
       C = std::numeric_limits<int>::min();
       
-      current_statement__ = 20;
+      current_statement__ = 17;
       C = context__.vals_i("C")[(1 - 1)];
-      current_statement__ = 21;
+      current_statement__ = 18;
       validate_non_negative_index("x", "N", N);
-      current_statement__ = 22;
+      current_statement__ = 19;
       validate_non_negative_index("x", "K", K);
-      current_statement__ = 23;
+      current_statement__ = 20;
       context__.validate_dims("data initialization","x","double",
           context__.to_vec(N, K));
       x = Eigen::Matrix<double, -1, -1>(N, K);
@@ -213,26 +210,26 @@ public:
       
       {
         std::vector<local_scalar_t__> x_flat__;
-        current_statement__ = 23;
+        current_statement__ = 20;
         assign(x_flat__, nil_index_list(), context__.vals_r("x"),
           "assigning variable x_flat__");
-        current_statement__ = 23;
+        current_statement__ = 20;
         pos__ = 1;
-        current_statement__ = 23;
+        current_statement__ = 20;
         for (int sym1__ = 1; sym1__ <= K; ++sym1__) {
-          current_statement__ = 23;
+          current_statement__ = 20;
           for (int sym2__ = 1; sym2__ <= N; ++sym2__) {
-            current_statement__ = 23;
+            current_statement__ = 20;
             assign(x,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),
               x_flat__[(pos__ - 1)], "assigning variable x");
-            current_statement__ = 23;
+            current_statement__ = 20;
             pos__ = (pos__ + 1);}}
       }
-      current_statement__ = 24;
+      current_statement__ = 21;
       validate_non_negative_index("y", "N", N);
-      current_statement__ = 25;
+      current_statement__ = 22;
       context__.validate_dims("data initialization","y","double",
           context__.to_vec(N));
       y = Eigen::Matrix<double, -1, 1>(N);
@@ -240,65 +237,65 @@ public:
       
       {
         std::vector<local_scalar_t__> y_flat__;
-        current_statement__ = 25;
+        current_statement__ = 22;
         assign(y_flat__, nil_index_list(), context__.vals_r("y"),
           "assigning variable y_flat__");
-        current_statement__ = 25;
+        current_statement__ = 22;
         pos__ = 1;
-        current_statement__ = 25;
+        current_statement__ = 22;
         for (int sym1__ = 1; sym1__ <= N; ++sym1__) {
-          current_statement__ = 25;
+          current_statement__ = 22;
           assign(y, cons_list(index_uni(sym1__), nil_index_list()),
             y_flat__[(pos__ - 1)], "assigning variable y");
-          current_statement__ = 25;
+          current_statement__ = 22;
           pos__ = (pos__ + 1);}
       }
-      current_statement__ = 26;
-      validate_non_negative_index("c", "C", C);
-      current_statement__ = 27;
+      current_statement__ = 23;
       validate_non_negative_index("c", "K", K);
-      current_statement__ = 28;
+      current_statement__ = 24;
+      validate_non_negative_index("c", "C", C);
+      current_statement__ = 25;
       context__.validate_dims("data initialization","c","double",
-          context__.to_vec(C, K));
-      c = Eigen::Matrix<double, -1, -1>(C, K);
+          context__.to_vec(K, C));
+      c = Eigen::Matrix<double, -1, -1>(K, C);
       stan::math::fill(c, std::numeric_limits<double>::quiet_NaN());
       
       {
         std::vector<local_scalar_t__> c_flat__;
-        current_statement__ = 28;
+        current_statement__ = 25;
         assign(c_flat__, nil_index_list(), context__.vals_r("c"),
           "assigning variable c_flat__");
-        current_statement__ = 28;
+        current_statement__ = 25;
         pos__ = 1;
-        current_statement__ = 28;
-        for (int sym1__ = 1; sym1__ <= K; ++sym1__) {
-          current_statement__ = 28;
-          for (int sym2__ = 1; sym2__ <= C; ++sym2__) {
-            current_statement__ = 28;
+        current_statement__ = 25;
+        for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
+          current_statement__ = 25;
+          for (int sym2__ = 1; sym2__ <= K; ++sym2__) {
+            current_statement__ = 25;
             assign(c,
               cons_list(index_uni(sym2__),
                 cons_list(index_uni(sym1__), nil_index_list())),
               c_flat__[(pos__ - 1)], "assigning variable c");
-            current_statement__ = 28;
+            current_statement__ = 25;
             pos__ = (pos__ + 1);}}
       }
-      current_statement__ = 29;
+      current_statement__ = 26;
       context__.validate_dims("data initialization","alpha","double",
           context__.to_vec());
       alpha = std::numeric_limits<double>::quiet_NaN();
       
-      current_statement__ = 29;
+      current_statement__ = 26;
       alpha = context__.vals_r("alpha")[(1 - 1)];
-      current_statement__ = 30;
-      context__.validate_dims("data initialization","beta_gamma","double",
+      current_statement__ = 27;
+      context__.validate_dims("data initialization","beta","double",
           context__.to_vec());
-      beta_gamma = std::numeric_limits<double>::quiet_NaN();
+      beta = std::numeric_limits<double>::quiet_NaN();
       
-      current_statement__ = 30;
-      beta_gamma = context__.vals_r("beta_gamma")[(1 - 1)];
-      current_statement__ = 31;
+      current_statement__ = 27;
+      beta = context__.vals_r("beta")[(1 - 1)];
+      current_statement__ = 28;
       validate_non_negative_index("u", "N", N);
-      current_statement__ = 32;
+      current_statement__ = 29;
       context__.validate_dims("data initialization","u","double",
           context__.to_vec(N));
       u = Eigen::Matrix<double, -1, 1>(N);
@@ -306,22 +303,22 @@ public:
       
       {
         std::vector<local_scalar_t__> u_flat__;
-        current_statement__ = 32;
+        current_statement__ = 29;
         assign(u_flat__, nil_index_list(), context__.vals_r("u"),
           "assigning variable u_flat__");
-        current_statement__ = 32;
+        current_statement__ = 29;
         pos__ = 1;
-        current_statement__ = 32;
+        current_statement__ = 29;
         for (int sym1__ = 1; sym1__ <= N; ++sym1__) {
-          current_statement__ = 32;
+          current_statement__ = 29;
           assign(u, cons_list(index_uni(sym1__), nil_index_list()),
             u_flat__[(pos__ - 1)], "assigning variable u");
-          current_statement__ = 32;
+          current_statement__ = 29;
           pos__ = (pos__ + 1);}
       }
-      current_statement__ = 33;
+      current_statement__ = 30;
       validate_non_negative_index("mu_not", "K", K);
-      current_statement__ = 34;
+      current_statement__ = 31;
       context__.validate_dims("data initialization","mu_not","double",
           context__.to_vec(K));
       mu_not = Eigen::Matrix<double, -1, 1>(K);
@@ -329,42 +326,42 @@ public:
       
       {
         std::vector<local_scalar_t__> mu_not_flat__;
-        current_statement__ = 34;
+        current_statement__ = 31;
         assign(mu_not_flat__, nil_index_list(), context__.vals_r("mu_not"),
           "assigning variable mu_not_flat__");
-        current_statement__ = 34;
+        current_statement__ = 31;
         pos__ = 1;
-        current_statement__ = 34;
+        current_statement__ = 31;
         for (int sym1__ = 1; sym1__ <= K; ++sym1__) {
-          current_statement__ = 34;
+          current_statement__ = 31;
           assign(mu_not, cons_list(index_uni(sym1__), nil_index_list()),
             mu_not_flat__[(pos__ - 1)], "assigning variable mu_not");
-          current_statement__ = 34;
+          current_statement__ = 31;
           pos__ = (pos__ + 1);}
       }
-      current_statement__ = 35;
+      current_statement__ = 32;
       validate_non_negative_index("n_k", "K", K);
-      current_statement__ = 36;
+      current_statement__ = 33;
       n_k = Eigen::Matrix<double, -1, 1>(K);
       stan::math::fill(n_k, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 37;
+      current_statement__ = 34;
       validate_non_negative_index("n_c", "C", C);
-      current_statement__ = 38;
-      n_c = Eigen::Matrix<double, -1, 1>(C);
+      current_statement__ = 35;
+      n_c = Eigen::Matrix<double, 1, -1>(C);
       stan::math::fill(n_c, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 39;
-      validate_non_negative_index("abs_c", "C", C);
-      current_statement__ = 40;
+      current_statement__ = 36;
       validate_non_negative_index("abs_c", "K", K);
-      current_statement__ = 41;
-      abs_c = Eigen::Matrix<double, -1, -1>(C, K);
+      current_statement__ = 37;
+      validate_non_negative_index("abs_c", "C", C);
+      current_statement__ = 38;
+      abs_c = Eigen::Matrix<double, -1, -1>(K, C);
       stan::math::fill(abs_c, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 47;
+      current_statement__ = 44;
       for (int i = 1; i <= K; ++i) {
-        current_statement__ = 42;
+        current_statement__ = 39;
         assign(n_k, cons_list(index_uni(i), nil_index_list()),
           (1 /
             sum(
@@ -372,37 +369,37 @@ public:
                 cons_list(index_omni(),
                   cons_list(index_uni(i), nil_index_list())), "x"))),
           "assigning variable n_k");
-        current_statement__ = 45;
+        current_statement__ = 42;
         for (int j = 1; j <= C; ++j) {
-          current_statement__ = 43;
+          current_statement__ = 40;
           assign(abs_c,
-            cons_list(index_uni(j),
-              cons_list(index_uni(i), nil_index_list())),
+            cons_list(index_uni(i),
+              cons_list(index_uni(j), nil_index_list())),
             stan::math::abs(
               rvalue(c,
-                cons_list(index_uni(j),
-                  cons_list(index_uni(i), nil_index_list())), "c")),
+                cons_list(index_uni(i),
+                  cons_list(index_uni(j), nil_index_list())), "c")),
             "assigning variable abs_c");}}
-      current_statement__ = 48;
-      assign(n_c, nil_index_list(), multiply(abs_c, n_k),
+      current_statement__ = 45;
+      assign(n_c, nil_index_list(), multiply(transpose(n_k), abs_c),
         "assigning variable n_c");
-      current_statement__ = 49;
+      current_statement__ = 46;
       assign(n_c, nil_index_list(),
         stan::math::sqrt(stan::model::deep_copy(n_c)),
         "assigning variable n_c");
-      current_statement__ = 50;
+      current_statement__ = 47;
       validate_non_negative_index("mu", "K", K);
-      current_statement__ = 51;
+      current_statement__ = 48;
       validate_non_negative_index("y_diff", "C", C);
-      current_statement__ = 52;
+      current_statement__ = 49;
       validate_non_negative_index("eta", "K", K);
-      current_statement__ = 53;
+      current_statement__ = 50;
       validate_non_negative_index("prior_mu_not", "K", K);
-      current_statement__ = 54;
+      current_statement__ = 51;
       validate_non_negative_index("mu_diff", "C", C);
-      current_statement__ = 55;
+      current_statement__ = 52;
       validate_non_negative_index("sigma_mu_not", "K", K);
-      current_statement__ = 56;
+      current_statement__ = 53;
       validate_non_negative_index("sigma_lfc", "C", C);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -477,43 +474,43 @@ public:
       
       current_statement__ = 5;
       prior_mu_not = in__.vector(K);
-      Eigen::Matrix<local_scalar_t__, -1, 1> mu_diff;
-      mu_diff = Eigen::Matrix<local_scalar_t__, -1, 1>(C);
+      Eigen::Matrix<local_scalar_t__, 1, -1> mu_diff;
+      mu_diff = Eigen::Matrix<local_scalar_t__, 1, -1>(C);
       stan::math::fill(mu_diff, DUMMY_VAR__);
       
+      current_statement__ = 6;
+      assign(mu_diff, nil_index_list(), multiply(transpose(mu), c),
+        "assigning variable mu_diff");
       Eigen::Matrix<local_scalar_t__, -1, 1> sigma_mu_not;
       sigma_mu_not = Eigen::Matrix<local_scalar_t__, -1, 1>(K);
       stan::math::fill(sigma_mu_not, DUMMY_VAR__);
       
+      current_statement__ = 7;
+      assign(sigma_mu_not, nil_index_list(), multiply((2 * sigma), n_k),
+        "assigning variable sigma_mu_not");
       Eigen::Matrix<local_scalar_t__, -1, 1> sigma_lfc;
       sigma_lfc = Eigen::Matrix<local_scalar_t__, -1, 1>(C);
       stan::math::fill(sigma_lfc, DUMMY_VAR__);
       
-      current_statement__ = 9;
-      assign(mu_diff, nil_index_list(), multiply(c, mu),
-        "assigning variable mu_diff");
-      current_statement__ = 10;
-      assign(sigma_mu_not, nil_index_list(), multiply((2 * sigma), n_k),
-        "assigning variable sigma_mu_not");
-      current_statement__ = 11;
-      assign(sigma_lfc, nil_index_list(), multiply(sigma, n_c),
+      current_statement__ = 8;
+      assign(sigma_lfc, nil_index_list(), multiply(sigma, transpose(n_c)),
         "assigning variable sigma_lfc");
       {
-        current_statement__ = 12;
-        lp_accum__.add(gamma_lpdf<propto__>(sigma, alpha, beta_gamma));
-        current_statement__ = 13;
+        current_statement__ = 9;
+        lp_accum__.add(gamma_lpdf<propto__>(sigma, alpha, beta));
+        current_statement__ = 10;
         lp_accum__.add(normal_lpdf<propto__>(eta, 0, 1));
-        current_statement__ = 14;
+        current_statement__ = 11;
         lp_accum__.add(
           normal_lpdf<propto__>(prior_mu_not, mu_not, sigma_mu_not));
-        current_statement__ = 15;
+        current_statement__ = 12;
         lp_accum__.add(
           normal_lpdf<propto__>(mu, add(prior_mu_not, multiply(sigma, eta)),
             sigma));
-        current_statement__ = 16;
+        current_statement__ = 13;
         lp_accum__.add(
           normal_lpdf<propto__>(y, multiply(x, mu), multiply(sigma, u)));
-        current_statement__ = 17;
+        current_statement__ = 14;
         lp_accum__.add(normal_lpdf<propto__>(y_diff, mu_diff, sigma_lfc));
       }
     } catch (const std::exception& e) {
@@ -577,8 +574,8 @@ public:
       
       current_statement__ = 5;
       prior_mu_not = in__.vector(K);
-      Eigen::Matrix<double, -1, 1> mu_diff;
-      mu_diff = Eigen::Matrix<double, -1, 1>(C);
+      Eigen::Matrix<double, 1, -1> mu_diff;
+      mu_diff = Eigen::Matrix<double, 1, -1>(C);
       stan::math::fill(mu_diff, std::numeric_limits<double>::quiet_NaN());
       
       Eigen::Matrix<double, -1, 1> sigma_mu_not;
@@ -602,14 +599,14 @@ public:
             primitive_value(emit_generated_quantities__)))) {
         return ;
       } 
-      current_statement__ = 9;
-      assign(mu_diff, nil_index_list(), multiply(c, mu),
+      current_statement__ = 6;
+      assign(mu_diff, nil_index_list(), multiply(transpose(mu), c),
         "assigning variable mu_diff");
-      current_statement__ = 10;
+      current_statement__ = 7;
       assign(sigma_mu_not, nil_index_list(), multiply((2 * sigma), n_k),
         "assigning variable sigma_mu_not");
-      current_statement__ = 11;
-      assign(sigma_lfc, nil_index_list(), multiply(sigma, n_c),
+      current_statement__ = 8;
+      assign(sigma_lfc, nil_index_list(), multiply(sigma, transpose(n_c)),
         "assigning variable sigma_lfc");
       if (emit_transformed_parameters__) {
         for (int sym1__ = 1; sym1__ <= C; ++sym1__) {
