@@ -1,5 +1,6 @@
 utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
-#' Sample the Posterior of the data and decision model
+#' Sample the Posterior of the data and decision model and generate point
+#' estimates
 #'
 #' @description Function to sample the posterior of the Bayesian data and
 #'   decision model. It first produces the needed inputs for Stan's [sampling()]
@@ -19,11 +20,12 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @param data A `tibble` or `data.frame` with alpha,beta priors annotated
 #' @param id_col_name A character of the id column
 #' @param design_matrix A design matrix for the data (see example)
-#' @param contrast_matrix A contrast matrix of the decisions to test. Rows
+#' @param contrast_matrix A contrast matrix of the decisions to test. Columns
 #'   should sum to `0` and only mean comparisons are allowed. That is, the
-#'   positive and negative values in each row has to sum to `abs(1)`. E.g., a
-#'   row can be `[`0.5, 0.5, -1`]` but not `[`1, 1, -1`]` or `[`0.5, 0.5, -2`]`.
-#'   That is, `sum(sign(x)*x)=2` where `x` is a row in the contrast matrix.
+#'   absolute value of the positive and negative values in each column has to
+#'   sum to `2`. E.g., a column can be `[`0.5, 0.5, -1`]`\eqn{^T} but not `[`1,
+#'   1, -1`]` or `[`0.5, 0.5, -2`]`. That is, `sum(abs(x))=2` where `x` is a
+#'   column in the contrast matrix.
 #' @param uncertainty_matrix A matrix of observation specific uncertainties
 #' @param stan_model Which Bayesian model to use. Defaults to [empirical_bayes]
 #'   but also allows [weakly_informative], or an user supplied function see [].
@@ -36,14 +38,14 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @return A [tibble()] or [data.frame()] annotated  with statistics of the
 #'   posterior and p(error). `err` is the probability of error, i.e., the two
 #'   tail-density supporting the null-hypothesis, `lfc` is the estimated
-#'   \eqn{\log_2}-fold change, `sigma` is the common #' variance, and `lp` is
-#'   the log-posterior. Columns without suffix shows the mean estimate from the
+#'   \eqn{\log_2}-fold change, `sigma` is the common variance, and `lp` is the
+#'   log-posterior. Columns without suffix shows the mean estimate from the
 #'   posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0,
 #'   and 97.5, percentiles, respectively. The suffixes `_eff` and `_rhat` are
-#'   the diagnostic variables returned by `rstan` (please see the Stan manual
-#'   for more details). In general, a larger `_eff` indicates a better sampling
-#'   efficiency, and `_rhat` compares the mixing within chains against between
-#'   the chains and should be smaller than 1.05.
+#'   the diagnostic variables returned by `Stan`. In general, a larger `_eff`
+#'   indicates effective sample size and `_rhat` indicates the mixing
+#'   within chains and between the chains and should be smaller than 1.05
+#'   (please see the Stan manual for more details).
 #' @export
 #'
 #' @importFrom rlang :=
