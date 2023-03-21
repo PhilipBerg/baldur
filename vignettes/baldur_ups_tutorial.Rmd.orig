@@ -39,11 +39,10 @@ ups <- ups %>%
 # This can easily be achieved with the following:
 ups_contrast <- matrix(
   c(
-    1,   -1,   0,
-    1,    0,  -1,
-    0,    1,  -1,
-    0.5, -1, 0.5
-  ), ncol = ncol(ups_design),
+     1,  1,   0, 0.5,
+    -1,  0,   1,  -1,
+     0, -1,  -1, 0.5
+  ), nrow = ncol(ups_design),
   byrow = TRUE
 )
 ```

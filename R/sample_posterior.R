@@ -100,7 +100,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'    # Add hyper-priors for sigma
 #'    estimate_gamma_hyperparameters(yeast_norm)
 #' # Setup contrast matrix
-#' contrast <- matrix(c(-1, 1), ncol = 2)
+#' contrast <- matrix(c(-1, 1)
 #' \donttest{
 #' yeast_norm %>%
 #'   head() %>% # Just running a few for the example
@@ -259,7 +259,7 @@ generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncer
     y = as.numeric(row),
     c = comparison,
     alpha = alpha,
-    beta_gamma = beta,
+    beta = beta,
     mu_not = ybar,
     u = u
   )

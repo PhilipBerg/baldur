@@ -44,7 +44,7 @@ utils::globalVariables(c(".", "lfc", "err"))
 #'    # Add hyper-priors for sigma
 #'    estimate_gamma_hyperparameters(yeast_norm)
 #' # Setup contrast matrix
-#' contrast <- matrix(c(-1, 1), ncol = 2)
+#' contrast <- matrix(c(-1, 1)
 #' \donttest{
 #' results <- yeast_norm %>%
 #'   head() %>% # Just run a few for the example

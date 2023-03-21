@@ -102,10 +102,7 @@ fit_lgmr <- function(data, model = lgmr_model, iter = 6000, warmup = 1500, chain
 print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary", "theta", "all"), digits = 3, ...) {
 
   mu <- coef(x, TRUE, "coefficients")
-  pars <- match.arg(pars, c("coefficients", "auxiliary", "theta", "all"), several.ok = TRUE)
-  if ("all" %in% pars) {
-    pars <- c("auxiliary", "coefficients", "theta")
-  }
+  pars <- match_pars(pars)
   x <- coef(x, simplify, pars)
 
   cat("\nLGMR Model\n")
@@ -159,11 +156,7 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
 #' @export
 coef.lgmr <- function(object, simplify = FALSE, pars = c("coefficients", "auxiliary", "theta", "all"), ...) {
 
-  if ("all" %in% pars) {
-    pars <- c("auxiliary", "coefficients", "theta")
-  } else {
-    pars <- match.arg(pars, several.ok = TRUE)
-  }
+  pars <- match_pars(pars)
   if (simplify & !object$simplify) {
     f <- function(x) x[, "mean"]
   } else {
@@ -191,4 +184,12 @@ mu_fun <- function(theta, reg_pars, y_bar, m, s){
   y_bar_star <- (y_bar - m)/s
   exp(reg_pars['I'] - reg_pars['S']*y_bar_star) +
     0.001 * exp(theta * (reg_pars["I_L"] - reg_pars["S_L"] * y_bar_star))
+}
+
+match_pars <- function(pars) {
+  if ("all" %in% pars) {
+    c("auxiliary", "coefficients", "theta")
+  } else {
+    match.arg(pars, several.ok = TRUE)
+  }
 }

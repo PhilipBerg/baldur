@@ -24,7 +24,7 @@
 #' For the intercepts, we assume a standard normal prior for the common intercept.
 #' Then, we use a skew-normal to model the latent intercept.
 #' The reason for this is two-fold, one, \eqn{\kappa} will decrease the value of the latent term and, two, to push the latent trend upwards.
-#' The latter reason is so that the latent intercept is larger than the common and so that the priors prioratise a shift in intercept over a increase in slope.
+#' The latter reason is so that the latent intercept is larger than the common and so that the priors prioritize a shift in intercept over a increase in slope.
 #'
 #' @export
 #' @name lgmr_model
