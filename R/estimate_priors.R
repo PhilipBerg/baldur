@@ -70,6 +70,7 @@ estimate_gamma_hyperparameters.glm <- function(reg, data, ...){
 #' @rdname estimate_gamma_hyperparameters
 #' @export
 estimate_gamma_hyperparameters.lgmr <- function(reg, data, id_col, ...){
+  check_id_col(id_col, colnames(data))
 
   mu_inputs <- mu_std_inputs(data)
   pars <- coef(reg, simplify = TRUE, pars = c("all"))

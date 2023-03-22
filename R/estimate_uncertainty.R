@@ -29,13 +29,13 @@
 #'   # Remove missing data
 #'   tidyr::drop_na() %>%
 #'   # Normalize data
-#'   psrn('id_col') %>%
+#'   psrn("identifier") %>%
 #'   # Add mean-variance trends
 #'   calculate_mean_sd_trends(design)
 #' # Fit the gamma regression
 #' gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 #' # Estimate each data point's uncertainty
-#' estimate_uncertainty(gam, yeast_norm, 'id_col', design)
+#' estimate_uncertainty(gam, yeast_norm, 'identifier', design)
 
 estimate_uncertainty <- function(reg, data, id_col, design_matrix){
   UseMethod("estimate_uncertainty")
@@ -45,6 +45,7 @@ estimate_uncertainty <- function(reg, data, id_col, design_matrix){
 #'
 #' @export
 estimate_uncertainty.glm <- function(reg, data, id_col, design_matrix){
+  check_id_col(id_col, colnames(data))
   pred <- ~ stats::predict.glm(
     reg,
     newdata = data.frame(mean = .),
@@ -68,6 +69,7 @@ estimate_uncertainty.glm <- function(reg, data, id_col, design_matrix){
 #'
 #' @export
 estimate_uncertainty.lgmr <- function(reg, data, id_col, design_matrix){
+  check_id_col(id_col, colnames(data))
   pars <- coef.lgmr(reg, simplify = TRUE, pars = c('coef', 'theta'))
   condi_regex <- colnames(design_matrix) %>%
     paste0(collapse = '|')

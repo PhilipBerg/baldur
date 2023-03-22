@@ -18,7 +18,8 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @details Model description here
 #'
 #' @param data A `tibble` or `data.frame` with alpha,beta priors annotated
-#' @param id_col_name A character of the id column
+#' @param id_col A character for the name of the column containing the
+#'     name of the features in data (e.g., peptides, proteins, etc.)
 #' @param design_matrix A design matrix for the data (see example)
 #' @param contrast_matrix A contrast matrix of the decisions to test. Columns
 #'   should sum to `0` and only mean comparisons are allowed. That is, the
@@ -118,8 +119,9 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'                  # this will greatly reduce the speed of running baldur
 #'   )
 #' }
-infer_data_and_decision_model <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
+infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
   check_contrast_and_design(contrast_matrix, design_matrix)
+  check_id_col(id_col, colnames(data))
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
@@ -127,7 +129,7 @@ infer_data_and_decision_model <- function(data, id_col_name, design_matrix, cont
   C <- ncol(contrast_matrix)
   sigma_bar <- sd(data$mean)
   ori_data <- data
-  pmap_columns <- rlang::expr(list(!!rlang::sym(id_col_name), alpha, beta))
+  pmap_columns <- rlang::expr(list(!!rlang::sym(id_col), alpha, beta))
   if (clusters > nrow(data)) {
     warning("You have more workers than rows in your data, setting workers to the number of rows in the data.")
     clusters <- nrow(data)
@@ -154,7 +156,7 @@ infer_data_and_decision_model <- function(data, id_col_name, design_matrix, cont
     multidplyr::cluster_copy(cl,
                              c(
                                "bayesian_testing",
-                               "id_col_name",
+                               "id_col",
                                "design_matrix",
                                "uncertainty_matrix",
                                "generate_stan_data_input",
@@ -189,7 +191,7 @@ infer_data_and_decision_model <- function(data, id_col_name, design_matrix, cont
                                                      alpha, beta),
                                                 ~ generate_stan_data_input(
                                                   ..1,
-                                                  id_col_name,
+                                                  id_col,
                                                   design_matrix,
                                                   ori_data,
                                                   uncertainty_matrix,
@@ -213,7 +215,7 @@ infer_data_and_decision_model <- function(data, id_col_name, design_matrix, cont
                                                           condi,
                                                           contrast_matrix,
                                                           h_not,
-                                                          .id = id_col_name
+                                                          .id = id_col
                                           )
     ) %>%
       dplyr::bind_rows()
@@ -223,10 +225,10 @@ infer_data_and_decision_model <- function(data, id_col_name, design_matrix, cont
   } else {
     data %>%
       dplyr::transmute(
-        !!id_col_name := .data[[id_col_name]],
+        !!id_col := .data[[id_col]],
         tmp = purrr::pmap(!!pmap_columns,
                           bayesian_testing,
-                          ori_data, id_col_name, design_matrix, contrast_matrix,
+                          ori_data, id_col, design_matrix, contrast_matrix,
                           stan_model, N, K, C, uncertainty_matrix, h_not,
                           rstan_inputs, sigma_bar
         )
@@ -246,8 +248,8 @@ stan_nse_wrapper <- function(data, model, ...){
   )
 }
 
-generate_stan_data_input <- function(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar){
-  row <- data[data[[id_col_name]] == id, stringr::str_detect(names(data), condi_regex)]
+generate_stan_data_input <- function(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar){
+  row <- data[data[[id_col]] == id, stringr::str_detect(names(data), condi_regex)]
   ybar <- purrr::map_dbl(purrr::set_names(condi, condi),
                          ~as.numeric(row[stringr::str_which(colnames(row), .x)]) %>%
                            mean()
@@ -313,10 +315,10 @@ stan_summary <- function(fit, dat, condi, contrast,  h_not){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args, sigma_bar){
+bayesian_testing <- function(id, alpha, beta, data, id_col, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args, sigma_bar){
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
-  dat <- generate_stan_data_input(id, id_col_name, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar)
+  dat <- generate_stan_data_input(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar)
   stan_output <- purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)
   stan_output$result %>%
     stan_summary(dat, condi, dat$c, h_not) %>%

@@ -7,7 +7,7 @@ estimates}
 \usage{
 infer_data_and_decision_model(
   data,
-  id_col_name,
+  id_col,
   design_matrix,
   contrast_matrix,
   uncertainty_matrix,
@@ -20,7 +20,8 @@ infer_data_and_decision_model(
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame} with alpha,beta priors annotated}
 
-\item{id_col_name}{A character of the id column}
+\item{id_col}{A character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
 
 \item{design_matrix}{A design matrix for the data (see example)}
 

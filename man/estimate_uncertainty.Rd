@@ -38,11 +38,11 @@ yeast_norm <- yeast \%>\%
   # Remove missing data
   tidyr::drop_na() \%>\%
   # Normalize data
-  psrn('id_col') \%>\%
+  psrn("identifier") \%>\%
   # Add mean-variance trends
   calculate_mean_sd_trends(design)
 # Fit the gamma regression
 gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 # Estimate each data point's uncertainty
-estimate_uncertainty(gam, yeast_norm, 'id_col', design)
+estimate_uncertainty(gam, yeast_norm, 'identifier', design)
 }
