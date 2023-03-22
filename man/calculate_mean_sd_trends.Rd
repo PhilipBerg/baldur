@@ -9,13 +9,15 @@ calculate_mean_sd_trends(data, design_matrix)
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame} to annotate with mean and sd}
 
-\item{design_matrix}{A design matrix for the data (see example)}
+\item{design_matrix}{A design matrix for the data (see example).}
 }
 \value{
 A \code{tibble} or \code{data.frame} with the mean and sd vectors
 }
 \description{
-Calculates the mean and sd of the rows.
+Calculates the mean and standard deviation of each row (peptide)
+and adds them as new columns. Assumes that the condition names are the
+names in the design matrix.
 }
 \examples{
 # Setup model matrix
@@ -23,7 +25,7 @@ design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 
 colnames(design) <- paste0("ng", c(50, 100))
 # Normalize data
-yeast_norm <- yeast \%>\%
+yeast \%>\%
     psrn("identifier") \%>\%
     # Get mean-variance trends
     calculate_mean_sd_trends(design)

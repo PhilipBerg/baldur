@@ -11,7 +11,7 @@ plot_lgrm_regression(model)
 plot_regression_field(model, n = 10, rng = 10)
 }
 \arguments{
-\item{model}{A LGMR model object}
+\item{model}{An LGMR model object}
 
 \item{n}{Number of interpolation points for each peptides regression}
 

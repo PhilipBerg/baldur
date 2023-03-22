@@ -9,11 +9,11 @@
 \alias{estimate_beta.lgmr}
 \title{Estimate Gamma hyperparameters for sigma}
 \usage{
-estimate_gamma_hyperparameters(reg, data)
+estimate_gamma_hyperparameters(reg, data, ...)
 
-\method{estimate_gamma_hyperparameters}{glm}(reg, data)
+\method{estimate_gamma_hyperparameters}{glm}(reg, data, ...)
 
-\method{estimate_gamma_hyperparameters}{lgmr}(reg, data)
+\method{estimate_gamma_hyperparameters}{lgmr}(reg, data, id_col, ...)
 
 estimate_beta(reg, mean, ...)
 
@@ -26,9 +26,12 @@ estimate_beta(reg, mean, ...)
 
 \item{data}{A \code{tibble} or \code{data.frame} to add gamma priors to}
 
-\item{mean}{The mean value of the peptide}
-
 \item{...}{Currently not in use}
+
+\item{id_col}{A character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
+
+\item{mean}{The mean value of the peptide}
 
 \item{alpha}{The alpha parameter of the peptide}
 
@@ -49,8 +52,8 @@ to the data (one for alpha and one for betas). Note that for \code{lgmr}
 objects, the \code{estimate_beta} function assumes that the data is ordered as
 when the model was fitted. If this is not the case, theta's will be
 incorrectly matched with peptides---resulting in wrong estimates of beta
-parameters. On the other hand, \code{estimate_gamma_hyperparameters} will (if
-needed) temporarily sort the data as when fitted and the sort it back as it
+parameters. On the other hand, \code{estimate_gamma_hyperparameters} will
+temporarily sort the data as when fitted and the sort it back as it
 was input to the function.
 }
 \examples{

@@ -39,7 +39,7 @@ utils::globalVariables(c(".", "sigma", "err"))
 #' # Fit the gamma regression
 #' gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 #' # Estimate each data point's uncertainty
-#' unc <- estimate_uncertainty(gam, yeast_norm, 'identifier', design)
+#' unc <- estimate_uncertainty(gam, yeast_norm, "identifier", design)
 #' yeast_norm <- gam %>%
 #'    # Add hyper-priors for sigma
 #'    estimate_gamma_hyperparameters(yeast_norm)

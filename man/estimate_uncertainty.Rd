@@ -6,18 +6,19 @@
 \alias{estimate_uncertainty.lgmr}
 \title{Estimate measurement uncertainty}
 \usage{
-estimate_uncertainty(reg, data, identifier, design_matrix)
+estimate_uncertainty(reg, data, id_col, design_matrix)
 
-\method{estimate_uncertainty}{glm}(reg, data, identifier, design_matrix)
+\method{estimate_uncertainty}{glm}(reg, data, id_col, design_matrix)
 
-\method{estimate_uncertainty}{lgmr}(reg, data, identifier, design_matrix)
+\method{estimate_uncertainty}{lgmr}(reg, data, id_col, design_matrix)
 }
 \arguments{
 \item{reg}{A \code{glm} gamma regression or \code{lgmr} object}
 
 \item{data}{A \code{tibble} or \code{data.frame}}
 
-\item{identifier}{Name of the peptide name/id column}
+\item{id_col}{A character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
 
 \item{design_matrix}{Cell mean design matrix for the data}
 }
@@ -37,11 +38,11 @@ yeast_norm <- yeast \%>\%
   # Remove missing data
   tidyr::drop_na() \%>\%
   # Normalize data
-  psrn('identifier') \%>\%
+  psrn('id_col') \%>\%
   # Add mean-variance trends
   calculate_mean_sd_trends(design)
 # Fit the gamma regression
 gam <- fit_gamma_regression(yeast_norm, sd ~ mean)
 # Estimate each data point's uncertainty
-unc <- estimate_uncertainty(gam, yeast_norm, 'identifier', design)
+estimate_uncertainty(gam, yeast_norm, 'id_col', design)
 }

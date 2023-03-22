@@ -45,7 +45,7 @@ utils::globalVariables(c("sd", "model"))
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log transform the data
-#' yeast_norm <- yeast %>%
+#' yeast %>%
 #'     # Remove missing data
 #'     # Note that this could be replaced with imputation
 #'     tidyr::drop_na() %>%
@@ -70,7 +70,7 @@ plot_mean_sd_trend <- function(data) {
       method.args = list(family = stats::Gamma(log)),
       fullrange = TRUE,
       se = F,
-      color = 'grey'
+      color = "grey"
     ) +
     ggplot2::theme_classic() +
     ggplot2::labs(

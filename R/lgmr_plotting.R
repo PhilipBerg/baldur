@@ -1,7 +1,23 @@
+utils::globalVariables(c("theta", "data", "x0", "x1", "y0", "y1", "dydx"))
 #' Visualization of LGMR models
 #'
 #' @name lgmr_plotting
 #' @param model An LGMR model object
+#'
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 theme_classic
+#' @importFrom ggplot2 scale_color_viridis_c
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 stat_function
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 geom_segment
+#' @importFrom dplyr mutate
+#' @importFrom rlang quo
+#' @importFrom tidyr unnest
+#' @importFrom purrr map
+#'
 #'
 #' @return A ggplot object
 #' @export
@@ -19,20 +35,20 @@ plot_lgrm_regression <- function(model) {
   lower <- ~ mu_fun(1,   reg_pars, .x, mu_inputs[1], mu_inputs[2])
 
   plt <- model$data %>%
-    mutate(
+    dplyr::mutate(
       theta = pars$theta
     ) %>%
-    ggplot(aes(mean, sd, color = theta)) +
-    geom_point(size = .1) +
-    theme_classic() +
-    scale_color_viridis_c(end = .9) +
-    theme(
+    ggplot2::ggplot(ggplot2::aes(mean, sd, color = theta)) +
+    ggplot2::geom_point(size = .1) +
+    ggplot2::theme_classic() +
+    ggplot2::scale_color_viridis_c(end = .9) +
+    ggplot2::theme(
       legend.position = c(.75, .75)
     ) +
-    stat_function(aes(color = 1),   fun = lower, linewidth = .9, n = 10000) +
-    stat_function(aes(color = .5),  fun = middl, linewidth = .9, n = 10000) +
-    stat_function(aes(color = 0),   fun = upper, linewidth = .9, n = 10000) +
-    labs(
+    ggplot2::stat_function(aes(color = 1),   fun = lower, linewidth = .9, n = 10000) +
+    ggplot2::stat_function(aes(color = .5),  fun = middl, linewidth = .9, n = 10000) +
+    ggplot2::stat_function(aes(color = 0),   fun = upper, linewidth = .9, n = 10000) +
+    ggplot2::labs(
       x = expression(bold(bar(y))),
       y = expression(bold(s))
     )
@@ -56,29 +72,29 @@ plot_regression_field <- function(model, n = 10, rng = 10) {
   reg <- pars$coef
   theta <- pars$theta
 
-  deriv <- quo(
+  deriv <- rlang::quo(
     -reg['S_L']*.001*theta*exp(theta*(reg['I_L']-reg['S_L']*(mean - mu_inputs[1])/mu_inputs[2])) +
       -reg['S']*exp(reg['I']-reg['S']*(mean - mu_inputs[1])/mu_inputs[2])
   )
   model$data %>%
-    mutate(
-      x0 = map(mean, ~seq(from = .x - rng, to = .x + rng, length.out = n)[1:(n - 1)]),
-      x1 = map(mean, ~seq(from = .x - rng, to = .x + rng, length.out = n)[2:n])
+    dplyr::mutate(
+      x0 = purrr::map(mean, ~seq(from = .x - rng, to = .x + rng, length.out = n)[1:(n - 1)]),
+      x1 = purrr::map(mean, ~seq(from = .x - rng, to = .x + rng, length.out = n)[2:n])
     ) %>%
-    unnest(c(x0, x1)) %>%
-    mutate(
-      y0 = mu_fun(theta, reg, x0, m, s),
-      y1 = mu_fun(theta, reg, x1, m, s),
+    tidyr::unnest(c(x0, x1)) %>%
+    dplyr::mutate(
+      y0 = mu_fun(theta, reg, x0, mu_inputs[1], mu_inputs[2]),
+      y1 = mu_fun(theta, reg, x1, mu_inputs[1], mu_inputs[2]),
       dydx =  !!deriv
     ) %>%
-    ggplot(aes(x0, y0, xend = x1, yend = y1, color = dydx)) +
-    geom_segment() +
-    theme_classic() +
-    labs(
+    ggplot2::ggplot(ggplot2::aes(x0, y0, xend = x1, yend = y1, color = dydx)) +
+    ggplot2::geom_segment() +
+    ggplot2::theme_classic() +
+    ggplot2::labs(
       x = expression(bold(bar(y))),
       y = expression(bold(s))
     ) +
-    scale_color_viridis_c('Slope',
+    ggplot2::scale_color_viridis_c('Slope',
                           labels = ~ paste(ifelse(sign(.x) == -1, "\u2212", ""),
                                            sprintf("%2.2f", abs(.x))),
                           option = 'H', direction = -1

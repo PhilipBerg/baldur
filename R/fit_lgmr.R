@@ -13,6 +13,8 @@ utils::globalVariables(c("reg", "coef"))
 #'@param simplify Should only the mean estimates of the posterior be returned?
 #'@param ... Additional arguments to `rstan`'s [sampling][rstan::sampling()].
 #'  Does nothing for `print` or `coef` only for `fit_lgmr`.
+#' @param id_col A character for the name of the column containing the
+#'     name of the features in data (e.g., peptides, proteins, etc.)
 #'
 #'@return A fitted `lgmr` model.
 #'@export
@@ -34,12 +36,12 @@ utils::globalVariables(c("reg", "coef"))
 #'     calculate_mean_sd_trends(design) %>%
 #'     # Fit the model
 #'     fit_lgmr(lgmr_model)
-#' # Print everything excep thetas
+#' # Print everything except thetas
 #' print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
 #' # Extract the mean of the model parameters posterior
 #' yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
 #' }
-fit_lgmr <- function(data, model = lgmr_model, iter = 6000, warmup = 1500, chains = 5, cores = 1, return_stanfit = FALSE, simplify = FALSE, ...) {
+fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 1500, chains = 5, cores = 1, return_stanfit = FALSE, simplify = FALSE, ...) {
   if (!"sd" %in% names(data)) {
     stop("sd is not a column in the data\n Did you forget to calculate the Mean-Variance trend?")
   } else if(!"mean" %in% names(data)) {
@@ -72,10 +74,12 @@ fit_lgmr <- function(data, model = lgmr_model, iter = 6000, warmup = 1500, chain
   model_summary <- rstan::summary(samp) %>%
     use_series(summary)
 
-  fitted_model            <- list()
-  fitted_model$coef       <- model_summary[rownames(model_summary) %in% c("I", "S", "I_L", "S_L"),]
-  fitted_model$aux        <- model_summary[rownames(model_summary) %in% c("alpha", "nrmse"),]
-  fitted_model$theta      <- model_summary[stringr::str_detect(rownames(model_summary), "theta"),]
+  fitted_model                 <- list()
+  fitted_model$coef            <- model_summary[rownames(model_summary) %in% c("I", "S", "I_L", "S_L"),]
+  fitted_model$aux             <- model_summary[rownames(model_summary) %in% c("alpha", "nrmse"),]
+  fitted_model$theta           <- model_summary[stringr::str_detect(rownames(model_summary), "theta"),]
+  rownames(fitted_model$theta) <- paste0('theta_', data[[id_col]])
+
   if (simplify) {
     fitted_model <- purrr::map(fitted_model, ~ .x[,"mean"])
   }

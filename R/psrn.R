@@ -45,7 +45,7 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @references
 #' \insertAllCited{}
 psrn <- function(data,
-                 id_col = "id",
+                 id_col,
                  log = TRUE,
                  load_info = FALSE,
                  target = NULL) {

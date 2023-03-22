@@ -7,7 +7,7 @@
 \url{https://www.nature.com/articles/npre.2010.4282.1}
 }
 \usage{
-psrn(data, id_col = "id", log = TRUE, load_info = FALSE, target = NULL)
+psrn(data, id_col, log = TRUE, load_info = FALSE, target = NULL)
 }
 \arguments{
 \item{data}{data.frame}

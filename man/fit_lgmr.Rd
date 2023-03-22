@@ -8,6 +8,7 @@
 \usage{
 fit_lgmr(
   data,
+  id_col,
   model = lgmr_model,
   iter = 6000,
   warmup = 1500,
@@ -37,8 +38,11 @@ fit_lgmr(
 \item{data}{A \code{data.frame} with mean-variance trends to use in the fitting.
 The columns need to have the following hard-coded names: \code{mean} and \code{sd}.}
 
-\item{model}{Defaults to \link{lgmr_model}, can also be an user supplied
-stan_model}
+\item{id_col}{A character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
+
+\item{model}{Defaults to \link{lgmr_model} (see it for details on the model), can
+also be an user supplied stan_model}
 
 \item{iter}{Total number of samples to draw}
 
@@ -48,8 +52,7 @@ stan_model}
 
 \item{cores}{Number of cores to use per chain}
 
-\item{return_stanfit}{Should the \code{stanfit} object be returned with the
-model?}
+\item{return_stanfit}{Should the \code{stanfit} object be returned with the model?}
 
 \item{simplify}{Should only the mean estimates of the posterior be returned?}
 
@@ -84,7 +87,7 @@ yeast_lgmr <- yeast \%>\%
     calculate_mean_sd_trends(design) \%>\%
     # Fit the model
     fit_lgmr(lgmr_model)
-# Print everything excep thetas
+# Print everything except thetas
 print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
 # Extract the mean of the model parameters posterior
 yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)

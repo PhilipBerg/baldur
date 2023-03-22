@@ -2,11 +2,8 @@
 % Please edit documentation in R/empirical_bayes.R
 \name{empirical_bayes}
 \alias{empirical_bayes}
-\title{Doc for Stan model 1
-... // however many lines of doc
-...}
+\title{Baldur's empirical Bayes Prior For The Mean In Conditions}
 \description{
-Doc for Stan model 1
-... // however many lines of doc
-...
+Here we assume that the sample mean of each condition is an estimator for the center of the mean prior.
+In addition, it assumes that the confidence in the prior is proportional to the variance of the peptide.
 }

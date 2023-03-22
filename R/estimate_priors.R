@@ -6,8 +6,8 @@
 #'   objects, the `estimate_beta` function assumes that the data is ordered as
 #'   when the model was fitted. If this is not the case, theta's will be
 #'   incorrectly matched with peptides---resulting in wrong estimates of beta
-#'   parameters. On the other hand, `estimate_gamma_hyperparameters` will (if
-#'   needed) temporarily sort the data as when fitted and the sort it back as it
+#'   parameters. On the other hand, `estimate_gamma_hyperparameters` will
+#'   temporarily sort the data as when fitted and the sort it back as it
 #'   was input to the function.
 #' @param reg A `glm` Gamma regression or a `lgmr` object
 #' @param data A `tibble` or `data.frame` to add gamma priors to
@@ -15,6 +15,8 @@
 #' @param m The mean of the means
 #' @param s The sd of the means
 #' @param alpha The alpha parameter of the peptide
+#' @param id_col A character for the name of the column containing the
+#'     name of the features in data (e.g., peptides, proteins, etc.)
 #' @param ... Currently not in use
 #'
 #' @return `estimate_gamma_hyperparameters` returns a `tibble` or `data.frame`
@@ -48,13 +50,13 @@
 #' # Can also explicitly estimate the beta parameters
 #' # Note this is order sensitive.
 #' estimate_beta(gam_reg, yeast_norm$mean, 1/summary(gam_reg)$dispersion)
-estimate_gamma_hyperparameters <- function(reg, data){
+estimate_gamma_hyperparameters <- function(reg, data, ...){
   UseMethod("estimate_gamma_hyperparameters")
 }
 
 #' @rdname estimate_gamma_hyperparameters
 #' @export
-estimate_gamma_hyperparameters.glm <- function(reg, data){
+estimate_gamma_hyperparameters.glm <- function(reg, data, ...){
   if (!"mean" %in% names(data)) {
     stop("Mean column missnig\nDid you forget to calculate the M-V trend?\n Try running calculate_mean_sd_trends")
   }
@@ -67,21 +69,18 @@ estimate_gamma_hyperparameters.glm <- function(reg, data){
 
 #' @rdname estimate_gamma_hyperparameters
 #' @export
-estimate_gamma_hyperparameters.lgmr <- function(reg, data){
+estimate_gamma_hyperparameters.lgmr <- function(reg, data, id_col, ...){
 
   mu_inputs <- mu_std_inputs(data)
   pars <- coef(reg, simplify = TRUE, pars = c("all"))
 
-  data$tmp <- as.integer(rownames(data))
-  data <- dplyr::right_join(reg$data, data, by = join_by(mean, sd))
+  theta <- sort_theta(pars$theta, data[[id_col]])
 
   data %>%
     dplyr::mutate(
       alpha = pars$aux["alpha"],
-      beta  = alpha / mu_fun(pars$theta, pars$coef, mean, mu_inputs[1], mu_inputs[2])
-    ) %>%
-    dplyr::arrange(tmp) %>%
-    dplyr::select(-tmp)
+      beta  = alpha / mu_fun(theta, pars$coef, mean, mu_inputs[1], mu_inputs[2])
+    )
 }
 
 #' @rdname estimate_gamma_hyperparameters

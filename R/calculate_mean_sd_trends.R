@@ -1,8 +1,10 @@
 #' Calculate the Mean-Variance trend
 #'
-#' @description Calculates the mean and sd of the rows.
+#' @description Calculates the mean and standard deviation of each row (peptide)
+#'   and adds them as new columns. Assumes that the condition names are the
+#'   names in the design matrix.
 #' @param data A `tibble` or `data.frame` to annotate with mean and sd
-#' @param design_matrix A design matrix for the data (see example)
+#' @param design_matrix A design matrix for the data (see example).
 #'
 #' @return A `tibble` or `data.frame` with the mean and sd vectors
 #' @export
@@ -17,7 +19,7 @@
 #'
 #' colnames(design) <- paste0("ng", c(50, 100))
 #' # Normalize data
-#' yeast_norm <- yeast %>%
+#' yeast %>%
 #'     psrn("identifier") %>%
 #'     # Get mean-variance trends
 #'     calculate_mean_sd_trends(design)
