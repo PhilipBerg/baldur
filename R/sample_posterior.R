@@ -323,9 +323,9 @@ bayesian_testing <- function(id, alpha, beta, data, id_col_name, design_matrix, 
 }
 
 contrast_to_comps <- function(contrast, conditions){
-  positives <- apply(contrast, 1, \(x) which(x>0)) %>%
+  positives <- apply(contrast, 2, \(x) which(x>0)) %>%
     purrr::map_chr(~ stringr::str_flatten(conditions[.x], ' and '))
-  negatives <- apply(contrast, 1, \(x) which(x<0)) %>%
+  negatives <- apply(contrast, 2, \(x) which(x<0)) %>%
     purrr::map_chr(~ stringr::str_flatten(conditions[.x], ' and '))
   stringr::str_c(positives, negatives, sep = ' vs ')
 }
@@ -340,11 +340,15 @@ check_contrast_and_design <- function(contrast_matrix, design_matrix) {
     error <- TRUE
     cs <- which(cs != 0)
     cs <- cat('Columns ', cs, 'do not sum to 0.\n')
+  } else {
+    cs <- ''
   }
   if (any(acs != 2)) {
     error <- TRUE
     acs <- which(acs != 2)
-    acs <- cat('Columns ', acs, 'absolute value do not sum to 2.')
+    acs <- cat('Columns ', acs, 'absolute value do not sum to 2.\n')
+  } else {
+    acs <- ''
   }
   if (cr != dn) {
     error <- TRUE
@@ -352,6 +356,8 @@ check_contrast_and_design <- function(contrast_matrix, design_matrix) {
       'Columns in design matrix (', dn,
       ') does not match the rows in contrast matrix (', cr, ')\n',
       'They need to match.')
+  } else {
+    cd <- ''
   }
   if (error) {
     stop(
