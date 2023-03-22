@@ -50,6 +50,7 @@ psrn <- function(data,
                  load_info = FALSE,
                  target = NULL) {
   check_id_col(id_col, colnames(data))
+
   target <- dplyr::enquo(target)
   target <- check_target(target)
   data_filtered <- data %>%

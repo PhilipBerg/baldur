@@ -46,6 +46,7 @@ estimate_uncertainty <- function(reg, data, id_col, design_matrix){
 #' @export
 estimate_uncertainty.glm <- function(reg, data, id_col, design_matrix){
   check_id_col(id_col, colnames(data))
+
   pred <- ~ stats::predict.glm(
     reg,
     newdata = data.frame(mean = .),
@@ -70,6 +71,7 @@ estimate_uncertainty.glm <- function(reg, data, id_col, design_matrix){
 #' @export
 estimate_uncertainty.lgmr <- function(reg, data, id_col, design_matrix){
   check_id_col(id_col, colnames(data))
+
   pars <- coef.lgmr(reg, simplify = TRUE, pars = c('coef', 'theta'))
   condi_regex <- colnames(design_matrix) %>%
     paste0(collapse = '|')
