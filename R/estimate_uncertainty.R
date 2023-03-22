@@ -71,8 +71,8 @@ estimate_uncertainty.lgmr <- function(reg, data, identifier, design_matrix){
   condi_regex <- colnames(design_matrix) %>%
     paste0(collapse = '|')
 
-  ori_order <- data$mean
-  data <- orderer(data, reg$data$mean)
+  data$tmp <- as.integer(rownames(data))
+  data <- dplyr::right_join(reg$data, data, by = join_by(mean, sd))
 
   mu_inputs <- mu_std_inputs(data)
 
@@ -82,7 +82,8 @@ estimate_uncertainty.lgmr <- function(reg, data, identifier, design_matrix){
                     ~ mu_fun(pars$theta, pars$coef, ., mu_inputs[1], mu_inputs[2])
       )
     ) %>%
-    orderer(ori_order) %>%
+    dplyr::arrange(tmp) %>%
+    dplyr::select(-tmp) %>%
     dplyr::select(dplyr::matches(condi_regex)) %>%
     as.matrix() %>%
     magrittr::set_rownames(data[[identifier]])

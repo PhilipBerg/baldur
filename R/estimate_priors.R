@@ -73,7 +73,7 @@ estimate_gamma_hyperparameters.lgmr <- function(reg, data){
   pars <- coef(reg, simplify = TRUE, pars = c("all"))
 
   data$tmp <- as.integer(rownames(data))
-  data <- dplyr::right_join(reg$data, data)
+  data <- dplyr::right_join(reg$data, data, by = join_by(mean, sd))
 
   data %>%
     dplyr::mutate(
