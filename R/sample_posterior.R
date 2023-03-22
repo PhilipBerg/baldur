@@ -116,6 +116,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   )
 #' }
 infer_data_and_decision_model <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
+  check_contrast(contrast_matrix)
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
@@ -327,4 +328,24 @@ contrast_to_comps <- function(contrast, conditions){
   negatives <- apply(contrast, 1, \(x) which(x<0)) %>%
     purrr::map_chr(~ stringr::str_flatten(conditions[.x], ' and '))
   stringr::str_c(positives, negatives, sep = ' vs ')
+}
+
+check_contrast <- function(contrast_matrix) {
+  cs  <- colSums(contrast_matrix)
+  acs <- colSums(abs(contrast_matrix))
+  if (any(cs != 0)) {
+    error <- TRUE
+    cs <- which(cs != 0)
+    cs <- cat('Columns ', cs, 'do not sum to 0.\n')
+  }
+  if (any(acs != 2)) {
+    error <- TRUE
+    acs <- which(acs != 2)
+    acs <- cat('Columns ', acs, 'absolute value do not sum to 2.')
+  }
+  if (error) {
+    stop(
+      cat(cs, acs)
+    )
+  }
 }

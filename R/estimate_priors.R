@@ -72,15 +72,16 @@ estimate_gamma_hyperparameters.lgmr <- function(reg, data){
   mu_inputs <- mu_std_inputs(data)
   pars <- coef(reg, simplify = TRUE, pars = c("all"))
 
-  ori_order <- data$mean
-  data <- orderer(data, reg$data$mean)
+  data$tmp <- as.integer(rownames(data))
+  data <- dplyr::right_join(reg$data, data)
 
   data %>%
     dplyr::mutate(
       alpha = pars$aux["alpha"],
       beta  = alpha / mu_fun(pars$theta, pars$coef, mean, mu_inputs[1], mu_inputs[2])
     ) %>%
-    orderer(ori_order)
+    dplyr::arrange(tmp) %>%
+    dplyr::select(-tmp)
 }
 
 #' @rdname estimate_gamma_hyperparameters
@@ -104,14 +105,6 @@ estimate_beta.glm <- function(reg, mean, alpha, ...){
 estimate_beta.lgmr <- function(reg, mean, m, s, ...){
   pars <- coef(reg, simplify = TRUE, pars = c("all"))
   pars$aux["alpha"] / mu_fun(pars$theta, pars$coef, mean, m, s)
-}
-
-orderer <- function(data, order) {
-  check_order <- any(data$mean != order)
-  if (check_order) {
-    data <- data[match(order, data$mean),]
-  }
-  return(data)
 }
 
 mu_std_inputs <- function(data) {

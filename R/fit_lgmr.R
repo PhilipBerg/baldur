@@ -1,23 +1,22 @@
 utils::globalVariables(c("reg", "coef"))
-#' Fit Latent Gamma Mixture Regression
+#'Fit Latent Gamma Mixture Regression
 #'
-#' @param data A `data.frame` with mean-variance trends to use in the fitting.
+#'@param data A `data.frame` with mean-variance trends to use in the fitting.
 #'  The columns need to have the following hard-coded names: `mean` and `sd`.
-#' @param model Defaults to [lgmr_model], can also be an user supplied
-#'   stan_model
-#' @param iter Total number of samples to draw
-#' @param warmup Number of warm-up samples to draw
-#' @param chains Number of chains to run
-#' @param cores Number of cores to use per chain
-#' @param return_stanfit Should the `stanfit` object be returned with the
-#'   model?
-#' @param simplify Should only the mean estimates of the posterior be returned?
-#' @param ... Additional arguments to `rstan`'s [sampling][rstan::sampling()].
-#' Does nothing for `print` or `coef` only for `fit_lgmr`.
+#'@param model Defaults to [lgmr_model] (see it for details on the model), can
+#'  also be an user supplied stan_model
+#'@param iter Total number of samples to draw
+#'@param warmup Number of warm-up samples to draw
+#'@param chains Number of chains to run
+#'@param cores Number of cores to use per chain
+#'@param return_stanfit Should the `stanfit` object be returned with the model?
+#'@param simplify Should only the mean estimates of the posterior be returned?
+#'@param ... Additional arguments to `rstan`'s [sampling][rstan::sampling()].
+#'  Does nothing for `print` or `coef` only for `fit_lgmr`.
 #'
-#' @return A fitted `lgmr` model.
-#' @export
-#' @name fit_lgmr
+#'@return A fitted `lgmr` model.
+#'@export
+#'@name fit_lgmr
 #'
 #' @examples
 #' # Define design matrix
