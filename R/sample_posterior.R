@@ -116,12 +116,12 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   )
 #' }
 infer_data_and_decision_model <- function(data, id_col_name, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
-  check_contrast(contrast_matrix)
+  check_contrast_and_design(contrast_matrix, design_matrix)
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
-  C <- nrow(contrast_matrix)
+  C <- ncol(contrast_matrix)
   sigma_bar <- sd(data$mean)
   ori_data <- data
   pmap_columns <- rlang::expr(list(!!rlang::sym(id_col_name), alpha, beta))
@@ -274,7 +274,7 @@ estimate_error <- function(posterior, h_not) {
 }
 
 stan_summary <- function(fit, dat, condi, contrast,  h_not){
-  lfc_pars <- paste0('y_diff[', seq_len(nrow(contrast)), ']')
+  lfc_pars <- paste0('y_diff[', seq_len(ncol(contrast)), ']')
   mu_pars  <- paste0("mu[", seq_along(condi), "]")
   err <- rstan::extract(fit, pars = lfc_pars) %>%
     purrr::map_dbl(estimate_error, h_not)
@@ -330,9 +330,11 @@ contrast_to_comps <- function(contrast, conditions){
   stringr::str_c(positives, negatives, sep = ' vs ')
 }
 
-check_contrast <- function(contrast_matrix) {
+check_contrast_and_design <- function(contrast_matrix, design_matrix) {
   cs  <- colSums(contrast_matrix)
   acs <- colSums(abs(contrast_matrix))
+  cr <- nrow(contrast_matrix)
+  dn <- ncol(design_matrix)
   if (any(cs != 0)) {
     error <- TRUE
     cs <- which(cs != 0)
@@ -343,9 +345,16 @@ check_contrast <- function(contrast_matrix) {
     acs <- which(acs != 2)
     acs <- cat('Columns ', acs, 'absolute value do not sum to 2.')
   }
+  if (cr != dn) {
+    error <- TRUE
+    cd <- cat(
+      'Columns in design matrix (', dn,
+      ') does not match the rows in contrast matrix (', cr, ')\n',
+      'They need to match.')
+  }
   if (error) {
     stop(
-      cat(cs, acs)
+      cat(cs, acs, cd)
     )
   }
 }
