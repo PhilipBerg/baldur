@@ -38,7 +38,7 @@ yeast_norm <- yeast \%>\%
   # Remove missing data
   tidyr::drop_na() \%>\%
   # Normalize data
-  psrn('id_col') \%>\%
+  psrn("identifier") \%>\%
   # Add mean-variance trends
   calculate_mean_sd_trends(design)
 # Fit the gamma regression

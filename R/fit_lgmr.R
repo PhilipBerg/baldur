@@ -46,7 +46,10 @@ fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 150
     stop("sd is not a column in the data\n Did you forget to calculate the Mean-Variance trend?")
   } else if(!"mean" %in% names(data)) {
     stop("mean is not a column in the data\n Did you forget to calculate the Mean-Variance trend?")
+  } else if (missing(id_col)) {
+    stop('id_col is a required input.')
   }
+  stopifnot(is.character(id_col))
 
   stan_args <- list(
     control = list(

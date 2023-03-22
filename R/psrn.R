@@ -49,6 +49,7 @@ psrn <- function(data,
                  log = TRUE,
                  load_info = FALSE,
                  target = NULL) {
+  check_id_col(id_col)
   target <- dplyr::enquo(target)
   target <- check_target(target)
   data_filtered <- data %>%
@@ -97,4 +98,11 @@ calc_loading_size <- function(data, targets) {
     dplyr::select(!!targets) %>%
     colSums() %>%
     tibble::enframe(name = "sample", value = "load_size")
+}
+
+check_id_col <- function(id_col) {
+  stopifnot(is.character(id_col))
+  if (!id_col %in% names(data)) {
+    stop(cat(id_col, '(id_col) is not a column in the dataset.'))
+  }
 }

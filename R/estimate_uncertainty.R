@@ -29,7 +29,7 @@
 #'   # Remove missing data
 #'   tidyr::drop_na() %>%
 #'   # Normalize data
-#'   psrn('id_col') %>%
+#'   psrn("identifier") %>%
 #'   # Add mean-variance trends
 #'   calculate_mean_sd_trends(design)
 #' # Fit the gamma regression
@@ -45,6 +45,7 @@ estimate_uncertainty <- function(reg, data, id_col, design_matrix){
 #'
 #' @export
 estimate_uncertainty.glm <- function(reg, data, id_col, design_matrix){
+  check_id_col(id_col)
   pred <- ~ stats::predict.glm(
     reg,
     newdata = data.frame(mean = .),
@@ -68,6 +69,7 @@ estimate_uncertainty.glm <- function(reg, data, id_col, design_matrix){
 #'
 #' @export
 estimate_uncertainty.lgmr <- function(reg, data, id_col, design_matrix){
+  check_id_col(id_col)
   pars <- coef.lgmr(reg, simplify = TRUE, pars = c('coef', 'theta'))
   condi_regex <- colnames(design_matrix) %>%
     paste0(collapse = '|')
