@@ -120,8 +120,12 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   )
 #' }
 infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
-  check_contrast_and_design(contrast_matrix, design_matrix)
-  check_id_col(id_col, colnames(data))
+  rlang::is_missing(data)
+  rlang::is_missing(id_col)
+  rlang::is_missing(uncertainty_matrix)
+  check_contrast_and_design(contrast_matrix, design_matrix, data)
+  check_id_col(id_col, colnames(data), missing(id_col))
+
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
   N <- sum(design_matrix)
@@ -335,38 +339,49 @@ contrast_to_comps <- function(contrast, conditions){
   stringr::str_c(positives, negatives, sep = ' vs ')
 }
 
-check_contrast_and_design <- function(contrast_matrix, design_matrix) {
-  error <- FALSE
-  cs  <- colSums(contrast_matrix)
-  acs <- colSums(abs(contrast_matrix))
+check_contrast_and_design <- function(contrast_matrix, design_matrix, data) {
+  cenv <- rlang::caller_call()
+
+  check_contrast(contrast_matrix, cenv)
+  check_design(design_matrix, data, cenv)
+
   cr <- nrow(contrast_matrix)
   dn <- ncol(design_matrix)
+
+  if (cr != dn) {
+    rlang::abort(
+      c(
+        paste0(
+          'There are ', dn, ' columns in design matrix but only ', cr,
+          ' rows in contrast matrix'
+        ),
+        'They need to match.'),
+      call = cenv
+    )
+  }
+}
+
+check_contrast <- function(contrast_matrix, cenv = rlang::caller_call()) {
+  rlang::is_missing(contrast_matrix)
+
+  cs  <- colSums(contrast_matrix)
+  acs <- colSums(abs(contrast_matrix))
+
   if (any(cs != 0)) {
-    error <- TRUE
     cs <- which(cs != 0)
-    cs <- cat('Columns ', cs, 'do not sum to 0.\n')
-  } else {
-    cs <- ''
+    cs <- rlang::abort(
+      paste0('Column(s) ', cs, ' do not sum to 0.\n'),
+      call = cenv
+    )
   }
   if (any(acs != 2)) {
-    error <- TRUE
-    acs <- which(acs != 2)
-    acs <- cat('Columns ', acs, 'absolute value do not sum to 2.\n')
-  } else {
-    acs <- ''
-  }
-  if (cr != dn) {
-    error <- TRUE
-    cd <- cat(
-      'Columns in design matrix (', dn,
-      ') does not match the rows in contrast matrix (', cr, ')\n',
-      'They need to match.')
-  } else {
-    cd <- ''
-  }
-  if (error) {
-    stop(
-      cat(cs, acs, cd)
+    acsw <- which(acs != 2)
+    rlang::abort(
+      c(
+        paste0('Contrast column(s) ', acsw, "s absolute value do not sum to 2."),
+        paste0('They sum to ', acs[acsw])
+      ),
+      call = cenv
     )
   }
 }

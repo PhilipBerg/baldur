@@ -36,6 +36,9 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @importFrom tidyr pivot_longer
 #' @importFrom tibble enframe
 #' @importFrom utils globalVariables
+#' @importFrom rlang abort
+#' @importFrom rlang caller_env
+#'
 #'
 #' @examples
 #' yeast_psrn <- psrn(yeast, "identifier")
@@ -49,6 +52,7 @@ psrn <- function(data,
                  log = TRUE,
                  load_info = FALSE,
                  target = NULL) {
+
   check_id_col(id_col, colnames(data))
 
   target <- dplyr::enquo(target)
@@ -102,8 +106,21 @@ calc_loading_size <- function(data, targets) {
 }
 
 check_id_col <- function(id_col, cols) {
-  stopifnot(is.character(id_col))
+  cls <- "id check"
+  rlang::is_missing(id_col)
+  if (!is.character(id_col)) {
+    rlang::abort(
+      message = paste0('id_col needs to be a charcter not a ', class(id_col), '\n'),
+      cls,
+      call = rlang::caller_call()
+    )
+  }
   if (!id_col %in% cols) {
-    stop(cat(id_col, '(id_col) is not a column in the dataset.'))
+    rlang::abort(
+      message = c(paste("id_col is specified as:", id_col),
+                  'This is not a columns in the dataset'),
+      cls,
+      call = rlang::caller_call()
+    )
   }
 }

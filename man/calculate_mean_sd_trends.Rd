@@ -22,10 +22,10 @@ names in the design matrix.
 \examples{
 # Setup model matrix
 design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
-
 colnames(design) <- paste0("ng", c(50, 100))
-# Normalize data
+
 yeast \%>\%
+    # Normalize data
     psrn("identifier") \%>\%
     # Get mean-variance trends
     calculate_mean_sd_trends(design)
