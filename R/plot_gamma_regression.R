@@ -52,7 +52,6 @@ utils::globalVariables(c("sd", "model"))
 #'     # Normalize
 #'     psrn("identifier") %>%
 #'     plot_gamma_regression(design)
-#'
 plot_gamma_regression <- function(data, design) {
   data <- data %>%
     calculate_mean_sd_trends(design)

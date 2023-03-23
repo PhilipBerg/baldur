@@ -106,7 +106,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'    # Add hyper-priors for sigma
 #'    estimate_gamma_hyperparameters(yeast_norm)
 #' # Setup contrast matrix
-#' contrast <- matrix(c(-1, 1)
+#' contrast <- matrix(c(-1, 1), 2)
 #' \donttest{
 #' yeast_norm %>%
 #'   head() %>% # Just running a few for the example
@@ -124,7 +124,7 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
   rlang::is_missing(id_col)
   rlang::is_missing(uncertainty_matrix)
   check_contrast_and_design(contrast_matrix, design_matrix, data)
-  check_id_col(id_col, colnames(data), missing(id_col))
+  check_id_col(id_col, colnames(data))
 
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F

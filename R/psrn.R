@@ -44,6 +44,8 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' yeast_psrn <- psrn(yeast, "identifier")
 #' yeast_psrn_with_load <- psrn(yeast, "identifier", load_info = TRUE)
 #' yeast_ng50_only <- psrn(yeast, "identifier", target = matches('ng50'))
+#'
+#'
 #' @source \url{https://www.nature.com/articles/npre.2010.4282.1}
 #' @references
 #' \insertAllCited{}

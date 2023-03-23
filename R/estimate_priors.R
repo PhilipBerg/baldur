@@ -108,7 +108,6 @@ estimate_beta.lgmr <- function(reg, mean, m, s, ...){
 }
 
 mu_std_inputs <- function(data) {
-
   if (!"mean" %in% names(data)) {
     stop("Mean column missnig\nDid you forget to calculate the M-V trend?\n Try running calculate_mean_sd_trends")
   }

@@ -20,6 +20,7 @@ and adds them as new columns. Assumes that the condition names are the
 names in the design matrix.
 }
 \examples{
+
 # Setup model matrix
 design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))

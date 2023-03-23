@@ -86,10 +86,11 @@ yeast_lgmr <- yeast \%>\%
     # Add the mean-variance trends
     calculate_mean_sd_trends(design) \%>\%
     # Fit the model
-    fit_lgmr(lgmr_model)
+    fit_lgmr("identifier")
 # Print everything except thetas
 print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
 # Extract the mean of the model parameters posterior
 yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
+
 }
 }

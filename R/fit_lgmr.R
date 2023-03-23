@@ -37,11 +37,12 @@ utils::globalVariables(c("reg", "coef"))
 #'     # Add the mean-variance trends
 #'     calculate_mean_sd_trends(design) %>%
 #'     # Fit the model
-#'     fit_lgmr(lgmr_model)
+#'     fit_lgmr("identifier")
 #' # Print everything except thetas
 #' print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
 #' # Extract the mean of the model parameters posterior
 #' yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
+#'
 #' }
 fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 1500, chains = 5, cores = 1, return_stanfit = FALSE, simplify = FALSE, ...) {
   if (!"sd" %in% names(data)) {

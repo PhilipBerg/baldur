@@ -33,5 +33,4 @@ yeast \%>\%
     # Normalize
     psrn("identifier") \%>\%
     plot_gamma_regression(design)
-
 }
