@@ -181,7 +181,7 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
     )
 
     multidplyr::cluster_assign_partition(cl,
-                                         id = ori_data$identifier,
+                                         id = ori_data[[id_col]],
                                          alpha = ori_data$alpha,
                                          beta = ori_data$beta
     )
