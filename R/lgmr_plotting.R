@@ -34,7 +34,7 @@ plot_lgrm_regression <- function(model) {
   middl <- ~ mu_fun(0.5, reg_pars, .x, mu_inputs[1], mu_inputs[2])
   lower <- ~ mu_fun(1,   reg_pars, .x, mu_inputs[1], mu_inputs[2])
 
-  plt <- model$data %>%
+  model$data %>%
     dplyr::mutate(
       theta = pars$theta
     ) %>%
