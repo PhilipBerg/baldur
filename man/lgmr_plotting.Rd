@@ -2,11 +2,11 @@
 % Please edit documentation in R/lgmr_plotting.R
 \name{lgmr_plotting}
 \alias{lgmr_plotting}
-\alias{plot_lgrm_regression}
+\alias{plot_lgmr_regression}
 \alias{plot_regression_field}
 \title{Visualization of LGMR models}
 \usage{
-plot_lgrm_regression(model)
+plot_lgmr_regression(model)
 
 plot_regression_field(model, n = 10, rng = 10)
 }
@@ -22,5 +22,33 @@ E.g., a value of 10 will make each line span 1 \% of the x-axis.}
 A ggplot object
 }
 \description{
-Visualization of LGMR models
+Options to plot the LGMR model. \code{plot_lgmr_regression} will plot the data
+colored by the amount of latent trend they have as well as the two extreme
+regression cases when \eqn{\theta} is zero or one. \code{plot_regression_field}
+will plot the local regression trend for each data point as a vector field and
+color the vector based on the derivative at the mean of the peptide.
+}
+\examples{
+#' # Define design matrix
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+colnames(design) <- paste0("ng", c(50, 100))
+
+\donttest{
+# Normalize data, calculate M-V trend, and fit LGMR model
+yeast_lgmr <- yeast \%>\%
+    # Remove missing values
+    tidyr::drop_na() \%>\%
+    # Normalize
+    psrn("identifier") \%>\%
+    # Add the mean-variance trends
+    calculate_mean_sd_trends(design) \%>\%
+    # Fit the model
+    fit_lgmr("identifier")
+# Print everything except thetas
+print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
+# Extract the mean of the model parameters posterior
+yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
+plot_lgmr_regression(yeast_lgmr)
+plot_regression_field(yeast_lgmr)
+}
 }

@@ -15,18 +15,57 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   each worker. E.g., two workers will each run half of the peptides in
 #'   parallel.
 #'
-#' @details Model description here
+#' @details The data model of Baldur assumes that the observations of a peptide,
+#'   \eqn{\boldsymbol{Y}}, is a normally distributed with a standard deviation,
+#'   \eqn{\sigma}, common to all measurements. In addition, it assumes that each
+#'   measurement has a unique uncertainty \eqn{u}. It then models all
+#'   measurements in the same condition with a common mean \eqn{\mu}. It then
+#'   assumes that the common variation of the peptide is caused by the variation
+#'   in the \eqn{\mu} As such, it models \eqn{\mu} with the common variance
+#'   \eqn{\sigma} and a non-centered parametrization for condition level
+#'   effects.
+#' \deqn{
+#'  \boldsymbol{Y}\sim\mathcal{N}(\boldsymbol{X}\boldsymbol{\mu},\sigma\boldsymbol{u})\quad
+#'  \boldsymbol{\mu}\sim\mathcal{N}(\mu_0+\boldsymbol{\eta}\sigma,\sigma)
+#' }
+#'   It then assumes \eqn{\sigma} to be gamma distributed with hyperparameters
+#'   infered from either a gamma regression [fit_gamma_regression] or a latent
+#'   gamma mixture regression [fit_lgmr]. \deqn{\sigma\sim\Gamma(\alpha,\beta)}
+#'   For details on the two priors for \eqn{\mu_0} see [empirical_bayes] or
+#'   [weakly_informative]. Baldur then builds a posterior distribution of the
+#'   difference(s) in means for contrasts of interest. In addition, Baldur
+#'   increases the precision of the decision as the number of measurements
+#'   increase. This is done by weighting the sample size with the contrast
+#'   matrix. To this end, Baldur limits the possible contrast of interest such
+#'   that each column must sum to zero, and the absolute value of each column
+#'   must sum to two. That is, only mean comparisons are allowed.
+#'   \deqn{
+#'     \boldsymbol{D}\sim\mathcal{N}(\boldsymbol{\mu}^\text{T}\boldsymbol{K},\sigma\boldsymbol{\xi}),\quad \xi_{i}=\sqrt{\sum_{c=1}^{C}|k_{cm}|n_c^{-1}}
+#'   }
+#'   where \eqn{\boldsymbol{K}} is a contrast matrix of interest and
+#'   \eqn{k_{cm}} is the contrast of the c:th condition in the m:th contrast of
+#'   interest, and \eqn{n_c} is the number of measurements in the c:th
+#'   condition. Baldur then integrates the tails of \eqn{\boldsymbol{D}} to
+#'   determine the probability of error.
+#'   \deqn{P(\text{\textbf{error}})=2\Phi(-\left|\boldsymbol{\mu}_{\boldsymbol{D}}-H_0\right|\odot\boldsymbol{\tau}_{\boldsymbol{D}})}
+#'   where \eqn{\Phi} is the CDF of the standard normal,
+#'   \eqn{\boldsymbol{\mu}_{\boldsymbol{D}}} is the posterior mean of
+#'   \eqn{\boldsymbol{D}}, \eqn{\boldsymbol{\tau}_{\boldsymbol{D}}} is the
+#'   posterior precision of \eqn{\boldsymbol{D}}, and \eqn{\odot} is the
+#'   Hadamard.
 #'
 #' @param data A `tibble` or `data.frame` with alpha,beta priors annotated
-#' @param id_col A character for the name of the column containing the
-#'     name of the features in data (e.g., peptides, proteins, etc.)
-#' @param design_matrix A design matrix for the data (see example)
+#' @param id_col A character for the name of the column containing the name of
+#'   the features in data (e.g., peptides, proteins, etc.)
+#' @param design_matrix A design matrix for the data. For the [empirical_bayes]
+#'   prior only mean models are allowed (see example). For the
+#'   [weakly_informative] prior more complicated design can be used.
 #' @param contrast_matrix A contrast matrix of the decisions to test. Columns
 #'   should sum to `0` and only mean comparisons are allowed. That is, the
 #'   absolute value of the positive and negative values in each column has to
 #'   sum to `2`. E.g., a column can be `[`0.5, 0.5, -1`]`\eqn{^T} but not `[`1,
-#'   1, -1`]` or `[`0.5, 0.5, -2`]`. That is, `sum(abs(x))=2` where `x` is a
-#'   column in the contrast matrix.
+#'   1, -1`]`\eqn{^T} or `[`0.5, 0.5, -2`]`\eqn{^T}. That is, `sum(abs(x))=2`
+#'   where `x` is a column in the contrast matrix.
 #' @param uncertainty_matrix A matrix of observation specific uncertainties
 #' @param stan_model Which Bayesian model to use. Defaults to [empirical_bayes]
 #'   but also allows [weakly_informative], or an user supplied function see [].
@@ -44,9 +83,9 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0,
 #'   and 97.5, percentiles, respectively. The suffixes `_eff` and `_rhat` are
 #'   the diagnostic variables returned by `Stan`. In general, a larger `_eff`
-#'   indicates effective sample size and `_rhat` indicates the mixing
-#'   within chains and between the chains and should be smaller than 1.05
-#'   (please see the Stan manual for more details).
+#'   indicates effective sample size and `_rhat` indicates the mixing within
+#'   chains and between the chains and should be smaller than 1.05 (please see
+#'   the Stan manual for more details).
 #' @export
 #'
 #' @importFrom rlang :=

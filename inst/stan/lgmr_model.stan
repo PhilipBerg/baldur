@@ -27,7 +27,7 @@ parameters {
 
 transformed parameters {
   real<lower = 0> S     = eta[1];    // Slope common
-  real<lower = 0> S_L   = eta[2]*.1; // Slope
+  real<lower = 0> S_L   = eta[2]*.1; // Slope Latent
 }
 
 model {

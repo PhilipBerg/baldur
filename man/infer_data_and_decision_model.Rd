@@ -20,17 +20,19 @@ infer_data_and_decision_model(
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame} with alpha,beta priors annotated}
 
-\item{id_col}{A character for the name of the column containing the
-name of the features in data (e.g., peptides, proteins, etc.)}
+\item{id_col}{A character for the name of the column containing the name of
+the features in data (e.g., peptides, proteins, etc.)}
 
-\item{design_matrix}{A design matrix for the data (see example)}
+\item{design_matrix}{A design matrix for the data. For the \link{empirical_bayes}
+prior only mean models are allowed (see example). For the
+\link{weakly_informative} prior more complicated design can be used.}
 
 \item{contrast_matrix}{A contrast matrix of the decisions to test. Columns
 should sum to \code{0} and only mean comparisons are allowed. That is, the
 absolute value of the positive and negative values in each column has to
 sum to \code{2}. E.g., a column can be \code{[}0.5, 0.5, -1\verb{]}\eqn{^T} but not \code{[}1,
-1, -1\verb{]} or \code{[}0.5, 0.5, -2\verb{]}. That is, \code{sum(abs(x))=2} where \code{x} is a
-column in the contrast matrix.}
+1, -1\verb{]}\eqn{^T} or \code{[}0.5, 0.5, -2\verb{]}\eqn{^T}. That is, \code{sum(abs(x))=2}
+where \code{x} is a column in the contrast matrix.}
 
 \item{uncertainty_matrix}{A matrix of observation specific uncertainties}
 
@@ -54,9 +56,9 @@ log-posterior. Columns without suffix shows the mean estimate from the
 posterior, while the suffixes \verb{_025}, \verb{_50}, and \verb{_975}, are the 2.5, 50.0,
 and 97.5, percentiles, respectively. The suffixes \verb{_eff} and \verb{_rhat} are
 the diagnostic variables returned by \code{Stan}. In general, a larger \verb{_eff}
-indicates effective sample size and \verb{_rhat} indicates the mixing
-within chains and between the chains and should be smaller than 1.05
-(please see the Stan manual for more details).
+indicates effective sample size and \verb{_rhat} indicates the mixing within
+chains and between the chains and should be smaller than 1.05 (please see
+the Stan manual for more details).
 }
 \description{
 Function to sample the posterior of the Bayesian data and
@@ -73,7 +75,44 @@ each worker. E.g., two workers will each run half of the peptides in
 parallel.
 }
 \details{
-Model description here
+The data model of Baldur assumes that the observations of a peptide,
+\eqn{\boldsymbol{Y}}, is a normally distributed with a standard deviation,
+\eqn{\sigma}, common to all measurements. In addition, it assumes that each
+measurement has a unique uncertainty \eqn{u}. It then models all
+measurements in the same condition with a common mean \eqn{\mu}. It then
+assumes that the common variation of the peptide is caused by the variation
+in the \eqn{\mu} As such, it models \eqn{\mu} with the common variance
+\eqn{\sigma} and a non-centered parametrization for condition level
+effects.
+\deqn{
+ \boldsymbol{Y}\sim\mathcal{N}(\boldsymbol{X}\boldsymbol{\mu},\sigma\boldsymbol{u})\quad
+ \boldsymbol{\mu}\sim\mathcal{N}(\mu_0+\boldsymbol{\eta}\sigma,\sigma)
+}
+It then assumes \eqn{\sigma} to be gamma distributed with hyperparameters
+infered from either a gamma regression \link{fit_gamma_regression} or a latent
+gamma mixture regression \link{fit_lgmr}. \deqn{\sigma\sim\Gamma(\alpha,\beta)}
+For details on the two priors for \eqn{\mu_0} see \link{empirical_bayes} or
+\link{weakly_informative}. Baldur then builds a posterior distribution of the
+difference(s) in means for contrasts of interest. In addition, Baldur
+increases the precision of the decision as the number of measurements
+increase. This is done by weighting the sample size with the contrast
+matrix. To this end, Baldur limits the possible contrast of interest such
+that each column must sum to zero, and the absolute value of each column
+must sum to two. That is, only mean comparisons are allowed.
+\deqn{
+    \boldsymbol{D}\sim\mathcal{N}(\boldsymbol{\mu}^\text{T}\boldsymbol{K},\sigma\boldsymbol{\xi}),\quad \xi_{i}=\sqrt{\sum_{c=1}^{C}|k_{cm}|n_c^{-1}}
+  }
+where \eqn{\boldsymbol{K}} is a contrast matrix of interest and
+\eqn{k_{cm}} is the contrast of the c:th condition in the m:th contrast of
+interest, and \eqn{n_c} is the number of measurements in the c:th
+condition. Baldur then integrates the tails of \eqn{\boldsymbol{D}} to
+determine the probability of error.
+\deqn{P(\text{\textbf{error}})=2\Phi(-\left|\boldsymbol{\mu}_{\boldsymbol{D}}-H_0\right|\odot\boldsymbol{\tau}_{\boldsymbol{D}})}
+where \eqn{\Phi} is the CDF of the standard normal,
+\eqn{\boldsymbol{\mu}_{\boldsymbol{D}}} is the posterior mean of
+\eqn{\boldsymbol{D}}, \eqn{\boldsymbol{\tau}_{\boldsymbol{D}}} is the
+posterior precision of \eqn{\boldsymbol{D}}, and \eqn{\odot} is the
+Hadamard.
 }
 \examples{
 # (Please see the vignette for a tutorial)

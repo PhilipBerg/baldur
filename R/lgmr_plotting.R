@@ -1,29 +1,57 @@
 utils::globalVariables(c("theta", "data", "x0", "x1", "y0", "y1", "dydx"))
-#' Visualization of LGMR models
+#'Visualization of LGMR models
 #'
-#' @name lgmr_plotting
-#' @param model An LGMR model object
+#'Options to plot the LGMR model. `plot_lgmr_regression` will plot the data
+#'colored by the amount of latent trend they have as well as the two extreme
+#'regression cases when \eqn{\theta} is zero or one. `plot_regression_field`
+#'will plot the local regression trend for each data point as a vector field and
+#'color the vector based on the derivative at the mean of the peptide.
 #'
-#' @importFrom ggplot2 ggplot
-#' @importFrom ggplot2 aes
-#' @importFrom ggplot2 geom_point
-#' @importFrom ggplot2 theme_classic
-#' @importFrom ggplot2 scale_color_viridis_c
-#' @importFrom ggplot2 theme
-#' @importFrom ggplot2 stat_function
-#' @importFrom ggplot2 labs
-#' @importFrom ggplot2 geom_segment
-#' @importFrom dplyr mutate
-#' @importFrom rlang quo
-#' @importFrom tidyr unnest
-#' @importFrom purrr map
+#'@name lgmr_plotting
+#'@param model An LGMR model object
+#'
+#'@importFrom ggplot2 ggplot
+#'@importFrom ggplot2 aes
+#'@importFrom ggplot2 geom_point
+#'@importFrom ggplot2 theme_classic
+#'@importFrom ggplot2 scale_color_viridis_c
+#'@importFrom ggplot2 theme
+#'@importFrom ggplot2 stat_function
+#'@importFrom ggplot2 labs
+#'@importFrom ggplot2 geom_segment
+#'@importFrom dplyr mutate
+#'@importFrom rlang quo
+#'@importFrom tidyr unnest
+#'@importFrom purrr map
 #'
 #'
-#' @return A ggplot object
-#' @export
+#'@return A ggplot object
+#'@export
 #'
 #' @examples
-plot_lgrm_regression <- function(model) {
+#' #' # Define design matrix
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+#' colnames(design) <- paste0("ng", c(50, 100))
+#'
+#'\donttest{
+#' # Normalize data, calculate M-V trend, and fit LGMR model
+#' yeast_lgmr <- yeast %>%
+#'     # Remove missing values
+#'     tidyr::drop_na() %>%
+#'     # Normalize
+#'     psrn("identifier") %>%
+#'     # Add the mean-variance trends
+#'     calculate_mean_sd_trends(design) %>%
+#'     # Fit the model
+#'     fit_lgmr("identifier")
+#' # Print everything except thetas
+#' print(yeast_lgmr, pars = c("coefficients", "auxiliary"))
+#' # Extract the mean of the model parameters posterior
+#' yeast_lgmr_pars <- coef(yeast_lgmr, pars = 'all', simplify = TRUE)
+#' plot_lgmr_regression(yeast_lgmr)
+#' plot_regression_field(yeast_lgmr)
+#' }
+plot_lgmr_regression <- function(model) {
 
   pars <- coef(model, TRUE, c('coef', 'theta'))
   reg_pars <- pars$coef
@@ -61,10 +89,8 @@ plot_lgrm_regression <- function(model) {
 #'   E.g., a value of 10 will make each line span 1 % of the x-axis.
 #'
 #' @export
-#'
-#' @examples
 plot_regression_field <- function(model, n = 10, rng = 10) {
-  rng <- diff(range(data$mean))/rng
+  rng <- diff(range(model$data$mean))/rng
 
   mu_inputs <- mu_std_inputs(model$data)
 

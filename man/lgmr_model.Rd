@@ -4,29 +4,97 @@
 \alias{lgmr_model}
 \title{Latent Gamma Regression Model}
 \description{
-Baldur has the option to use the Latent Gamma Regression Model (LGMR).
-This model attempts to estimate local Mean-Variance (M-V) trend for each peptide (or protein, PTM, etc.).
-To this end is describes the M-V trend as a regression with a common link function and a latent one.
-While there may not be a latent trend in real data, it allows for a mathematical description that can estimate the local trends of each peptide.
-The model describes the standard deviation (S) as a gamma random variable with mean dependency described by the sample mean (\eqn{\bar{y}}):
-\deqn{\boldsymbol{S}\sim\Gamma(\alpha,\beta)}
-\deqn{\boldsymbol{\beta}=\frac{\alpha}{\boldsymbol{\mu}}}
-\deqn{\boldsymbol{\mu}=\exp(\gamma_0-\gamma_{\bar{y}}\,f(\boldsymbol{\bar{y}})) + \kappa \exp(\boldsymbol{\theta}(\gamma_{0L}-\gamma_{\bar{y}L}\,f(\boldsymbol{\bar{y}})),\quad f(\boldsymbol{x})=\frac{\boldsymbol{x}-\mu_{\bar{y}}}{\sigma_{\bar{y}}}}
-Here, \eqn{\exp(I+S\,f(\boldsymbol{\bar{y}}))} is the common trend of the regression.
-Then, the mixing variable, \eqn{\boldsymbol{\theta}}, describes the proportion of the mixture that each peptide has, and \eqn{\kappa} is just some small constant such that when \eqn{\theta} is zero the latent term is small.
+Baldur has the option to use the Latent Gamma Regression Model
+(LGMR). This model attempts to estimate local Mean-Variance (M-V) trend for
+each peptide (or protein, PTM, etc.). To this end is describes the M-V
+trend as a regression with a common link function and a latent one. While
+there may not be a latent trend in real data, it allows for a mathematical
+description that can estimate the local trends of each peptide. The model
+describes the standard deviation (S) as a gamma random variable with mean
+dependency described by the sample mean (\eqn{\bar{y}}):
+\deqn{\boldsymbol{S}\sim\Gamma(\alpha,\beta),\quad\boldsymbol{\beta}=\frac{\alpha}{\boldsymbol{\mu}}}
+\deqn{\boldsymbol{\mu}=\exp(\gamma_0-\gamma_{\bar{y}}\,f(\boldsymbol{\bar{y}}))
+  + \kappa
+  \exp(\boldsymbol{\theta}(\gamma_{0L}-\gamma_{\bar{y}L}\,f(\boldsymbol{\bar{y}})),\quad
+  f(\boldsymbol{x})=\frac{\boldsymbol{x}-\mu_{\bar{y}}}{\sigma_{\bar{y}}}}
+Here, \eqn{\exp(\gamma_0-\gamma_{\bar{y}})} is the common trend of the
+regression. Then, the mixing variable, \eqn{\boldsymbol{\theta}}, describes
+the proportion of the mixture that each peptide has, and \eqn{\kappa} is
+just some small constant such that when \eqn{\theta} is zero the latent
+term is small.
 }
 \details{
-Next we will describe the hierarchical prior setup for the regression variables.
-A priori, Baldur assumes that each peptide is most likely to completely have the mixture or to not have it at all.
-To this end, the \eqn{\theta_i} for the i:th peptide has a beta distribution:
-\deqn{\theta_i\sim\beta(0.5,0.5)}
-Further, it can be seen that Baldur assumes that S always decreases (on average; S is always negative) with the sample mean.
-To this end, both slopes (\eqn{\gamma_{\bar{y}},\gamma_{\bar{y}L}}) are defined on the real positive line.
-Hence, we used Half-Normal (HN) distributions to describe the slope parameters:
-\deqn{\gamma_{\bar{y}}\sim HN(1)}
-\deqn{\gamma_{\bar{y}L}\sim HN(0.1)}
-For the intercepts, we assume a standard normal prior for the common intercept.
-Then, we use a skew-normal to model the latent intercept.
-The reason for this is two-fold, one, \eqn{\kappa} will decrease the value of the latent term and, two, to push the latent trend upwards.
-The latter reason is so that the latent intercept is larger than the common and so that the priors prioritize a shift in intercept over a increase in slope.
+Next we will describe the hierarchical prior setup for the
+regression variables. A priori, Baldur assumes that each peptide is most
+likely to completely have the mixture or to not have it at all. To this end,
+the \eqn{\theta_i} for the i:th peptide has a beta distribution:
+\deqn{\theta_i\sim\beta(0.5,0.5)} Further, it can be seen that Baldur assumes
+that S always decreases (on average; S is always negative) with the sample
+mean. To this end, both slopes (\eqn{\gamma_{\bar{y}},\gamma_{\bar{y}L}}) are
+defined on the real positive line. Hence, we used Half-Normal (HN)
+distributions to describe the slope parameters: \deqn{\gamma_{\bar{y}}\sim
+HN(1)} \deqn{\gamma_{\bar{y}L}\sim HN(0.1)} For the intercepts, we assume a
+standard normal prior for the common intercept. Then, we use a skew-normal to
+model the latent intercept. The reason for this is two-fold, one,
+\eqn{\kappa} will decrease the value of the latent term and, two, to push the
+latent trend upwards. The latter reason is so that the latent intercept is
+larger than the common and so that the priors prioritize a shift in intercept
+over a increase in slope.
 }
+\section{Code}{
+
+The \code{Stan} code for this model is given by:
+
+\if{html}{\out{<div class="sourceCode stan">}}\preformatted{functions \{
+vector reg_function(vector x, vector theta, real I, real I_L, real S, real S_L, int N) \{
+  vector[N] exp_beta  = .001*exp(theta.*(I_L - S_L*x));
+  exp_beta +=      exp(I - S*x);
+  return exp_beta;
+  \}
+\}
+data \{
+  int<lower=0> N;       // Number of observations
+  vector<lower=0>[N] y; // sd
+  vector[N] x;          // mean
+\}
+transformed data \{
+  real v_y = variance(y);                 // for NRMSE
+  vector[N] x_star = (x - mean(x))/sd(x); // f(y_bar)
+\}
+parameters \{
+  real<lower = 0> alpha;    // Shape
+  real<lower = 0> alpha_mu; // Shape mean hyperprior
+  real I;                   // Intercep common
+  real I_L;                 // Intercept Latent
+  vector<lower = 0>[2] eta; // For S,S_L
+  vector<lower = 0, upper = 1>[N] theta; // Mixture paramater
+\}
+transformed parameters \{
+  real<lower = 0> S     = eta[1];    // Slope common
+  real<lower = 0> S_L   = eta[2]*.1; // Slope Latent
+\}
+model \{
+  alpha         ~ exp_mod_normal(alpha_mu, 1, .1); //Priors
+  alpha_mu      ~ normal(50, 10);
+  I             ~ std_normal();
+  I_L           ~ skew_normal(2, 15,  35);
+  eta           ~ std_normal();
+  theta         ~ beta(.5, .5);
+  \{
+    vector[N] exp_beta = reg_function(x_star, theta, I, I_L, S, S_L, N);
+    y ~ gamma(alpha, alpha ./ exp_beta); // Likelihood
+  \}
+\}
+generated quantities \{
+  real nrmse; // NRMSE calculations
+  \{
+    vector[N] se = reg_function(x_star, theta, I, I_L, S, S_L, N);
+    se -= y;
+    se = se^2;
+    nrmse = mean(se) / v_y;
+  \}
+  nrmse = sqrt(nrmse);
+\}
+}\if{html}{\out{</div>}}
+}
+
