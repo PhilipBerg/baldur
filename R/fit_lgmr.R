@@ -1,26 +1,27 @@
 utils::globalVariables(c("reg", "coef"))
 #'Fit Latent Gamma Mixture Regression
 #'
-#' @param data A `data.frame` with mean-variance trends to use in the fitting.
+#'@param data A `data.frame` with mean-variance trends to use in the fitting.
 #'  The columns need to have the following hard-coded names: `mean` and `sd`.
-#' @param  id_col A character for the name of the column containing the
-#'     name of the features in data (e.g., peptides, proteins, etc.)
-#' @param model Defaults to [lgmr_model] (see it for details on the model), can
-#'   also be an user supplied stan_model
-#' @param iter Total number of samples to draw
-#' @param warmup Number of warm-up samples to draw
-#' @param chains Number of chains to run
-#' @param cores Number of cores to use per chain
-#' @param return_stanfit Should the `stanfit` object be returned with the model?
-#' @param simplify Should only the mean estimates of the posterior be returned?
-#' @param ... Additional arguments to `rstan`'s [sampling][rstan::sampling()].
+#'@param  id_col A character for the name of the column containing the name of
+#'  the features in data (e.g., peptides, proteins, etc.)
+#'@param model Defaults to [lgmr_model] (see it for details on the model), can
+#'  also be an user supplied [stan_model()]
+#'@param iter Total number of samples to draw
+#'@param warmup Number of warm-up samples to draw
+#'@param chains Number of chains to run
+#'@param cores Number of cores to use per chain
+#'@param return_stanfit Should the `stanfit` object be returned with the model?
+#'@param simplify Should only the mean estimates of the posterior be returned?
+#'@param ... Additional arguments to `rstan`'s [sampling][rstan::sampling()].
 #'  Does nothing for `print` or `coef` only for `fit_lgmr`.
-#' @param id_col A character for the name of the column containing the
-#'     name of the features in data (e.g., peptides, proteins, etc.)
+#'@param id_col A character for the name of the column containing the name of
+#'  the features in data (e.g., peptides, proteins, etc.). Has to be a unique
+#'  identifier for each feature.
 #'
-#' @return A fitted `lgmr` model.
-#' @export
-#' @name fit_lgmr
+#'@return A fitted `lgmr` model.
+#'@export
+#'@name fit_lgmr
 #'
 #' @examples
 #' # Define design matrix
@@ -125,9 +126,21 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
       mu["S_L"],
       " f(bar_y))", sep = ''
   )
+  if (!is.list(x)) {
+    cat("\n\n",
+        paste0(stringr::str_to_title(pars), ":\n")
+    )
+    print.default(
+      x,
+      digits = digits,
+      print.gap = 2L,
+      quote = FALSE
+    )
+    return(invisible())
+  }
   if ("auxiliary" %in% pars) {
     cat("\n\n",
-        "auxiliary:\n"
+        "Auxiliary:\n"
     )
     print.default(
       x$aux,
@@ -151,7 +164,7 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
 
   if ("theta" %in% pars) {
     cat("\n\n",
-        "theta:\n"
+        "Theta:\n"
     )
     print.default(
       x$theta,

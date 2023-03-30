@@ -38,11 +38,12 @@ fit_lgmr(
 \item{data}{A \code{data.frame} with mean-variance trends to use in the fitting.
 The columns need to have the following hard-coded names: \code{mean} and \code{sd}.}
 
-\item{id_col}{A character for the name of the column containing the
-name of the features in data (e.g., peptides, proteins, etc.)}
+\item{id_col}{A character for the name of the column containing the name of
+the features in data (e.g., peptides, proteins, etc.). Has to be a unique
+identifier for each feature.}
 
 \item{model}{Defaults to \link{lgmr_model} (see it for details on the model), can
-also be an user supplied stan_model}
+also be an user supplied \code{\link[=stan_model]{stan_model()}}}
 
 \item{iter}{Total number of samples to draw}
 

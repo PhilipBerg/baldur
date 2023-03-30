@@ -48,11 +48,12 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   condition. Baldur then integrates the tails of \eqn{\boldsymbol{D}} to
 #'   determine the probability of error.
 #'   \deqn{P(\text{\textbf{error}})=2\Phi(-\left|\boldsymbol{\mu}_{\boldsymbol{D}}-H_0\right|\odot\boldsymbol{\tau}_{\boldsymbol{D}})}
-#'   where \eqn{\Phi} is the CDF of the standard normal,
+#'   where \eqn{H_0} is the null hypothesis for the difference in means,
+#'   \eqn{\Phi} is the CDF of the standard normal,
 #'   \eqn{\boldsymbol{\mu}_{\boldsymbol{D}}} is the posterior mean of
 #'   \eqn{\boldsymbol{D}}, \eqn{\boldsymbol{\tau}_{\boldsymbol{D}}} is the
 #'   posterior precision of \eqn{\boldsymbol{D}}, and \eqn{\odot} is the
-#'   Hadamard.
+#'   Hadamard product.
 #'
 #' @param data A `tibble` or `data.frame` with alpha,beta priors annotated
 #' @param id_col A character for the name of the column containing the name of
@@ -85,7 +86,9 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   the diagnostic variables returned by `Stan`. In general, a larger `_eff`
 #'   indicates effective sample size and `_rhat` indicates the mixing within
 #'   chains and between the chains and should be smaller than 1.05 (please see
-#'   the Stan manual for more details).
+#'   the Stan manual for more details). In addition it returns a column
+#'   `warnings` with potential warnings given by the sampler.
+#'
 #' @export
 #'
 #' @importFrom rlang :=
@@ -249,7 +252,7 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
     )
     results <- multidplyr::cluster_call(cl,
                                         purrr::map(dat,
-                                                   stan_nse_wrapper,
+                                                   purrr::quietly(stan_nse_wrapper),
                                                    stan_model,
                                                    rstan_inputs
                                         ) %>%
@@ -321,7 +324,8 @@ estimate_error <- function(posterior, h_not) {
   2*pnorm(s)
 }
 
-stan_summary <- function(fit, dat, condi, contrast,  h_not){
+stan_summary <- function(samp, dat, condi, contrast,  h_not){
+  fit <- samp$result
   lfc_pars <- paste0('y_diff[', seq_len(ncol(contrast)), ']')
   mu_pars  <- paste0("mu[", seq_along(condi), "]")
   err <- rstan::extract(fit, pars = lfc_pars) %>%
@@ -354,7 +358,8 @@ stan_summary <- function(fit, dat, condi, contrast,  h_not){
     lp_50 = summ[rownames(summ) == 'lp__', 6],
     lp_975 = summ[rownames(summ) == 'lp__', 3],
     lp_eff = summ[rownames(summ) == 'lp__', 4],
-    lp_rhat = summ[rownames(summ) == 'lp__', 5]
+    lp_rhat = summ[rownames(summ) == 'lp__', 5],
+    warnings = list(samp$warnings)
   )
 }
 
@@ -363,11 +368,8 @@ bayesian_testing <- function(id, alpha, beta, data, id_col, design_matrix, compa
   condi_regex <- paste0(condi, collapse = '|')
   dat <- generate_stan_data_input(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar)
   stan_output <- purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)
-  stan_output$result %>%
-    stan_summary(dat, condi, dat$c, h_not) %>%
-    dplyr::mutate(
-      warnings = list(stan_output$warnings)
-    )
+  stan_output %>%
+    stan_summary(dat, condi, dat$c, h_not)
 }
 
 contrast_to_comps <- function(contrast, conditions){

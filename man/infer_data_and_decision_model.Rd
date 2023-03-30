@@ -58,7 +58,8 @@ and 97.5, percentiles, respectively. The suffixes \verb{_eff} and \verb{_rhat} a
 the diagnostic variables returned by \code{Stan}. In general, a larger \verb{_eff}
 indicates effective sample size and \verb{_rhat} indicates the mixing within
 chains and between the chains and should be smaller than 1.05 (please see
-the Stan manual for more details).
+the Stan manual for more details). In addition it returns a column
+\code{warnings} with potential warnings given by the sampler.
 }
 \description{
 Function to sample the posterior of the Bayesian data and
@@ -108,11 +109,12 @@ interest, and \eqn{n_c} is the number of measurements in the c:th
 condition. Baldur then integrates the tails of \eqn{\boldsymbol{D}} to
 determine the probability of error.
 \deqn{P(\text{\textbf{error}})=2\Phi(-\left|\boldsymbol{\mu}_{\boldsymbol{D}}-H_0\right|\odot\boldsymbol{\tau}_{\boldsymbol{D}})}
-where \eqn{\Phi} is the CDF of the standard normal,
+where \eqn{H_0} is the null hypothesis for the difference in means,
+\eqn{\Phi} is the CDF of the standard normal,
 \eqn{\boldsymbol{\mu}_{\boldsymbol{D}}} is the posterior mean of
 \eqn{\boldsymbol{D}}, \eqn{\boldsymbol{\tau}_{\boldsymbol{D}}} is the
 posterior precision of \eqn{\boldsymbol{D}}, and \eqn{\odot} is the
-Hadamard.
+Hadamard product.
 }
 \examples{
 # (Please see the vignette for a tutorial)
