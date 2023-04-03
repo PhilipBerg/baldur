@@ -29,9 +29,9 @@ regression variables. A priori, Baldur assumes that each peptide is most
 likely to completely have the mixture or to not have it at all. To this end,
 the \eqn{\theta_i} for the i:th peptide has a beta distribution:
 \deqn{\theta_i\sim\beta(0.5,0.5)} Further, it can be seen that Baldur assumes
-that S always decreases (on average; S is always negative) with the sample
-mean. To this end, both slopes (\eqn{\gamma_{\bar{y}},\gamma_{\bar{y}L}}) are
-defined on the real positive line. Hence, we used Half-Normal (HN)
+that S always decreases (on average) with the sample mean. To this end, both
+slopes (\eqn{\gamma_{\bar{y}},\gamma_{\bar{y}L}}) are defined on the real
+positive line. Hence, we used Half-Normal (HN)
 distributions to describe the slope parameters: \deqn{\gamma_{\bar{y}}\sim
 HN(1)} \deqn{\gamma_{\bar{y}L}\sim HN(0.1)} For the intercepts, we assume a
 standard normal prior for the common intercept. Then, we use a skew-normal to
@@ -42,8 +42,7 @@ larger than the common and so that the priors prioritize a shift in intercept
 over a increase in slope.
 }
 \section{Code}{
-
-The \code{Stan} code for this model is given by:
+ The \code{Stan} code for this model is given by:
 
 \if{html}{\out{<div class="sourceCode stan">}}\preformatted{functions \{
 vector reg_function(vector x, vector theta, real I, real I_L, real S, real S_L, int N) \{

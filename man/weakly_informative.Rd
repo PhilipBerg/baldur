@@ -4,16 +4,14 @@
 \alias{weakly_informative}
 \title{Baldur's weakly informative prior for the mean in conditions}
 \description{
-Here we will model the mean of the prior with a weakly informative (WI) prior.
-We will assume that, in essence, nothing is know about the mean.
-Following from
-}
-\details{
-\deqn{\boldsymbol{Y}\sim\mathcal{N}(\mu_0 + \boldsymbol{\eta}\sigma,\sigma\boldsymbol{u})}
+Here we will model the mean of the prior with a weakly
+informative (WI) prior. We will assume that, in essence, nothing is know
+about the mean. As such, for the WI prior, we use a normal prior on
+\eqn{\boldsymbol{\mu}_0} centered at zero and with a very large variance.
+\deqn{\boldsymbol{\mu}_0\sim\mathcal{N}(0,100)}
 }
 \section{Code}{
-
-The \code{Stan} code for this model is given by:
+ The \code{Stan} code for this model is given by:
 
 \if{html}{\out{<div class="sourceCode stan">}}\preformatted{data \{
   int<lower=0> N;     // number of data items

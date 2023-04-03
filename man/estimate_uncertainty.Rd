@@ -30,7 +30,7 @@ Estimates the measurement uncertainty for each data point using
 a Gamma regression.
 Calculated as the expected standard deviation for each measurement:
 \deqn{
-     \text{E}[s_i|\omega,y_{ij}]=e^{f(y_{ij},\omega)}
+     \text{E}[s_i|\omega,y_{ij}]=\exp({f(y_{ij},\omega)})
   }
 where \eqn{\omega} are the regression parameters and \eqn{f} is a function
 describing the mean relationship between \eqn{s_i} and \eqn{y_{ij}}.

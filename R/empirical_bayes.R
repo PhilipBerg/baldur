@@ -2,7 +2,8 @@
 #'
 #' @description Here we assume that the sample mean of each condition is an estimator for the center of the mean prior.
 #' In addition, it assumes that the confidence in the prior is proportional to the variance of the peptide.
-#'
+#' \deqn{\boldsymbol{\mu}_0\sim\mathcal{N}(\boldsymbol{\bar{y}},\sigma\boldsymbol{n}^R)}
+#' \deqn{\boldsymbol{n}^R=[\frac{1}{n_1},\frac{1}{n_2},\dots,\frac{1}{n_C}]}
 #'
 #' @section Code:
 #' The `Stan` code for the model is given by:

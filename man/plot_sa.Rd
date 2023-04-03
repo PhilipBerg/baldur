@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sa.R
 \name{plot_sa}
 \alias{plot_sa}
-\title{Plot the trend between the log fold-change and sigma}
+\title{Plot the trend between the log fold-change and sigma, coloring significant hits}
 \usage{
 plot_sa(results, alpha = 0.05, lfc = NULL)
 }
