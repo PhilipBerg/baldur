@@ -39,7 +39,9 @@ calculate_mean_sd_trends <- function(data, design_matrix){
 }
 
 check_design <- function(design_matrix, data, cenv = rlang::caller_call()) {
+  inp <- rlang::enquo(design_matrix)
   rlang::is_missing(design_matrix)
+  check_matrix(inp, "design matrix", cenv)
   if (is.null(colnames(design_matrix))) {
     rlang::abort(
       c(
@@ -68,6 +70,23 @@ check_design <- function(design_matrix, data, cenv = rlang::caller_call()) {
           ' samples in conditions ', stringr::str_flatten(names(condi_counts), ', '), ', respectively'
         ),
         "They need to match, see vignette('baldur_yeast_tutorial') or vignette('baldur_ups_tutorial') on how to setup the design matrix"
+      ),
+      call = cenv
+    )
+  }
+}
+
+check_matrix <- function(input, type, cenv) {
+  inp <- eval_tidy(input)
+  inp_name <- rlang::as_name(input)
+  if (!is.matrix(inp)) {
+    rlang::abort(
+      c(
+        paste0(
+          "Your ", type, ", ", inp_name, ", needs to be a matrix not a ",
+          stringr::str_flatten(class(inp), ", "),
+          "."
+        )
       ),
       call = cenv
     )

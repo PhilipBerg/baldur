@@ -403,7 +403,9 @@ check_contrast_and_design <- function(contrast_matrix, design_matrix, data) {
 }
 
 check_contrast <- function(contrast_matrix, cenv = rlang::caller_call()) {
+  inp <- rlang::enquo(contrast_matrix)
   rlang::is_missing(contrast_matrix)
+  check_matrix(inp, "contrast matrix", cenv)
 
   cs  <- colSums(contrast_matrix)
   acs <- colSums(abs(contrast_matrix))

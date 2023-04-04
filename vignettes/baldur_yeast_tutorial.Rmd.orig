@@ -23,7 +23,10 @@ yeast_design <- model.matrix(~0+factor(rep(1:2, each = 3)))
 colnames(yeast_design) <- paste0('ng', c(50, 100))
 # Compare the first and second column of the design matrix
 # with the following contrast matrix
-yeast_contrast <- matrix(c(-1, 1), nrow = 1)
+yeast_contrast <- matrix(c(-1, 1), nrow = 2)
+
+# Set id column
+id_col <- colnames(yeast)[1] # "identifier"
 
 # Since baldur itself does not deal with missing data we remove the
 # rows that have missing data for the purpose of the tutorial.
@@ -33,7 +36,7 @@ yeast_norm <- yeast %>%
   # Remove missing data
   tidyr::drop_na() %>%
   # Normalize data (this might already have been done if imputation was performed)
-  psrn('identifier') %>%
+  psrn(id_col) %>%
   # Add mean-variance trends
   calculate_mean_sd_trends(yeast_design)
 ```
@@ -44,7 +47,7 @@ colnames(yeast_design)
 ```
 This is essential for `baldur` to know which columns to use in calculations and to perform transformations.
 
-# 2. Trend-partitioning and uncertainty estimation
+# 2. Mean-Variance trends and Gamma Regression fitting
 Next is to infer the mixture of the data and to estimate the parameters needed for `baldur`.
 First we will setup the needed variables for using `baldur` without partitioning the data.
 Then, partitioning and setting up `baldur` after trend-partitioning
@@ -52,7 +55,7 @@ Then, partitioning and setting up `baldur` after trend-partitioning
 # Fit the gamma regression
 gr_model <- fit_gamma_regression(yeast_norm, sd ~ mean)
 # Estimate the uncertainty
-unc_gr <- estimate_uncertainty(gr_model, yeast_norm, 'identifier', yeast_design)
+unc_gr <- estimate_uncertainty(gr_model, yeast_norm, id_col, yeast_design)
 ```
 
 # 3. Run the sampling procedure
@@ -63,8 +66,8 @@ First we sample assuming a single trend, then using the partitioning.
 gr_results <- gr_model %>%
   # Add hyper-priors for sigma
   estimate_gamma_hyperparameters(yeast_norm) %>%
-  infer_data_and_descision_model(
-    'identifier',
+  infer_data_and_decision_model(
+    id_col,
     yeast_design,
     yeast_contrast,
     unc_gr,
@@ -73,29 +76,28 @@ gr_results <- gr_model %>%
 # The top hits then looks as follows:
 gr_results %>%
   dplyr::arrange(err)
-
 ```
 Here `err` is the probability of error, i.e., the two tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, `sigma` is the common variance, and `lp` is the log-posterior.
 Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0, and 97.5, percentiles, respectively.
 The suffixes `_eff` and `_rhat` are the diagnostic variables returned by `rstan` (please see the Stan manual for details).
 In general, a larger `_eff` indicates a better sampling efficiency, and `_rhat` compares the mixing within chains against between the chains and should be smaller than 1.05.
 
-# 4. Running Baldur with Latent Gamma Regression estimation
+# 4. Running Baldur with Latent Gamma Mixture Regression estimation
 First we fit the LGMR model:
 ```{r lgmr}
-yeast_lgmr <- fit_lgmr(yeast_norm, lgmr_model, cores = 5)
+yeast_lgmr <- fit_lgmr(yeast_norm, id_col, lgmr_model, cores = 5)
 ```
 
 We can print the model with `print` and extract parameters of interest with `coef`:
 ```{r lgmr_outputs}
-print(yeast_lgmr)
+print(yeast_lgmr, pars = c("coef", "aux"))
 # Extract the regression, alpha, and theta parameters and the NRMSE.
-yeast_lgmr_coef <- coef(yeast_lgmr, pars = c("all"))
+yeast_lgmr_coef <- coef(yeast_lgmr, pars = "all")
 ```
 
 We can then estimate the uncertainty similar to the GR case:
 ```{r lgmr_unc}
-unc_lgmr <- estimate_uncertainty(yeast_lgmr, yeast_norm, 'identifier', yeast_design)
+unc_lgmr <- estimate_uncertainty(yeast_lgmr, yeast_norm, id_col, yeast_design)
 ```
 
 Then running the data and decision model:
@@ -103,9 +105,9 @@ Then running the data and decision model:
 # Single trend
 lgmr_results <- yeast_lgmr %>%
   # Add hyper-priors for sigma
-  estimate_gamma_hyperparameters(yeast_norm) %>%
-  infer_data_and_descision_model(
-    'identifier',
+  estimate_gamma_hyperparameters(yeast_norm, id_col) %>%
+  infer_data_and_decision_model(
+    id_col,
     yeast_design,
     yeast_contrast,
     unc_lgmr,

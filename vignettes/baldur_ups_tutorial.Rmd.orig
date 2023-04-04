@@ -27,12 +27,15 @@ library(tidyr)
 ups_design <- model.matrix(~ 0 + factor(rep(1:3, each = 4)))
 colnames(ups_design) <- paste0('fmol', c(25, 50, 100))
 
+# Set id column
+id_col <- colnames(ups)[1] # "identifier"
+
 # Normalize and add M-V trend
 ups <- ups %>%
   # Remove rows with NA for the sake of the tutorial
   drop_na() %>%
   # Normalize the data
-  psrn('identifier') %>%
+  psrn(id_col) %>%
   calculate_mean_sd_trends(ups_design)
 
 # For the contrast, we want to compare all conditions against each other, and in addtion, suppose we would like to know the difference between the mean of condition 1 and 3 against 2 ([fmol25 + fmol100]/2 - fmol50).
@@ -79,7 +82,7 @@ We can then estimate the uncertainty for the partitioned data as follows:
 # Fit the gamma regression
 gr <- fit_gamma_regression(ups)
 # Get each data points uncertainty
-unc_gr <- estimate_uncertainty(gr, ups, 'identifier', ups_design)
+unc_gr <- estimate_uncertainty(gr, ups, id_col, ups_design)
 ```
 
 # 3. Sampling from the Data and Decision model
@@ -90,9 +93,9 @@ The only thing that needs to be changed is the `clusters` flag:
 # Single trend
 gr_results <- gr %>%
   # Add hyper-priors for sigma
-  estimate_gamma_hyperparameters(ups) %>%
-  infer_data_and_descision_model(
-    'identifier',
+  estimate_gamma_hyperparameters(ups, id_col) %>%
+  infer_data_and_decision_model(
+    id_col,
     ups_design,
     ups_contrast,
     unc_gr,
@@ -109,19 +112,19 @@ An important difference from `yeast-DS` is that each peptide gets three rows, on
 To run Baldur with the LGMR model is very similar to running it with the GR model.
 First we fit the regression model using the `fit_lgmr` function:
 ```{r fit_lgmr}
-ups_lgmr <- fit_lgmr(ups, cores = 5)
+ups_lgmr <- fit_lgmr(ups, id_col, cores = 5)
 ```
 We can the estimate the uncertanties and hyperparameters for the data and decision model and run them as for the GR model:
 
 ```{r lgmr_results}
 # Estimate uncertainty
-unc_lgmr <- estimate_uncertainty(ups_lgmr, ups, 'identifier', ups_design)
+unc_lgmr <- estimate_uncertainty(ups_lgmr, ups, id_col, ups_design)
 # Sample from the data and decision model
 lgmr_results <- ups_lgmr %>%
   # Add hyper-priors for sigma
-  estimate_gamma_hyperparameters(ups) %>%
-  infer_data_and_descision_model(
-    'identifier',
+  estimate_gamma_hyperparameters(ups, id_col) %>%
+  infer_data_and_decision_model(
+    id_col,
     ups_design,
     ups_contrast,
     unc_lgmr,
