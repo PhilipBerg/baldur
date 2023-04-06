@@ -62,6 +62,8 @@ the Stan manual for more details). In addition it returns a column
 \code{warnings} with potential warnings given by the sampler.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Function to sample the posterior of the Bayesian data and
 decision model. It first produces the needed inputs for Stan's \code{\link[=sampling]{sampling()}}
 for each peptide (or protein, PTM, etc.). It then runs the sampling for the

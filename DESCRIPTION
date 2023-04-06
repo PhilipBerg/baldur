@@ -4,9 +4,16 @@ Version: 0.0.1
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3772-6185"))
-Description: Differential abundance analysis for label-free proteomics using a Bayesian decision model.
-    Baldur utilizes the mean-variance trend to estimate variance priors and measurement specific uncertainties.
-    It uses this to builed a posterior distribution of the differences in means and then integrates the tails to estimate the probability of error.
+Description: Baldur is a Bayesian hierarchical model for statistical decision
+    in proteomics data. It models the mean-variance trend with the option of
+    two different regression models, a gamma regression or a latent gamma
+    mixture regression. It then the regression model as en Empirical Bayes
+    estimator for the prior on the variance. Further, it assumes that
+    each measurement has an uncertainty (increased variance) associated with it
+    that it also infers. Finally, it tries to estimate the posterior
+    distribution (by Hamiltonian Monte Carlo) for the differences in means for
+    each peptide in the data. Once the posterior is inferred, it integrates the
+    tails to estimate the probability of error from which a statistical
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
@@ -33,7 +40,8 @@ Imports:
     ggplot2 (>= 3.3.6),
     cowplot (>= 1.1.1),
     tibble (>= 3.1.7),
-    viridisLite (>= 0.4.1)
+    viridisLite (>= 0.4.1),
+    lifecycle
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),

@@ -19,6 +19,8 @@ should contain columns with conditions named as the column names in
 \code{fit_gamma_regression} returns a glm object
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 \code{fit_gamma_regression} returns a \code{glm} object containing the
 gamma regression for the mean-variance trend.
 }

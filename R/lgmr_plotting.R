@@ -1,11 +1,13 @@
 utils::globalVariables(c("theta", "data", "x0", "x1", "y0", "y1", "dydx"))
 #'Visualization of LGMR models
 #'
-#'Options to plot the LGMR model. `plot_lgmr_regression` will plot the data
-#'colored by the amount of latent trend they have as well as the two extreme
-#'regression cases when \eqn{\theta} is zero or one. `plot_regression_field`
-#'will plot the local regression trend for each data point as a vector field and
-#'color the vector based on the derivative at the mean of the peptide.
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'  Options to plot the LGMR model. `plot_lgmr_regression` will plot the data
+#'  colored by the amount of latent trend they have as well as the two extreme
+#'  regression cases when \eqn{\theta} is zero or one. `plot_regression_field`
+#'  will plot the local regression trend for each data point as a vector field and
+#'  color the vector based on the derivative at the mean of the peptide.
 #'
 #'@name lgmr_plotting
 #'@param model An LGMR model object

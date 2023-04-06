@@ -46,6 +46,8 @@ with the alpha,beta hyperparameters estimates as new columns.
 \code{estimate_beta} returns estimates of the beta parameter(s)
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Estimates the hyperparameters for the Bayesian data and decision
 model. \code{estimate_gamma_hyperparameters} is a wrapper that adds new columns
 to the data (one for alpha and one for betas). Note that for \code{lgmr}

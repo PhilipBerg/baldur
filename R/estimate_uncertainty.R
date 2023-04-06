@@ -1,5 +1,8 @@
 #' Estimate measurement uncertainty
-#' @description Estimates the measurement uncertainty for each data point using
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#'   Estimates the measurement uncertainty for each data point using
 #'   a Gamma regression.
 #'   Calculated as the expected standard deviation for each measurement:
 #'   \deqn{

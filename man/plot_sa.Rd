@@ -20,6 +20,8 @@ are drawn}
 \code{plot_sa} returns a \code{ggplot} object
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 \code{plot_sa} returns a \code{ggplot} with a graphical representation between the log
 fold-change and sigma.
 }

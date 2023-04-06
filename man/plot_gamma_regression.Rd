@@ -17,6 +17,8 @@ a plot with the mean-variance trend before partitioning on the left
 side, and the right side after.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Generates a scatter plot with the gamma regressions of the mean-variance
 trend
 }

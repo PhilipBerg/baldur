@@ -1,6 +1,11 @@
 utils::globalVariables(c("reg", "coef"))
 #'Fit Latent Gamma Mixture Regression
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#' See [lgmr_model] for model details.
+#'
 #'@param data A `data.frame` with mean-variance trends to use in the fitting.
 #'  The columns need to have the following hard-coded names: `mean` and `sd`.
 #'@param  id_col A character for the name of the column containing the name of

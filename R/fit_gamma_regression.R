@@ -1,5 +1,8 @@
 #' Function for Fitting the Mean-Variance Gamma Regression Models
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' `fit_gamma_regression` returns a `glm` object containing the
 #'    gamma regression for the mean-variance trend.
 #'

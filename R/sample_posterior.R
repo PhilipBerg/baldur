@@ -2,7 +2,10 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' Sample the Posterior of the data and decision model and generate point
 #' estimates
 #'
-#' @description Function to sample the posterior of the Bayesian data and
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#'   Function to sample the posterior of the Bayesian data and
 #'   decision model. It first produces the needed inputs for Stan's [sampling()]
 #'   for each peptide (or protein, PTM, etc.). It then runs the sampling for the
 #'   data and decision model. From the posterior, it then collects estimates and

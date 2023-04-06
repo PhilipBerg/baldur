@@ -26,6 +26,8 @@ name of the features in data (e.g., peptides, proteins, etc.)}
 A matrix with the uncertainty
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Estimates the measurement uncertainty for each data point using
 a Gamma regression.
 Calculated as the expected standard deviation for each measurement:

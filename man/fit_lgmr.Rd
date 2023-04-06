@@ -70,7 +70,9 @@ Does nothing for \code{print} or \code{coef} only for \code{fit_lgmr}.}
 A fitted \code{lgmr} model.
 }
 \description{
-Fit Latent Gamma Mixture Regression
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+See \link{lgmr_model} for model details.
 }
 \examples{
 # Define design matrix

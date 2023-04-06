@@ -1,6 +1,9 @@
 utils::globalVariables(c(".", "sigma", "err"))
 #' Plot the trend between the log fold-change and sigma, coloring significant hits
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' `plot_sa` returns a `ggplot` with a graphical representation between the log
 #' fold-change and sigma.
 #'

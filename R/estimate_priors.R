@@ -1,6 +1,9 @@
 #' Estimate Gamma hyperparameters for sigma
 #'
-#' @description Estimates the hyperparameters for the Bayesian data and decision
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#'   Estimates the hyperparameters for the Bayesian data and decision
 #'   model. `estimate_gamma_hyperparameters` is a wrapper that adds new columns
 #'   to the data (one for alpha and one for betas). Note that for `lgmr`
 #'   objects, the `estimate_beta` function assumes that the data is ordered as

@@ -6,11 +6,11 @@
 \alias{baldur}
 \title{The 'baldur' package.}
 \description{
-baldur is a Bayesian hierarchical model for statistical decision
-in proteomics data. It partitions the mean-variance trend into two parts
-using a probabilistic distance metric based on a gamma regression. It then
-uses a gamma regression (with or without partitioning) as en Empirical
-Bayes estimator for the prior on the variance. Further, it assumes that
+\code{baldur} is a Bayesian hierarchical model for statistical decision
+in proteomics data. It models the mean-variance trend with the option of
+two different regression models, a gamma regression or a latent gamma
+mixture regression. It then the regression model as en Empirical Bayes
+estimator for the prior on the variance. Further, it assumes that
 each measurement has an uncertainty (increased variance) associated with it
 that it also infers. Finally, it tries to estimate the posterior
 distribution (by Hamiltonian Monte Carlo) for the differences in means for
@@ -19,8 +19,9 @@ tails to estimate the probability of error from which a statistical
 decision can be made.
 }
 \references{
-Berg and Popescu (2023). Baldur: a Bayesian hierarchical model for
-label-free proteomics using mean-variance trend. Under review. Stan
-Development Team (2022). RStan: the R interface to Stan. R package version
+Berg and Popescu (2023). Baldur: Bayesian Hierarchical Modeling
+For Label-Free Proteomics Exploiting Gamma Dependent Mean-Variance Trends.
+Under review.
+Stan Development Team (2022). RStan: the R interface to Stan. R package version
 2.21.5. https://mc-stan.org
 }

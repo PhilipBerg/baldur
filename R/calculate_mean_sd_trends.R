@@ -1,8 +1,11 @@
 #' Calculate the Mean-Variance trend
 #'
-#' @description Calculates the mean and standard deviation of each row (peptide)
-#'   and adds them as new columns. Assumes that the condition names are the
-#'   names in the design matrix.
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
+#'  Calculates the mean and standard deviation of each row (peptide)
+#'  and adds them as new columns. Assumes that the condition names are the
+#'  names in the design matrix.
 #' @param data A `tibble` or `data.frame` to annotate with mean and sd
 #' @param design_matrix A design matrix for the data (see example).
 #'

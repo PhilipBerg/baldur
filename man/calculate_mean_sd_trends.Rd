@@ -15,6 +15,8 @@ calculate_mean_sd_trends(data, design_matrix)
 A \code{tibble} or \code{data.frame} with the mean and sd vectors
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Calculates the mean and standard deviation of each row (peptide)
 and adds them as new columns. Assumes that the condition names are the
 names in the design matrix.

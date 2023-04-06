@@ -31,6 +31,8 @@ normalized data and one containing the loading info as well as the
 estimated normalization factors.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This function generates a pseudo-reference by taking the geometric mean of
 each feature across all samples. Each feature in each sample is then divided
 by the pseudo-reference. Then, the median ratio of all ratios is used as an
@@ -43,8 +45,6 @@ For details see \insertCite{anders2010differential;textual}{baldur}.
 yeast_psrn <- psrn(yeast, "identifier")
 yeast_psrn_with_load <- psrn(yeast, "identifier", load_info = TRUE)
 yeast_ng50_only <- psrn(yeast, "identifier", target = matches('ng50'))
-
-
 }
 \references{
 \insertAllCited{}

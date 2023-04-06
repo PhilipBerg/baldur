@@ -1,6 +1,9 @@
 utils::globalVariables(c(".", "lfc", "err"))
 #' Plot the -log10(err) against the log fold-change
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' `plot_volcano` returns a `ggplot` with a graphical representation between the
 #' -log10(err) and LFC.
 #'

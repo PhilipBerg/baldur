@@ -2,6 +2,9 @@
 utils::globalVariables(c("sd", "model"))
 #' Function for plotting the mean-variance gamma regressions
 #'
+#' @description
+#' `r lifecycle::badge('experimental')`
+#'
 #' Generates a scatter plot with the gamma regressions of the mean-variance
 #' trend
 #'

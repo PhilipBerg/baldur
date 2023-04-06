@@ -22,6 +22,7 @@ E.g., a value of 10 will make each line span 1 \% of the x-axis.}
 A ggplot object
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Options to plot the LGMR model. \code{plot_lgmr_regression} will plot the data
 colored by the amount of latent trend they have as well as the two extreme
 regression cases when \eqn{\theta} is zero or one. \code{plot_regression_field}
