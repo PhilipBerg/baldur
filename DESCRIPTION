@@ -4,13 +4,13 @@ Version: 0.0.1
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3772-6185"))
-Description: Baldur is a Bayesian hierarchical model for statistical decision
-    in proteomics data. It models the mean-variance trend with the option of
-    two different regression models, a gamma regression or a latent gamma
-    mixture regression. It then the regression model as en Empirical Bayes
-    estimator for the prior on the variance. Further, it assumes that
-    each measurement has an uncertainty (increased variance) associated with it
-    that it also infers. Finally, it tries to estimate the posterior
+Description: Statistical decision in proteomics data using a hierarchical
+    Bayesian model. There are two regression models for describing the 
+    mean-variance trend, a gamma regression or a latent gamma mixture
+    regression. The regression model is then used as an Empirical Bayes
+    estimator for the prior on the variance in a peptide. Further, it assumes
+    that each measurement has an uncertainty (increased variance) associated
+    with it that is also infered. Finally, it tries to estimate the posterior
     distribution (by Hamiltonian Monte Carlo) for the differences in means for
     each peptide in the data. Once the posterior is inferred, it integrates the
     tails to estimate the probability of error from which a statistical decision

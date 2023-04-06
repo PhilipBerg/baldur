@@ -14,7 +14,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   information for each peptide's posterior (see **Value** below). There are
 #'   major time gains to be made by running this procedure in parallel.
 #'   `infer_data_and_decision_model` has an efficient wrapper around
-#'   `multipldyr`. This will let you to evenly distribute all peptides evenly to
+#'   `multidplyr`. This will let you to evenly distribute all peptides evenly to
 #'   each worker. E.g., two workers will each run half of the peptides in
 #'   parallel.
 #'
