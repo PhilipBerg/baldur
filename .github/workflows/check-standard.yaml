@@ -6,12 +6,8 @@ on:
   pull_request:
     branches: [main, master]
 
-name: executable Permissions
-        run: |
-          chmod +x configure
-
 name: R-CMD-check
-z
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
