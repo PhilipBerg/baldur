@@ -411,9 +411,23 @@ check_contrast <- function(contrast_matrix, cenv = rlang::caller_call()) {
   acs <- colSums(abs(contrast_matrix))
 
   if (any(cs != 0)) {
-    cs <- which(cs != 0)
-    cs <- rlang::abort(
-      paste0('Column(s) ', cs, ' do not sum to 0.\n'),
+    csi <- which(cs != 0)
+    rlang::abort(
+      c(
+        paste0(
+          "Your contrast matix, ",
+          rlang::as_name(inp),
+          ", column(s) do not sum to zero.")
+        ,
+        paste0(
+          'The following column(s): ',
+          stringr::str_flatten(csi, ', '),
+          ', do not sum to 0.'
+        ),
+        paste0(
+          'They sum to ', stringr::str_flatten(cs[csi], ', '), ', respesctively.'
+        )
+      ),
       call = cenv
     )
   }

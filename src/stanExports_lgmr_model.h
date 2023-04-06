@@ -87,7 +87,7 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 44, column 11 to column 12)",
                                                       " (in 'string', line 44, column 4 to column 66)",
                                                       " (in 'string', line 45, column 4 to column 12)",
-                                                      " (in 'string', line 46, column 4 to column 14)",
+                                                      " (in 'string', line 46, column 4 to column 17)",
                                                       " (in 'string', line 47, column 4 to column 27)",
                                                       " (in 'string', line 43, column 2 to line 48, column 3)",
                                                       " (in 'string', line 49, column 2 to column 22)",
@@ -111,7 +111,7 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 15, column 2 to column 41)",
                                                       " (in 'string', line 23, column 31 to column 32)",
                                                       " (in 'string', line 3, column 11 to column 12)",
-                                                      " (in 'string', line 3, column 4 to column 57)",
+                                                      " (in 'string', line 3, column 4 to column 59)",
                                                       " (in 'string', line 4, column 14 to column 44)",
                                                       " (in 'string', line 5, column 4 to column 20)",
                                                       " (in 'string', line 2, column 89 to line 6, column 3)"};

@@ -75,20 +75,20 @@ using stan::math::pow;
 stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
-                                                      " (in 'string', line 27, column 2 to column 15)",
-                                                      " (in 'string', line 28, column 2 to column 22)",
-                                                      " (in 'string', line 29, column 2 to column 17)",
-                                                      " (in 'string', line 30, column 2 to column 16)",
-                                                      " (in 'string', line 31, column 2 to column 25)",
-                                                      " (in 'string', line 34, column 2 to column 34)",
-                                                      " (in 'string', line 35, column 2 to column 41)",
-                                                      " (in 'string', line 36, column 2 to column 37)",
-                                                      " (in 'string', line 39, column 2 to column 36)",
-                                                      " (in 'string', line 40, column 2 to column 30)",
-                                                      " (in 'string', line 41, column 2 to column 46)",
-                                                      " (in 'string', line 42, column 2 to column 59)",
-                                                      " (in 'string', line 43, column 2 to column 43)",
-                                                      " (in 'string', line 44, column 2 to column 44)",
+                                                      " (in 'string', line 24, column 2 to column 15)",
+                                                      " (in 'string', line 25, column 2 to column 22)",
+                                                      " (in 'string', line 26, column 2 to column 17)",
+                                                      " (in 'string', line 27, column 2 to column 16)",
+                                                      " (in 'string', line 28, column 2 to column 25)",
+                                                      " (in 'string', line 31, column 2 to column 34)",
+                                                      " (in 'string', line 32, column 2 to column 41)",
+                                                      " (in 'string', line 33, column 2 to column 37)",
+                                                      " (in 'string', line 36, column 2 to column 36)",
+                                                      " (in 'string', line 37, column 2 to column 30)",
+                                                      " (in 'string', line 38, column 2 to column 46)",
+                                                      " (in 'string', line 39, column 2 to column 59)",
+                                                      " (in 'string', line 40, column 2 to column 43)",
+                                                      " (in 'string', line 41, column 2 to column 44)",
                                                       " (in 'string', line 2, column 2 to column 17)",
                                                       " (in 'string', line 3, column 2 to column 17)",
                                                       " (in 'string', line 4, column 2 to column 8)",
@@ -112,22 +112,19 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 15, column 2 to column 20)",
                                                       " (in 'string', line 16, column 9 to column 10)",
                                                       " (in 'string', line 16, column 12 to column 13)",
-                                                      " (in 'string', line 16, column 2 to column 21)",
+                                                      " (in 'string', line 16, column 2 to column 31)",
                                                       " (in 'string', line 18, column 4 to column 26)",
-                                                      " (in 'string', line 20, column 6 to column 33)",
-                                                      " (in 'string', line 19, column 19 to line 21, column 5)",
-                                                      " (in 'string', line 19, column 4 to line 21, column 5)",
-                                                      " (in 'string', line 17, column 17 to line 22, column 3)",
-                                                      " (in 'string', line 17, column 2 to line 22, column 3)",
-                                                      " (in 'string', line 23, column 2 to column 21)",
-                                                      " (in 'string', line 24, column 2 to column 18)",
+                                                      " (in 'string', line 17, column 17 to line 19, column 3)",
+                                                      " (in 'string', line 17, column 2 to line 19, column 3)",
+                                                      " (in 'string', line 20, column 2 to column 21)",
+                                                      " (in 'string', line 21, column 2 to column 18)",
+                                                      " (in 'string', line 24, column 9 to column 10)",
+                                                      " (in 'string', line 26, column 14 to column 15)",
                                                       " (in 'string', line 27, column 9 to column 10)",
-                                                      " (in 'string', line 29, column 14 to column 15)",
-                                                      " (in 'string', line 30, column 9 to column 10)",
-                                                      " (in 'string', line 31, column 9 to column 10)",
-                                                      " (in 'string', line 34, column 13 to column 14)",
-                                                      " (in 'string', line 35, column 9 to column 10)",
-                                                      " (in 'string', line 36, column 9 to column 10)"};
+                                                      " (in 'string', line 28, column 9 to column 10)",
+                                                      " (in 'string', line 31, column 13 to column 14)",
+                                                      " (in 'string', line 32, column 9 to column 10)",
+                                                      " (in 'string', line 33, column 9 to column 10)"};
 #include <stan_meta_header.hpp>
 class model_empirical_bayes final : public model_base_crtp<model_empirical_bayes> {
 private:
@@ -359,7 +356,10 @@ public:
       abs_c = Eigen::Matrix<double, -1, -1>(K, C);
       stan::math::fill(abs_c, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 44;
+      current_statement__ = 38;
+      assign(abs_c, nil_index_list(), stan::math::fabs(c),
+        "assigning variable abs_c");
+      current_statement__ = 41;
       for (int i = 1; i <= K; ++i) {
         current_statement__ = 39;
         assign(n_k, cons_list(index_uni(i), nil_index_list()),
@@ -368,38 +368,27 @@ public:
               rvalue(x,
                 cons_list(index_omni(),
                   cons_list(index_uni(i), nil_index_list())), "x"))),
-          "assigning variable n_k");
-        current_statement__ = 42;
-        for (int j = 1; j <= C; ++j) {
-          current_statement__ = 40;
-          assign(abs_c,
-            cons_list(index_uni(i),
-              cons_list(index_uni(j), nil_index_list())),
-            stan::math::abs(
-              rvalue(c,
-                cons_list(index_uni(i),
-                  cons_list(index_uni(j), nil_index_list())), "c")),
-            "assigning variable abs_c");}}
-      current_statement__ = 45;
+          "assigning variable n_k");}
+      current_statement__ = 42;
       assign(n_c, nil_index_list(), multiply(transpose(n_k), abs_c),
         "assigning variable n_c");
-      current_statement__ = 46;
+      current_statement__ = 43;
       assign(n_c, nil_index_list(),
         stan::math::sqrt(stan::model::deep_copy(n_c)),
         "assigning variable n_c");
-      current_statement__ = 47;
+      current_statement__ = 44;
       validate_non_negative_index("mu", "K", K);
-      current_statement__ = 48;
+      current_statement__ = 45;
       validate_non_negative_index("y_diff", "C", C);
-      current_statement__ = 49;
+      current_statement__ = 46;
       validate_non_negative_index("eta", "K", K);
-      current_statement__ = 50;
+      current_statement__ = 47;
       validate_non_negative_index("prior_mu_not", "K", K);
-      current_statement__ = 51;
+      current_statement__ = 48;
       validate_non_negative_index("mu_diff", "C", C);
-      current_statement__ = 52;
+      current_statement__ = 49;
       validate_non_negative_index("sigma_mu_not", "K", K);
-      current_statement__ = 53;
+      current_statement__ = 50;
       validate_non_negative_index("sigma_lfc", "C", C);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);

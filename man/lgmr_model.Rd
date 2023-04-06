@@ -46,7 +46,7 @@ over a increase in slope.
 
 \if{html}{\out{<div class="sourceCode stan">}}\preformatted{functions \{
 vector reg_function(vector x, vector theta, real I, real I_L, real S, real S_L, int N) \{
-  vector[N] exp_beta  = .001*exp(theta.*(I_L - S_L*x));
+  vector[N] exp_beta  = .001*exp(theta .* (I_L - S_L*x));
   exp_beta +=      exp(I - S*x);
   return exp_beta;
   \}
@@ -63,10 +63,10 @@ transformed data \{
 parameters \{
   real<lower = 0> alpha;    // Shape
   real<lower = 0> alpha_mu; // Shape mean hyperprior
-  real I;                   // Intercep common
+  real I;                   // Intercept common
   real I_L;                 // Intercept Latent
   vector<lower = 0>[2] eta; // For S,S_L
-  vector<lower = 0, upper = 1>[N] theta; // Mixture paramater
+  vector<lower = 0, upper = 1>[N] theta; // Mixture parameter
 \}
 transformed parameters \{
   real<lower = 0> S     = eta[1];    // Slope common

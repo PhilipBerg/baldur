@@ -1,6 +1,6 @@
 functions {
   vector reg_function(vector x, vector theta, real I, real I_L, real S, real S_L, int N) {
-    vector[N] exp_beta  = .001*exp(theta.*(I_L - S_L*x));
+    vector[N] exp_beta  = .001*exp(theta .* (I_L - S_L*x));
               exp_beta +=      exp(I - S*x);
     return exp_beta;
   }
@@ -22,7 +22,7 @@ parameters {
   real I;                   // Intercep common
   real I_L;                 // Intercept Latent
   vector<lower = 0>[2] eta; // For S,S_L
-  vector<lower = 0, upper = 1>[N] theta; // Mixture paramater
+  vector<lower = 0, upper = 1>[N] theta; // Mixture parameter
 }
 
 transformed parameters {
@@ -48,7 +48,7 @@ generated quantities {
   {
     vector[N] se = reg_function(x_star, theta, I, I_L, S, S_L, N);
     se -= y;
-    se = se^2;
+    se = se .^ 2;
     nrmse = mean(se) / v_y;
   }
   nrmse = sqrt(nrmse);

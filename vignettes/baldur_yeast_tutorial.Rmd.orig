@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 # 1. Setup
-This tutorial is quite fast and on a very simple data set (2 conditions only), for a more complicated tutorial for setup please see `vignette('baldur_ups_tutorial')`.
+This tutorial is quite fast and on a very simple data set (2 conditions only), for a more complicated tutorial on the setup please see `vignette('baldur_ups_tutorial')`.
 First we load `baldur` and setup the model dependent variables we need, then normalize the data and add the mean-variance trends.
 ```{r setup}
 library(baldur)
@@ -29,7 +29,7 @@ yeast_contrast <- matrix(c(-1, 1), nrow = 2)
 id_col <- colnames(yeast)[1] # "identifier"
 
 # Since baldur itself does not deal with missing data we remove the
-# rows that have missing data for the purpose of the tutorial.
+# rows that have missing values for the purpose of the tutorial.
 # Else, one would replace the filtering step with imputation but that is outside
 # the scope of baldur
 yeast_norm <- yeast %>%
@@ -94,6 +94,13 @@ print(yeast_lgmr, pars = c("coef", "aux"))
 # Extract the regression, alpha, and theta parameters and the NRMSE.
 yeast_lgmr_coef <- coef(yeast_lgmr, pars = "all")
 ```
+Baldur allows for two ways to plot the LGMR model, `plot_lgmr_regression`, and `plot_regression_field`.
+The first plots lines of three cases of $\theta$, `0`, `0.5`, and `1`, and colors each peptide according to their infered $\theta$.
+They can be plotted accordingly:
+```{r plotting_lgmr_yeast, fig.show='hold', fig.width=7.2, fig.height = 7.2}
+plot_lgmr_regression(yeast_lgmr)
+plot_regression_field(yeast_lgmr, rng = 25)
+```
 
 We can then estimate the uncertainty similar to the GR case:
 ```{r lgmr_unc}
@@ -118,7 +125,7 @@ lgmr_results <- yeast_lgmr %>%
 # 5. Visualization of the results
 `baldur` have two ways of visualizing the results 1) plotting sigma vs LFC and 2) Volcano plots.
 To plot sigma against LFC we use `plot_sa`:
-```{r plotting_sa, fig.show='hold', fig.width=7.2, fig.height = 7.2}
+```{r plotting_sa_yeast, fig.show='hold', fig.width=7.2, fig.height = 7.2}
 gr_results %>%
   plot_sa(
     alpha = .05, # Level of significance
@@ -134,7 +141,7 @@ lgmr_results %>%
 
 While it is hard to see with this few examples, in general a good decision is indicated by a lack of a trend between $\sigma$ and LFC.
 To make a volcano plot one uses `plot_volcano` in a similar fashion to `plot_sa`:
-```{r plotting_volc, fig.show='hold', fig.width=7.2, fig.height = 7.2}
+```{r plotting_volc_yeast, fig.show='hold', fig.width=7.2, fig.height = 7.2}
 gr_results %>%
   plot_volcano(
     alpha = .05, # Level of significance

@@ -25,14 +25,11 @@ about the mean. As such, for the WI prior, we use a normal prior on
   vector[N] u;        // uncertainty
 \}
 transformed data\{
-  vector[K] n_k;  // per condition measurements
-  row_vector[C] n_c;      // per comparison measurements
-  matrix[K, C] abs_c; // abs of C for n_c calculation
+  vector[K] n_k;                // per condition measurements
+  row_vector[C] n_c;            // per comparison measurements
+  matrix[K, C] abs_c = fabs(c); // abs of C for n_c calculation
   for (i in 1:K) \{
     n_k[i] = 1/sum(x[,i]);
-    for (j in 1:C) \{
-      abs_c[i, j] = abs(c[i, j]);
-    \}
   \}
   n_c = n_k' * abs_c;
   n_c = sqrt(n_c);

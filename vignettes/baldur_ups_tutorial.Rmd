@@ -17,7 +17,7 @@ The `UPS-DS` has one more condition than the `yeast-DS` and has one more replica
 library(baldur)
 # Packages for pre-processing
 library(dplyr, warn.conflicts = FALSE)
-library(tidyr)
+library(tidyr, warn.conflicts = FALSE)
 
 # Setup the design matrix
 ups_design <- model.matrix(~ 0 + factor(rep(1:3, each = 4)))
@@ -27,7 +27,7 @@ colnames(ups_design) <- paste0('fmol', c(25, 50, 100))
 id_col <- colnames(ups)[1] # "identifier"
 
 # Normalize and add M-V trend
-ups <- ups %>%
+ups_norm <- ups %>%
   # Remove rows with NA for the sake of the tutorial
   drop_na() %>%
   # Normalize the data
@@ -40,20 +40,18 @@ ups_contrast <- matrix(
   c(
      1,  1,   0,  1,   -0.5, -0.5,
     -1,  0,   1, -0.5,  1,   -0.5,
-     0, -1,  -1, -0.5  -0.5,  1
+     0, -1,  -1, -0.5, -0.5,  1
   ), nrow = ncol(ups_design),
   byrow = TRUE
 )
-#> Warning in matrix(c(1, 1, 0, 1, -0.5, -0.5, -1, 0, 1, -0.5, 1, -0.5, 0, : data length [17] is not a
-#> sub-multiple or multiple of the number of rows [3]
 ```
 Lets go over the design and contrast matrix.
 First, lets not how the design matrix uses subsets of the real columns of each condition:
 
 ```r
-colnames(ups[-1])
-#>  [1] "fmol25_1"  "fmol25_2"  "fmol25_3"  "fmol25_4"  "fmol50_1"  "fmol50_2"  "fmol50_3"  "fmol50_4" 
-#>  [9] "fmol100_1" "fmol100_2" "fmol100_3" "fmol100_4" "mean"      "sd"
+colnames(ups_norm[-1])
+#>  [1] "fmol25_1"  "fmol25_2"  "fmol25_3"  "fmol25_4"  "fmol50_1"  "fmol50_2"  "fmol50_3"  "fmol50_4"  "fmol100_1" "fmol100_2"
+#> [11] "fmol100_3" "fmol100_4" "mean"      "sd"
 colnames(ups_design)
 #> [1] "fmol25"  "fmol50"  "fmol100"
 ```
@@ -66,7 +64,7 @@ ups_contrast
 #>      [,1] [,2] [,3] [,4] [,5] [,6]
 #> [1,]    1    1    0  1.0 -0.5 -0.5
 #> [2,]   -1    0    1 -0.5  1.0 -0.5
-#> [3,]    0   -1   -1 -1.0  1.0  1.0
+#> [3,]    0   -1   -1 -0.5 -0.5  1.0
 ```
 First, note how the contrast only has two columns; currently `baldur` only allows pair-wise comparisons.
 Lets go over the rows, the first row tells us that the first column of the design matrix should be compared against the second.
@@ -79,21 +77,20 @@ And, of course, the last row shows the mean of condition one and three vs condit
 First, I would like to note that reader that the remainder of the tutorial will look very similar to `vignette("baldur_yeast_tutorial")`.
 The next step in `baldur` is to partition the trends in the mean and variance, and then to estimate the uncertainty of each measurement.
 
-The trends before and after partitioning can then be visualized with `plot_gamma_regression`:
+The trends before and after partitioning can then be visualized with `plot_gamma`:
 
 ```r
-plot_gamma(ups)
+plot_gamma(ups_norm)
 ```
 
-![plot of chunk plot_gam](figure/plot_gam-1.png)
-and the two individual plots can be plotted with `plot_gamma` and `plot_gamma_partition`.
-We can then estimate the uncertainty for the partitioned data as follows:
+![plot of chunk plot_gam](plot_gam-1.png)
 
+We can then estimate the uncertainty for the partitioned data as follows:
 ```r
 # Fit the gamma regression
-gr <- fit_gamma_regression(ups)
+gr <- fit_gamma_regression(ups_norm)
 # Get each data points uncertainty
-unc_gr <- estimate_uncertainty(gr, ups, id_col, ups_design)
+unc_gr <- estimate_uncertainty(gr, ups_norm, id_col, ups_design)
 ```
 
 # 3. Sampling from the Data and Decision model
@@ -105,7 +102,7 @@ The only thing that needs to be changed is the `clusters` flag:
 # Single trend
 gr_results <- gr %>%
   # Add hyper-priors for sigma
-  estimate_gamma_hyperparameters(ups, id_col) %>%
+  estimate_gamma_hyperparameters(ups_norm, id_col) %>%
   infer_data_and_decision_model(
     id_col,
     ups_design,
@@ -113,10 +110,6 @@ gr_results <- gr %>%
     unc_gr,
     clusters = 10 # Change this to 1 to run sequentially
   )
-#> Error in `infer_data_and_decision_model()`:
-#> ! Column(s) 4 do not sum to 0.
-#> 
-#> • Column(s) 5 do not sum to 0.
 ```
 Here `err` is the probability of error, i.e., the two tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, `sigma` is the common variance, and `lp` is the log-posterior.
 Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0, and 97.5, percentiles, respectively.
@@ -126,25 +119,25 @@ An important difference from `yeast-DS` is that each peptide gets three rows, on
 
 # 4. Inference with Latent Gamma Mixuter Regression
 To run Baldur with the LGMR model is very similar to running it with the GR model.
-First we fit the regression model using the `fit_lgmr` function:
+First we fit the regression model using the `fit_lgmr` function.
+Here I will try to make use of my parallel processors to speed-up the inference:
 
 ```r
-ups_lgmr <- fit_lgmr(ups, id_col, cores = 5)
-#> Warning: There were 2 divergent transitions after warmup. See
+ups_lgmr <- fit_lgmr(ups_norm, id_col, chains = 10, cores = 10, warmup = 1000, iter = 3000)
+#> Warning: There were 1 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.
 #> Warning: Examine the pairs() plot to diagnose sampling problems
 ```
-We can the estimate the uncertanties and hyperparameters for the data and decision model and run them as for the GR model:
-
+We can then estimate the uncertainties and hyperparameters for the data and decision model and run them as for the GR model:
 
 ```r
 # Estimate uncertainty
-unc_lgmr <- estimate_uncertainty(ups_lgmr, ups, id_col, ups_design)
+unc_lgmr <- estimate_uncertainty(ups_lgmr, ups_norm, id_col, ups_design)
 # Sample from the data and decision model
 lgmr_results <- ups_lgmr %>%
   # Add hyper-priors for sigma
-  estimate_gamma_hyperparameters(ups, id_col) %>%
+  estimate_gamma_hyperparameters(ups_norm, id_col) %>%
   infer_data_and_decision_model(
     id_col,
     ups_design,
@@ -152,11 +145,16 @@ lgmr_results <- ups_lgmr %>%
     unc_lgmr,
     clusters = 10 # Change this to 1 to run sequentially
   )
-#> Error in `infer_data_and_decision_model()`:
-#> ! Column(s) 4 do not sum to 0.
-#> 
-#> • Column(s) 5 do not sum to 0.
 ```
+
+Plotting LGMR:
+
+```r
+plot_lgmr_regression(ups_lgmr)
+plot_regression_field(ups_lgmr, rng = 25)
+```
+
+![plot of chunk plotting_lgmr](plotting_lgmr-1.png)![plot of chunk plotting_lgmr](plotting_lgmr-2.png)
 
 # 5. Visualization of the results
 `baldur` have two ways of visualizing the results 1) plotting sigma vs LFC and 2) Volcano plots.
@@ -176,7 +174,7 @@ lgmr_results %>%
   )
 ```
 
-![plot of chunk plotting_sa](figure/plotting_sa-1.png)![plot of chunk plotting_sa](figure/plotting_sa-2.png)
+![plot of chunk plotting_sa](plotting_sa-1.png)![plot of chunk plotting_sa](plotting_sa-2.png)
 In general, a good decision is indicated by a lack of a trend between $\sigma$ and LFC.
 We can see that Baludr with the LGMR model (second plot) has a lower trend compared to GR model (first plot) for which there is a trend for $\sigma$ to increase with LFC.
 
@@ -195,4 +193,4 @@ lgmr_results %>%
   )
 ```
 
-![plot of chunk plotting_volc](figure/plotting_volc-1.png)![plot of chunk plotting_volc](figure/plotting_volc-2.png)
+![plot of chunk plotting_volc](plotting_volc-1.png)![plot of chunk plotting_volc](plotting_volc-2.png)
