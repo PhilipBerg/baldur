@@ -1,5 +1,5 @@
 Package: baldur
-Title: Bayesian Hierarchical Modeling For Label-Free Proteomics Exploiting Gamma Dependent Mean-Variance Trends
+Title: Bayesian Hierarchical Modeling for Label-Free Proteomics Exploiting Gamma Dependent Mean-Variance Trends
 Version: 0.0.1
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),

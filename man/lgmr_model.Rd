@@ -40,6 +40,11 @@ model the latent intercept. The reason for this is two-fold, one,
 latent trend upwards. The latter reason is so that the latent intercept is
 larger than the common and so that the priors prioritize a shift in intercept
 over a increase in slope.
+For the intercepts, Baldur uses a standard normal prior for the common intercept.
+\deqn{\gamma_0\sim\mathcal{N}(0,1)}
+While for the latent trend, it uses a skew-normal (SN) to push up the second
+trend and to counteract the shrinkage of \eqn{\kappa}.
+\deqn{\gamma_{0L}\sim\mathcal{SN}(2,15,35)}
 }
 \section{Code}{
  The \code{Stan} code for this model is given by:
@@ -89,7 +94,7 @@ generated quantities \{
   \{
     vector[N] se = reg_function(x_star, theta, I, I_L, S, S_L, N);
     se -= y;
-    se = se^2;
+    se  = square(se);
     nrmse = mean(se) / v_y;
   \}
   nrmse = sqrt(nrmse);

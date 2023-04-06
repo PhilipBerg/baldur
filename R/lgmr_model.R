@@ -35,6 +35,12 @@
 #' latent trend upwards. The latter reason is so that the latent intercept is
 #' larger than the common and so that the priors prioritize a shift in intercept
 #' over a increase in slope.
+#' For the intercepts, Baldur uses a standard normal prior for the common intercept.
+#' \deqn{\gamma_0\sim\mathcal{N}(0,1)}
+#' While for the latent trend, it uses a skew-normal (SN) to push up the second
+#' trend and to counteract the shrinkage of \eqn{\kappa}.
+#' \deqn{\gamma_{0L}\sim\mathcal{SN}(2,15,35)}
+#'
 #'
 #' @section Code: The `Stan` code for this model is given by:
 #' ```stan

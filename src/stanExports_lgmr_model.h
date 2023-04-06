@@ -87,7 +87,7 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 44, column 11 to column 12)",
                                                       " (in 'string', line 44, column 4 to column 66)",
                                                       " (in 'string', line 45, column 4 to column 12)",
-                                                      " (in 'string', line 46, column 4 to column 17)",
+                                                      " (in 'string', line 46, column 4 to column 21)",
                                                       " (in 'string', line 47, column 4 to column 27)",
                                                       " (in 'string', line 43, column 2 to line 48, column 3)",
                                                       " (in 'string', line 49, column 2 to column 22)",
@@ -571,7 +571,7 @@ public:
         assign(se, nil_index_list(), subtract(stan::model::deep_copy(se), y),
           "assigning variable se");
         current_statement__ = 13;
-        assign(se, nil_index_list(), pow(stan::model::deep_copy(se), 2),
+        assign(se, nil_index_list(), square(stan::model::deep_copy(se)),
           "assigning variable se");
         current_statement__ = 14;
         nrmse = (mean(se) / v_y);
