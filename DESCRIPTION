@@ -1,10 +1,12 @@
 Package: baldur
-Title: Bayesian hierarchical modeling for label-free proteomics exploiting gamma dependent mean-variance trends
+Title: Bayesian Hierarchical Modeling For Label-Free Proteomics Exploiting Gamma Dependent Mean-Variance Trends
 Version: 0.0.1
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3772-6185"))
 Description: Differential abundance analysis for label-free proteomics using a Bayesian decision model.
+    Baldur utilizes the mean-variance trend to estimate variance priors and measurement specific uncertainties.
+    It uses this to builed a posterior distribution of the differences in means and then integrates the tails to estimate the probability of error.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
