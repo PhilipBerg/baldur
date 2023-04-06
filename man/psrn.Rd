@@ -34,7 +34,7 @@ estimated normalization factors.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This function generates a pseudo-reference by taking the geometric mean of
-each feature across all samples. Each feature in each sample is then divided
+each peptide across all samples. Each peptide in each sample is then divided
 by the pseudo-reference. Then, the median ratio of all ratios is used as an
 estimate to use for normalizing differences in loading concentration. All
 features in each sample is then divided by their corresponding estimate.
