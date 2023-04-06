@@ -83,7 +83,7 @@
 #'   {
 #'     vector[N] se = reg_function(x_star, theta, I, I_L, S, S_L, N);
 #'     se -= y;
-#'     se = se^2;
+#'     se  = square(se);
 #'     nrmse = mean(se) / v_y;
 #'   }
 #'   nrmse = sqrt(nrmse);
