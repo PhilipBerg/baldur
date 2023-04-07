@@ -20,7 +20,9 @@ side, and the right side after.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Generates a scatter plot with the gamma regressions of the mean-variance
-trend
+trend. Can either be ran directly with \code{plot_gamma_regression} and inputing
+a design matrix, or with \code{plot_gamma} if the M-V trend has been added to the
+data with \code{\link[=calculate_mean_sd_trends]{calculate_mean_sd_trends()}}.
 }
 \examples{
 # Produce a design matrix

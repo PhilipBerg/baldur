@@ -73,7 +73,7 @@ decision distribution D. It then returns a \code{\link[=tibble]{tibble()}} with 
 information for each peptide's posterior (see \strong{Value} below). There are
 major time gains to be made by running this procedure in parallel.
 \code{infer_data_and_decision_model} has an efficient wrapper around
-\code{multipldyr}. This will let you to evenly distribute all peptides evenly to
+\code{multidplyr}. This will let you to evenly distribute all peptides evenly to
 each worker. E.g., two workers will each run half of the peptides in
 parallel.
 }
