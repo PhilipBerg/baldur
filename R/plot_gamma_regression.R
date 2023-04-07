@@ -6,7 +6,9 @@ utils::globalVariables(c("sd", "model"))
 #' `r lifecycle::badge('experimental')`
 #'
 #' Generates a scatter plot with the gamma regressions of the mean-variance
-#' trend
+#' trend. Can either be ran directly with `plot_gamma_regression` and inputing
+#' a design matrix, or with `plot_gamma` if the M-V trend has been added to the
+#' data with [calculate_mean_sd_trends()].
 #'
 #' @param data The data to use for producing the plots.
 #' @param design A design matrix as produced by
@@ -16,9 +18,6 @@ utils::globalVariables(c("sd", "model"))
 #'   side, and the right side after.
 #' @export
 #'
-#' @importFrom cowplot plot_grid
-#' @importFrom cowplot ggdraw
-#' @importFrom cowplot draw_label
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 geom_smooth

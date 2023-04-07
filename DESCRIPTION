@@ -39,7 +39,6 @@ Imports:
     Rdpack (>= 2.4),
     multidplyr (>= 0.1.1),
     ggplot2 (>= 3.3.6),
-    cowplot (>= 1.1.1),
     tibble (>= 3.1.7),
     viridisLite (>= 0.4.1),
     lifecycle
