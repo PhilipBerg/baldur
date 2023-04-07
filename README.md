@@ -1,7 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-![cran-badge](http://www.r-pkg.org/badges/version/baldur)
+![cran-badge](http://www.r-pkg.org/badges/version/baldur
+[![R-CMD-check](https://github.com/PhilipBerg/baldur/actions/workflows/check-standard.yaml/badge.svg)
 
 # Baldur
 
