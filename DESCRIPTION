@@ -10,7 +10,7 @@ Description: Statistical decision in proteomics data using a hierarchical
     regression. The regression model is then used as an Empirical Bayes
     estimator for the prior on the variance in a peptide. Further, it assumes
     that each measurement has an uncertainty (increased variance) associated
-    with it that is also infered. Finally, it tries to estimate the posterior
+    with it that is also inferred. Finally, it tries to estimate the posterior
     distribution (by Hamiltonian Monte Carlo) for the differences in means for
     each peptide in the data. Once the posterior is inferred, it integrates the
     tails to estimate the probability of error from which a statistical decision
