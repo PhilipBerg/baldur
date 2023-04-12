@@ -4,7 +4,11 @@
 
 ![cran-badge](http://www.r-pkg.org/badges/version/baldur)
 ![R-CMD-check](https://github.com/PhilipBerg/baldur/actions/workflows/check-standard.yaml/badge.svg)
+<<<<<<< HEAD
 <!-- badges: end -->
+=======
+<!-- badges: end --> 
+>>>>>>> 6140af2911325cf91ccc343c50a49aeb35e81aaa
 
 # Baldur
 
