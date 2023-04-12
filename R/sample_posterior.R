@@ -330,7 +330,7 @@ estimate_error <- function(posterior, h_not) {
 stan_summary <- function(samp, dat, condi, contrast,  h_not){
   fit <- samp$result
   lfc_pars <- paste0("y_diff[", seq_len(ncol(contrast)), "]")
-  sigma_pars <- paste0("sigma_lfc[", seq_along(condi), "]")
+  sigma_pars <- paste0("sigma_lfc[", seq_len(ncol(contrast)), "]")
   err <- rstan::extract(fit, pars = lfc_pars) %>%
     purrr::map_dbl(estimate_error, h_not)
   summ <- rstan::summary(fit, pars = c("y_diff", 'sigma_lfc', 'lp__')) %>%
