@@ -329,17 +329,15 @@ estimate_error <- function(posterior, h_not) {
 
 stan_summary <- function(samp, dat, condi, contrast,  h_not){
   fit <- samp$result
-  lfc_pars <- paste0('y_diff[', seq_len(ncol(contrast)), ']')
-  mu_pars  <- paste0("mu[", seq_along(condi), "]")
+  lfc_pars <- paste0("y_diff[", seq_len(ncol(contrast)), "]")
+  sigma_pars <- paste0("sigma_lfc[", seq_along(condi), "]")
   err <- rstan::extract(fit, pars = lfc_pars) %>%
     purrr::map_dbl(estimate_error, h_not)
-  summ <- rstan::summary(fit, pars = c(lfc_pars, mu_pars, 'sigma', 'lp__')) %>%
+  summ <- rstan::summary(fit, pars = c("y_diff", 'sigma_lfc', 'lp__')) %>%
     magrittr::use_series(summary)
   summ <- summ[
-    rownames(summ) %in% c(lfc_pars, mu_pars, 'sigma', 'lp__'),
-    colnames(summ) %in% c('mean', '2.5%', '50%', '97.5%', 'n_eff', 'Rhat')
+    , colnames(summ) %in% c('mean', '2.5%', '50%', '97.5%', 'n_eff', 'Rhat')
   ]
-  summ <- summ[, c(1:2, 4:6, 3)]
   comps <- contrast_to_comps(contrast, condi)
   dplyr::tibble(
     comparison = comps,
@@ -350,12 +348,12 @@ stan_summary <- function(samp, dat, condi, contrast,  h_not){
     lfc_975 = summ[rownames(summ) %in% lfc_pars, 3],
     lfc_eff = summ[rownames(summ) %in% lfc_pars, 4],
     lfc_rhat = summ[rownames(summ) %in% lfc_pars, 5],
-    sigma = summ[rownames(summ) == 'sigma', 1],
-    sigma_025 = summ[rownames(summ) == 'sigma', 2],
-    sigma_50 = summ[rownames(summ) == 'sigma', 6],
-    sigma_975 = summ[rownames(summ) == 'sigma', 3],
-    sigma_eff = summ[rownames(summ) == 'sigma', 4],
-    sigma_rhat = summ[rownames(summ) == 'sigma', 5],
+    sigma = summ[rownames(summ) %in% sigma_pars, 1],
+    sigma_025 = summ[rownames(summ) %in% sigma_pars, 2],
+    sigma_50 = summ[rownames(summ) %in% sigma_pars, 6],
+    sigma_975 = summ[rownames(summ) %in% sigma_pars, 3],
+    sigma_eff = summ[rownames(summ) %in% sigma_pars, 4],
+    sigma_rhat = summ[rownames(summ) %in% sigma_pars, 5],
     lp = summ[rownames(summ) == 'lp__', 1],
     lp_025 = summ[rownames(summ) == 'lp__', 2],
     lp_50 = summ[rownames(summ) == 'lp__', 6],
