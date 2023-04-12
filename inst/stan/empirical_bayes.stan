@@ -20,6 +20,7 @@ transformed data{
   }
   n_c = n_k' * abs_c;
   n_c = sqrt(n_c);
+  n_k = sqrt(2*n_k);
 }
 
 parameters {
@@ -32,7 +33,7 @@ parameters {
 
 transformed parameters{
   row_vector[C] mu_diff = mu' * c;        // differences in means
-  vector[K] sigma_mu_not = 2*sigma * n_k; // variance of ybars
+  vector[K] sigma_mu_not = sigma * n_k; // variance of ybars
   vector[C] sigma_lfc = sigma * n_c';     // variance of y_diff
 }
 

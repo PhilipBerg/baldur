@@ -3,6 +3,9 @@
 \name{lgmr_model}
 \alias{lgmr_model}
 \title{Latent Gamma Regression Model}
+\value{
+A \code{stanmodel} that can be used in \link{fit_lgmr}.
+}
 \description{
 Baldur has the option to use the Latent Gamma Regression Model
 (LGMR). This model attempts to estimate local Mean-Variance (M-V) trend for
@@ -49,11 +52,21 @@ trend and to counteract the shrinkage of \eqn{\kappa}.
 \section{Code}{
  The \code{Stan} code for this model is given by:
 
-\if{html}{\out{<div class="sourceCode stan">}}\preformatted{functions \{
-vector reg_function(vector x, vector theta, real I, real I_L, real S, real S_L, int N) \{
-  vector[N] exp_beta  = .001*exp(theta .* (I_L - S_L*x));
-  exp_beta +=      exp(I - S*x);
-  return exp_beta;
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{lgmr_model
+S4 class stanmodel 'lgmr_model' coded as follows:
+functions \{
+  vector reg_function(
+    vector x,
+    vector theta,
+    real I,
+    real I_L,
+    real S,
+    real S_L,
+    int N
+    ) \{
+    vector[N] exp_beta  = .001*exp(theta .* (I_L - S_L*x));
+              exp_beta +=      exp(I - S*x);
+    return exp_beta;
   \}
 \}
 data \{
@@ -68,7 +81,7 @@ transformed data \{
 parameters \{
   real<lower = 0> alpha;    // Shape
   real<lower = 0> alpha_mu; // Shape mean hyperprior
-  real I;                   // Intercept common
+  real I;                   // Intercep common
   real I_L;                 // Intercept Latent
   vector<lower = 0>[2] eta; // For S,S_L
   vector<lower = 0, upper = 1>[N] theta; // Mixture parameter
@@ -98,7 +111,7 @@ generated quantities \{
     nrmse = mean(se) / v_y;
   \}
   nrmse = sqrt(nrmse);
-\}
+\} 
 }\if{html}{\out{</div>}}
 }
 

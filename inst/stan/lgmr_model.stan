@@ -1,5 +1,13 @@
 functions {
-  vector reg_function(vector x, vector theta, real I, real I_L, real S, real S_L, int N) {
+  vector reg_function(
+    vector x,
+    vector theta,
+    real I,
+    real I_L,
+    real S,
+    real S_L,
+    int N
+    ) {
     vector[N] exp_beta  = .001*exp(theta .* (I_L - S_L*x));
               exp_beta +=      exp(I - S*x);
     return exp_beta;

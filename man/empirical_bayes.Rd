@@ -3,17 +3,21 @@
 \name{empirical_bayes}
 \alias{empirical_bayes}
 \title{Baldur's empirical Bayes Prior For The Mean In Conditions}
+\value{
+A \code{stanmodel} that can be used in \link{infer_data_and_decision_model}.
+}
 \description{
 Here we assume that the sample mean of each condition is an estimator for the center of the mean prior.
 In addition, it assumes that the confidence in the prior is proportional to the variance of the peptide.
-\deqn{\boldsymbol{\mu}_0\sim\mathcal{N}(\boldsymbol{\bar{y}},\sigma\boldsymbol{n}^R)}
-\deqn{\boldsymbol{n}^R=[\frac{1}{n_1},\frac{1}{n_2},\dots,\frac{1}{n_C}]}
+\deqn{\boldsymbol{\mu}_0\sim\mathcal{N}(\boldsymbol{\bar{y}},\sigma\boldsymbol{n}_R)}
+\deqn{\boldsymbol{n}_R=[\frac{1}{\sqrt{n_1}},\frac{1}{\sqrt{n_2}},\dots,\frac{1}{\sqrt{n_C}}]}
 }
 \section{Code}{
+ The \code{Stan} code for this model is given by:
 
-The \code{Stan} code for the model is given by:
-
-\if{html}{\out{<div class="sourceCode stan">}}\preformatted{data \{
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{empirical_bayes
+S4 class stanmodel 'empirical_bayes' coded as follows:
+data \{
   int<lower=0> N;     // number of data items
   int<lower=0> K;     // number of conditions
   int C;              // number of comparisons to perform
@@ -26,7 +30,7 @@ The \code{Stan} code for the model is given by:
   vector[K] mu_not;   // prior mu
 \}
 transformed data\{
-  vector[K] n_k;                // per condition measurements
+  vector[K] n_k;                // per condition reciprocal measurements
   row_vector[C] n_c;            // per comparison measurements
   matrix[K, C] abs_c = fabs(c); // abs of C for n_c calculation
   for (i in 1:K) \{
@@ -34,6 +38,7 @@ transformed data\{
   \}
   n_c = n_k' * abs_c;
   n_c = sqrt(n_c);
+  n_k = sqrt(2*n_k);
 \}
 parameters \{
   vector[K] mu;           // mean vector
@@ -44,7 +49,7 @@ parameters \{
 \}
 transformed parameters\{
   row_vector[C] mu_diff = mu' * c;        // differences in means
-  vector[K] sigma_mu_not = 2*sigma * n_k; // variance of ybars
+  vector[K] sigma_mu_not = sigma * n_k; // variance of ybars
   vector[C] sigma_lfc = sigma * n_c';     // variance of y_diff
 \}
 model \{
@@ -54,7 +59,7 @@ model \{
   mu           ~ normal(prior_mu_not + sigma * eta, sigma); // mean
   y            ~ normal(x * mu, sigma * u);                 // data model
   y_diff       ~ normal(mu_diff, sigma_lfc);                // difference statistic
-\}
+\} 
 }\if{html}{\out{</div>}}
 }
 
