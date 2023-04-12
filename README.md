@@ -1,10 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
 
-![cran-badge](http://www.r-pkg.org/badges/version/baldur)
-![R-CMD-check](https://github.com/PhilipBerg/baldur/actions/workflows/check-standard.yaml/badge.svg)
-
-# Baldur
+\[![cran-badge](http://www.r-pkg.org/badges/version/baldur)
+\[![R-CMD-check](https://github.com/PhilipBerg/baldur/actions/workflows/check-standard.yaml/badge.svg)
+<!-- badges: end --> \# Baldur
 
 The goal of Baldur is to shine light on your proteomics data. Baldur is
 a hierarchical Bayesian model that uses an empirical Bayes method to
@@ -19,8 +19,9 @@ You can install the development version of `baldur` from this github or
 the stable version from CRAN. Importantly, you first need to follow the
 instructions for installing `rstan`
 <https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started> and make
-sure that is working. Then you can install `baldur` accordingly: For the
-stable release please install from CRAN:
+sure that is working. Then you can install `baldur` accordingly:
+
+For the stable release please install from CRAN:
 
 ``` r
 install.packages('baldur') # Once on CRAN

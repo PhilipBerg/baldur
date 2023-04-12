@@ -75,20 +75,20 @@ using stan::math::pow;
 stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
-                                                      " (in 'string', line 24, column 2 to column 15)",
-                                                      " (in 'string', line 25, column 2 to column 22)",
-                                                      " (in 'string', line 26, column 2 to column 17)",
-                                                      " (in 'string', line 27, column 2 to column 16)",
-                                                      " (in 'string', line 28, column 2 to column 25)",
-                                                      " (in 'string', line 31, column 2 to column 34)",
-                                                      " (in 'string', line 32, column 2 to column 41)",
-                                                      " (in 'string', line 33, column 2 to column 37)",
-                                                      " (in 'string', line 36, column 2 to column 36)",
-                                                      " (in 'string', line 37, column 2 to column 30)",
-                                                      " (in 'string', line 38, column 2 to column 46)",
-                                                      " (in 'string', line 39, column 2 to column 59)",
-                                                      " (in 'string', line 40, column 2 to column 43)",
-                                                      " (in 'string', line 41, column 2 to column 44)",
+                                                      " (in 'string', line 25, column 2 to column 15)",
+                                                      " (in 'string', line 26, column 2 to column 22)",
+                                                      " (in 'string', line 27, column 2 to column 17)",
+                                                      " (in 'string', line 28, column 2 to column 16)",
+                                                      " (in 'string', line 29, column 2 to column 25)",
+                                                      " (in 'string', line 32, column 2 to column 34)",
+                                                      " (in 'string', line 33, column 2 to column 39)",
+                                                      " (in 'string', line 34, column 2 to column 37)",
+                                                      " (in 'string', line 37, column 2 to column 36)",
+                                                      " (in 'string', line 38, column 2 to column 30)",
+                                                      " (in 'string', line 39, column 2 to column 46)",
+                                                      " (in 'string', line 40, column 2 to column 59)",
+                                                      " (in 'string', line 41, column 2 to column 43)",
+                                                      " (in 'string', line 42, column 2 to column 44)",
                                                       " (in 'string', line 2, column 2 to column 17)",
                                                       " (in 'string', line 3, column 2 to column 17)",
                                                       " (in 'string', line 4, column 2 to column 8)",
@@ -118,13 +118,14 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'string', line 17, column 2 to line 19, column 3)",
                                                       " (in 'string', line 20, column 2 to column 21)",
                                                       " (in 'string', line 21, column 2 to column 18)",
-                                                      " (in 'string', line 24, column 9 to column 10)",
-                                                      " (in 'string', line 26, column 14 to column 15)",
-                                                      " (in 'string', line 27, column 9 to column 10)",
+                                                      " (in 'string', line 22, column 2 to column 20)",
+                                                      " (in 'string', line 25, column 9 to column 10)",
+                                                      " (in 'string', line 27, column 14 to column 15)",
                                                       " (in 'string', line 28, column 9 to column 10)",
-                                                      " (in 'string', line 31, column 13 to column 14)",
-                                                      " (in 'string', line 32, column 9 to column 10)",
-                                                      " (in 'string', line 33, column 9 to column 10)"};
+                                                      " (in 'string', line 29, column 9 to column 10)",
+                                                      " (in 'string', line 32, column 13 to column 14)",
+                                                      " (in 'string', line 33, column 9 to column 10)",
+                                                      " (in 'string', line 34, column 9 to column 10)"};
 #include <stan_meta_header.hpp>
 class model_empirical_bayes final : public model_base_crtp<model_empirical_bayes> {
 private:
@@ -377,18 +378,22 @@ public:
         stan::math::sqrt(stan::model::deep_copy(n_c)),
         "assigning variable n_c");
       current_statement__ = 44;
-      validate_non_negative_index("mu", "K", K);
+      assign(n_k, nil_index_list(),
+        stan::math::sqrt(multiply(2, stan::model::deep_copy(n_k))),
+        "assigning variable n_k");
       current_statement__ = 45;
-      validate_non_negative_index("y_diff", "C", C);
+      validate_non_negative_index("mu", "K", K);
       current_statement__ = 46;
-      validate_non_negative_index("eta", "K", K);
+      validate_non_negative_index("y_diff", "C", C);
       current_statement__ = 47;
-      validate_non_negative_index("prior_mu_not", "K", K);
+      validate_non_negative_index("eta", "K", K);
       current_statement__ = 48;
-      validate_non_negative_index("mu_diff", "C", C);
+      validate_non_negative_index("prior_mu_not", "K", K);
       current_statement__ = 49;
-      validate_non_negative_index("sigma_mu_not", "K", K);
+      validate_non_negative_index("mu_diff", "C", C);
       current_statement__ = 50;
+      validate_non_negative_index("sigma_mu_not", "K", K);
+      current_statement__ = 51;
       validate_non_negative_index("sigma_lfc", "C", C);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -475,7 +480,7 @@ public:
       stan::math::fill(sigma_mu_not, DUMMY_VAR__);
       
       current_statement__ = 7;
-      assign(sigma_mu_not, nil_index_list(), multiply((2 * sigma), n_k),
+      assign(sigma_mu_not, nil_index_list(), multiply(sigma, n_k),
         "assigning variable sigma_mu_not");
       Eigen::Matrix<local_scalar_t__, -1, 1> sigma_lfc;
       sigma_lfc = Eigen::Matrix<local_scalar_t__, -1, 1>(C);
@@ -592,7 +597,7 @@ public:
       assign(mu_diff, nil_index_list(), multiply(transpose(mu), c),
         "assigning variable mu_diff");
       current_statement__ = 7;
-      assign(sigma_mu_not, nil_index_list(), multiply((2 * sigma), n_k),
+      assign(sigma_mu_not, nil_index_list(), multiply(sigma, n_k),
         "assigning variable sigma_mu_not");
       current_statement__ = 8;
       assign(sigma_lfc, nil_index_list(), multiply(sigma, transpose(n_c)),

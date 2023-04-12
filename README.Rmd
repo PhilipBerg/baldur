@@ -27,13 +27,14 @@ Finally, it integrates the posterior to estimate the probability of error.
 You can install the development version of `baldur` from this github or the stable version from CRAN.
 Importantly, you first need to follow the instructions for installing `rstan` [https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) and make sure that is working.
 Then you can install `baldur` accordingly:
+
 For the stable release please install from CRAN:
-```{r}
+```{r, eval = FALSE}
 install.packages('baldur') # Once on CRAN
 ```
 
 Or you can install the development version of `baldur` from this github:
-```{r}
+```{r, eval = FALSE}
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 ```
 
