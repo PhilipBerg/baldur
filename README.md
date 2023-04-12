@@ -2,9 +2,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-\[![cran-badge](http://www.r-pkg.org/badges/version/baldur)
-\[![R-CMD-check](https://github.com/PhilipBerg/baldur/actions/workflows/check-standard.yaml/badge.svg)
-<!-- badges: end --> \# Baldur
+![cran-badge](http://www.r-pkg.org/badges/version/baldur)
+![R-CMD-check](https://github.com/PhilipBerg/baldur/actions/workflows/check-standard.yaml/badge.svg)
+<!-- badges: end -->
+
+# Baldur
 
 The goal of Baldur is to shine light on your proteomics data. Baldur is
 a hierarchical Bayesian model that uses an empirical Bayes method to
