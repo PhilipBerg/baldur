@@ -60,9 +60,9 @@ plot_lgmr_regression <- function(model) {
 
   mu_inputs <- mu_std_inputs(model$data)
 
-  upper <- ~ mu_fun(0,   reg_pars, .x, mu_inputs[1], mu_inputs[2])
-  middl <- ~ mu_fun(0.5, reg_pars, .x, mu_inputs[1], mu_inputs[2])
-  lower <- ~ mu_fun(1,   reg_pars, .x, mu_inputs[1], mu_inputs[2])
+  upper <- ~ mu_fun(rep(0, times = length(.x)),   reg_pars, .x, mu_inputs[1], mu_inputs[2])
+  middl <- ~ mu_fun(rep(0.5, times = length(.x)), reg_pars, .x, mu_inputs[1], mu_inputs[2])
+  lower <- ~ mu_fun(rep(1, times = length(.x)),   reg_pars, .x, mu_inputs[1], mu_inputs[2])
 
   model$data %>%
     dplyr::mutate(
@@ -98,14 +98,16 @@ plot_regression_field <- function(model, n = 10, rng = 10) {
 
   pars <- coef(model, TRUE, c('coef', 'theta'))
   reg <- pars$coef
-  theta <- pars$theta
 
   deriv <- rlang::quo(
-    -reg['S_L']*.001*theta*exp(theta*(reg['I_L']-reg['S_L']*(mean - mu_inputs[1])/mu_inputs[2])) +
+    (1/mu_inputs[2]) * (
+      -reg['S_L']*.001*theta*exp(theta*(reg['I_L']-reg['S_L']*(mean - mu_inputs[1])/mu_inputs[2])) +
       -reg['S']*exp(reg['I']-reg['S']*(mean - mu_inputs[1])/mu_inputs[2])
+    )
   )
   model$data %>%
     dplyr::mutate(
+      theta = pars$theta,
       x0 = purrr::map(mean, ~seq(from = .x - rng, to = .x + rng, length.out = n)[1:(n - 1)]),
       x1 = purrr::map(mean, ~seq(from = .x - rng, to = .x + rng, length.out = n)[2:n])
     ) %>%

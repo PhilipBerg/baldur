@@ -210,6 +210,7 @@ coef.lgmr <- function(object, simplify = FALSE, pars = c("coefficients", "auxili
 }
 
 mu_fun <- function(theta, reg_pars, y_bar, m, s){
+  check_mu_fun_inputs(theta, y_bar)
   y_bar_star <- (y_bar - m)/s
   exp(reg_pars['I'] - reg_pars['S']*y_bar_star) +
     0.001 * exp(theta * (reg_pars["I_L"] - reg_pars["S_L"] * y_bar_star))
@@ -220,5 +221,17 @@ match_pars <- function(pars = c("coefficients", "auxiliary", "theta", "all")) {
     c("auxiliary", "coefficients", "theta")
   } else {
     match.arg(pars, several.ok = TRUE)
+  }
+}
+
+check_mu_fun_inputs <- function(theta, y_bar) {
+  if (length(theta) != length(y_bar)) {
+    rlang::abort(
+      c(
+        "Length of theta not equal to length of y_bar.",
+        "mu_fun does not recycle.",
+        "If you did not run mu_fun yourself; please report this error to: https://github.com/PhilipBerg/baldur/issues"
+      )
+    )
   }
 }

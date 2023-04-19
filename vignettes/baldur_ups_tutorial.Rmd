@@ -50,8 +50,7 @@ First, lets not how the design matrix uses subsets of the real columns of each c
 
 ```r
 colnames(ups_norm[-1])
-#>  [1] "fmol25_1"  "fmol25_2"  "fmol25_3"  "fmol25_4"  "fmol50_1"  "fmol50_2"  "fmol50_3"  "fmol50_4"  "fmol100_1" "fmol100_2"
-#> [11] "fmol100_3" "fmol100_4" "mean"      "sd"
+#>  [1] "fmol25_1"  "fmol25_2"  "fmol25_3"  "fmol25_4"  "fmol50_1"  "fmol50_2"  "fmol50_3"  "fmol50_4"  "fmol100_1" "fmol100_2" "fmol100_3" "fmol100_4" "mean"      "sd"
 colnames(ups_design)
 #> [1] "fmol25"  "fmol50"  "fmol100"
 ```
@@ -86,6 +85,7 @@ plot_gamma(ups_norm)
 ![plot of chunk plot_gam](plot_gam-1.png)
 
 We can then estimate the uncertainty for the partitioned data as follows:
+
 ```r
 # Fit the gamma regression
 gr <- fit_gamma_regression(ups_norm)
@@ -124,9 +124,11 @@ Here I will try to make use of my parallel processors to speed-up the inference:
 
 ```r
 ups_lgmr <- fit_lgmr(ups_norm, id_col, chains = 10, cores = 10, warmup = 1000, iter = 3000)
-#> Warning: There were 1 divergent transitions after warmup. See
+#> Warning: There were 4 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.
+#> Warning: There were 6 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
+#> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded
 #> Warning: Examine the pairs() plot to diagnose sampling problems
 ```
 We can then estimate the uncertainties and hyperparameters for the data and decision model and run them as for the GR model:
