@@ -41,6 +41,8 @@ devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 
 Note that Ubuntu operating systems can require `pandoc` [https://pandoc.org/](https://pandoc.org/) to compile the vignettes.
 
+For Windows, the developmental version of `rstan` is sometimes needed to install `baldur`.
+
 ## Example
 
 Please see the vignettes for an examples `vignette('baldur_yeast_tutorial')` and `vignette('baldur_ups_tutorial')`.
