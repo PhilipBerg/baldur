@@ -116,7 +116,7 @@ fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 150
 #'
 #' @rdname fit_lgmr
 #' @export
-print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary", "theta", "all"), digits = 3, ...) {
+print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"), digits = 3, ...) {
 
   mu <- coef(x, TRUE, "coefficients")
   pars <- match_pars(pars)
@@ -183,7 +183,7 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
 #' @rdname fit_lgmr
 #'
 #' @export
-coef.lgmr <- function(object, simplify = FALSE, pars = c("coefficients", "auxiliary", "theta", "all"), ...) {
+coef.lgmr <- function(object, simplify = FALSE, pars = c("coefficients", "auxiliary"), ...) {
 
   pars <- match_pars(pars)
   if (simplify & !object$simplify) {

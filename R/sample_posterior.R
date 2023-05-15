@@ -297,7 +297,7 @@ stan_nse_wrapper <- function(data, model, ...){
   )
 }
 
-generate_stan_data_input <- function(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar){
+generate_stan_data_input <- function(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex){
   row <- data[data[[id_col]] == id, stringr::str_detect(names(data), condi_regex)]
   ybar <- purrr::map_dbl(purrr::set_names(condi, condi),
                          ~as.numeric(row[stringr::str_which(colnames(row), .x)]) %>%
