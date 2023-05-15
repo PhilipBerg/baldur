@@ -176,7 +176,6 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
   N <- sum(design_matrix)
   K <- ncol(design_matrix)
   C <- ncol(contrast_matrix)
-  sigma_bar <- sd(data$mean)
   ori_data <- data
   pmap_columns <- rlang::expr(list(!!rlang::sym(id_col), alpha, beta))
   if (clusters > nrow(data)) {
@@ -220,8 +219,7 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
                                'stan_model',
                                "h_not",
                                "rstan_inputs",
-                               "stan_nse_wrapper",
-                               "sigma_bar"
+                               "stan_nse_wrapper"
                              )
     )
 
@@ -248,8 +246,7 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
                                                   N, K, C,
                                                   ..2, ..3,
                                                   condi,
-                                                  condi_regex,
-                                                  sigma_bar
+                                                  condi_regex
                                                 )
                              )
     )
@@ -279,7 +276,7 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
                           bayesian_testing,
                           ori_data, id_col, design_matrix, contrast_matrix,
                           stan_model, N, K, C, uncertainty_matrix, h_not,
-                          rstan_inputs, sigma_bar
+                          rstan_inputs
         )
       ) %>%
       tidyr::unnest(tmp)
@@ -364,10 +361,10 @@ stan_summary <- function(samp, dat, condi, contrast,  h_not){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, id_col, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args, sigma_bar){
+bayesian_testing <- function(id, alpha, beta, data, id_col, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args){
   condi <- colnames(design_matrix)
   condi_regex <- paste0(condi, collapse = '|')
-  dat <- generate_stan_data_input(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, sigma_bar)
+  dat <- generate_stan_data_input(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
   stan_output <- purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)
   stan_output %>%
     stan_summary(dat, condi, dat$c, h_not)

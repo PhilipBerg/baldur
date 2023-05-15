@@ -22,17 +22,12 @@ fit_lgmr(
 \method{print}{lgmr}(
   x,
   simplify = FALSE,
-  pars = c("coefficients", "auxiliary", "theta", "all"),
+  pars = c("coefficients", "auxiliary"),
   digits = 3,
   ...
 )
 
-\method{coef}{lgmr}(
-  object,
-  simplify = FALSE,
-  pars = c("coefficients", "auxiliary", "theta", "all"),
-  ...
-)
+\method{coef}{lgmr}(object, simplify = FALSE, pars = c("coefficients", "auxiliary"), ...)
 }
 \arguments{
 \item{data}{A \code{data.frame} with mean-variance trends to use in the fitting.
