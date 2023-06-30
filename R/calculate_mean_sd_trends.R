@@ -30,9 +30,7 @@
 calculate_mean_sd_trends <- function(data, design_matrix){
   check_design(design_matrix, data)
 
-  conditions <- design_matrix %>%
-    colnames() %>%
-    paste0(collapse = '|')
+  conditions <- get_conditions(design_matrix)
 
   data %>%
     dplyr::mutate(
@@ -56,23 +54,43 @@ check_design <- function(design_matrix, data, cenv = rlang::caller_call()) {
   }
 
   condi_counts <- colSums(design_matrix)
-  col_counts <- map_dbl(names(condi_counts),
-                        ~ sum(stringr::str_count(colnames(data), .x))
-  )
+  condi <- names(condi_counts)
+  cols <- data %>%
+    dplyr::select(matches(stringr::str_flatten(condi, '|'))) %>%
+    colnames()
 
-  if (any(condi_counts != col_counts)) {
+  check_dups <- apply(combn(condi, 2), 2, check_column_directionality, simplify = T)
+  check_dups <- check_dups[!is.na(check_dups)]
+
+  tbl <- setNames(paste0("^", condi), condi) %>%
+    purrr::map(grep, cols, value = TRUE) %>%
+    stack() %>%
+    table()
+  dup_rows <- rowSums(tbl) != 1
+
+  if(length(check_dups) != 0) {
+    for (i in seq_along(check_dups)) {
+      tbl <- correct_dups(check_dups[[1]], tbl, dup_rows)
+    }
+  }
+
+  col_counts <- colSums(tbl)
+  col_counts <- col_counts[names(condi_counts)]
+  cols <- which(condi_counts != col_counts)
+
+  if (length(cols) != 0) {
     rlang::abort(
       c(
         'Number of samples in design matrix does not match number of samples in data.',
         paste0(
-          'Design matrix has: ', stringr::str_flatten(condi_counts, ', '),
-          ' samples in conditions ', stringr::str_flatten(names(condi_counts), ', '), ', respectively'
+          'Design matrix has: ', stringr::str_flatten(condi_counts[cols], ', '),
+          ' samples in conditions ', stringr::str_flatten(names(condi_counts)[cols], ', '), ', respectively'
         ),
         paste0(
-          'Samples found in data are: ', stringr::str_flatten(col_counts, ', '),
-          ' samples in conditions ', stringr::str_flatten(names(condi_counts), ', '), ', respectively'
+          'Samples found in data are: ', stringr::str_flatten(col_counts[cols], ', '),
+          ' samples in conditions ', stringr::str_flatten(names(condi_counts)[cols], ', '), ', respectively'
         ),
-        "They need to match, see vignette('baldur_yeast_tutorial') or vignette('baldur_ups_tutorial') on how to setup the design matrix"
+        "They need to match, see vignette('baldur_yeast_tutorial') or vignette('baldur_ups_tutorial') on how to setup the design matrix."
       ),
       call = cenv
     )
@@ -94,4 +112,28 @@ check_matrix <- function(input, type, cenv) {
       call = cenv
     )
   }
+}
+
+get_conditions <- function(design_matrix) {
+  design_matrix %>%
+    colnames() %>%
+    paste0('^', ., collapse = '|')
+}
+
+check_column_directionality <- function(nams) {
+  nams_reg <- paste0("^", nams)
+  check <- c(
+    grepl(nams_reg[1], nams[2]),
+    grepl(nams_reg[2], nams[1])
+  )
+  if (any(check != 0)) {
+    c(nams[check], nams[!check])
+  } else{
+    NA
+  }
+}
+
+correct_dups <- function(dups, tab, rws) {
+  tab[rowSums(tab[,dups]) == 2, dups[1]] <- 0
+  return(tab)
 }
