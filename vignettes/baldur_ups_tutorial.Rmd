@@ -131,6 +131,15 @@ ups_lgmr <- fit_lgmr(ups_norm, id_col, chains = 10, cores = 10, warmup = 1000, i
 #> https://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded
 #> Warning: Examine the pairs() plot to diagnose sampling problems
 ```
+On rare occasions, the UPS-DS will have a few (<10) divergent transitions or exceed maximum tree depth, it is unlikely to have any impact on the final inference (considering that the posterior draws are 20 000).
+One could increase the acceptance rate and max tree depth at the expense of computational time.
+E.g., with:
+```r
+`ups_lgmr <- fit_lgmr(
+  ups_norm, id_col, chains = 10, cores = 10, warmup = 1000, iter = 3000,
+  control = list(adapt_delta = .95, max_treedepth = 11)
+)
+```
 We can then estimate the uncertainties and hyperparameters for the data and decision model and run them as for the GR model:
 
 ```r

@@ -72,7 +72,7 @@ fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 150
     y = data$sd, x = data$mean
   )
 
-  input_args <- rlang::dots_list()
+  input_args <- rlang::dots_list(...)
   stan_args[names(input_args)] <- input_args
   samp <- rlang::eval_tidy(
     rlang::call2(rstan::sampling,

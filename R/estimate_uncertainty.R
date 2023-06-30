@@ -61,8 +61,7 @@ estimate_uncertainty.glm <- function(reg, data, id_col, design_matrix){
     newdata = data.frame(mean = .),
     type = "response"
   )
-  condi_regex <- colnames(design_matrix) %>%
-    paste0(collapse = '|')
+  condi_regex <- get_conditions(design_matrix)
 
   data %>%
     dplyr::mutate(
@@ -82,8 +81,7 @@ estimate_uncertainty.lgmr <- function(reg, data, id_col, design_matrix){
   check_id_col(id_col, colnames(data))
 
   pars <- coef.lgmr(reg, simplify = TRUE, pars = c('coef', 'theta'))
-  condi_regex <- colnames(design_matrix) %>%
-    paste0(collapse = '|')
+  condi_regex <- get_conditions(design_matrix)
 
   theta <- sort_theta(pars$theta, data[[id_col]])
 
