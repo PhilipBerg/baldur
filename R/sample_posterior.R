@@ -363,7 +363,7 @@ stan_summary <- function(samp, dat, condi, contrast,  h_not){
 
 bayesian_testing <- function(id, alpha, beta, data, id_col, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args){
   condi <- colnames(design_matrix)
-  condi_regex <- paste0(condi, collapse = '|')
+  condi_regex <- get_conditions(design_matrix)
   dat <- generate_stan_data_input(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
   stan_output <- purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)
   stan_output %>%
