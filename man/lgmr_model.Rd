@@ -20,7 +20,7 @@ dependency described by the sample mean (\eqn{\bar{y}}):
   + \kappa
   \exp(\boldsymbol{\theta}(\gamma_{0L}-\gamma_{\bar{y}L}\,f(\boldsymbol{\bar{y}})),\quad
   f(\boldsymbol{x})=\frac{\boldsymbol{x}-\mu_{\bar{y}}}{\sigma_{\bar{y}}}}
-Here, \eqn{\exp(\gamma_0-\gamma_{\bar{y}})} is the common trend of the
+Here, \eqn{\exp(\gamma_0-\gamma_{\bar{y}}f(\boldsymbol{\bar{y}}))} is the common trend of the
 regression. Then, the mixing variable, \eqn{\boldsymbol{\theta}}, describes
 the proportion of the mixture that each peptide has, and \eqn{\kappa} is
 just some small constant such that when \eqn{\theta} is zero the latent
@@ -28,15 +28,16 @@ term is small.
 }
 \details{
 Next we will describe the hierarchical prior setup for the
-regression variables. A priori, Baldur assumes that each peptide is most
-likely to completely have the mixture or to not have it at all. To this end,
-the \eqn{\theta_i} for the i:th peptide has a beta distribution:
-\deqn{\theta_i\sim\beta(0.5,0.5)} Further, it can be seen that Baldur assumes
+regression variables.
+For \eqn{\alpha} \code{baldur} uses a half-Cauchy as a weakly informative prior:
+\deqn{\alpha\sim\text{Half-Cauchy}(25)}
+For the latent contribution to the i:th peptide, \eqn{\theta_i}, has an uniform distribution:
+\deqn{\theta_i\sim\mathcal{U}(0, 1)} Further, it can be seen that Baldur assumes
 that S always decreases (on average) with the sample mean. To this end, both
 slopes (\eqn{\gamma_{\bar{y}},\gamma_{\bar{y}L}}) are defined on the real
 positive line. Hence, we used Half-Normal (HN)
 distributions to describe the slope parameters: \deqn{\gamma_{\bar{y}}\sim
-HN(1)} \deqn{\gamma_{\bar{y}L}\sim HN(0.1)} For the intercepts, we assume a
+HN(1)} \deqn{\gamma_{\bar{y}L}\sim HN(1)} For the intercepts, we assume a
 standard normal prior for the common intercept. Then, we use a skew-normal to
 model the latent intercept. The reason for this is two-fold, one,
 \eqn{\kappa} will decrease the value of the latent term and, two, to push the
@@ -55,6 +56,7 @@ trend and to counteract the shrinkage of \eqn{\kappa}.
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{lgmr_model
 S4 class stanmodel 'lgmr_model' coded as follows:
 functions \{
+  // mu
   vector reg_function(
     vector x,
     vector theta,
@@ -75,35 +77,36 @@ data \{
   vector[N] x;          // mean
 \}
 transformed data \{
-  real v_y = variance(y);                 // for NRMSE
-  vector[N] x_star = (x - mean(x))/sd(x); // f(y_bar)
+  real v_y = variance(y);                      // for NRMSE
+  vector[N] x_star = (x - mean(x))/sd(x);      // f(y_bar)
+  vector[3] lb = [0, 0, negative_infinity()]'; // Boundaries normal coefs.
 \}
 parameters \{
-  real<lower = 0> alpha;    // Shape
-  real<lower = 0> alpha_mu; // Shape mean hyperprior
-  real I;                   // Intercep common
-  real I_L;                 // Intercept Latent
-  vector<lower = 0>[2] eta; // For S,S_L
+  real<lower = 0> alpha;                 // Shape
+  vector<lower = lb>[3] eta;             // For S, S_L, I
   vector<lower = 0, upper = 1>[N] theta; // Mixture parameter
+  real I_L; // Intercept Latent
 \}
 transformed parameters \{
-  real<lower = 0> S     = eta[1];    // Slope common
-  real<lower = 0> S_L   = eta[2]*.1; // Slope Latent
+  real<lower = 0> S   = eta[1]; // Slope common
+  real<lower = 0> S_L = eta[2]; // Slope Latent
+  real I              = eta[3]; // Intercep common
 \}
 model \{
-  alpha         ~ exp_mod_normal(alpha_mu, 1, .1); //Priors
-  alpha_mu      ~ normal(50, 10);
-  I             ~ std_normal();
-  I_L           ~ skew_normal(2, 15,  35);
+  //Priors
+  alpha         ~ cauchy(0, 25);
   eta           ~ std_normal();
-  theta         ~ beta(.5, .5);
+  I_L           ~ skew_normal(2, 15,  35);
+  theta         ~ beta(1, 1);
   \{
     vector[N] exp_beta = reg_function(x_star, theta, I, I_L, S, S_L, N);
-    y ~ gamma(alpha, alpha ./ exp_beta); // Likelihood
+    // Likelihood
+    y ~ gamma(alpha, alpha ./ exp_beta);
   \}
 \}
 generated quantities \{
-  real nrmse; // NRMSE calculations
+  // NRMSE calculations
+  real nrmse;
   \{
     vector[N] se = reg_function(x_star, theta, I, I_L, S, S_L, N);
     se -= y;

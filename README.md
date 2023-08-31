@@ -38,8 +38,18 @@ devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
 Note that Ubuntu operating systems can require `pandoc`
 <https://pandoc.org/> to compile the vignettes.
 
+For Windows, the developmental version of `rstan` is sometimes needed to
+install `baldur`.
+
 ## Example
 
-Please see the vignettes for an examples
+Please see the vignettes for examples
 `vignette('baldur_yeast_tutorial')` and
 `vignette('baldur_ups_tutorial')`.
+
+## Reference
+
+Berg, Philip, and George Popescu. “Baldur: Bayesian hierarchical
+modeling for label-free proteomics exploiting gamma dependent
+mean-variance trends.” bioRxiv (2023): 2023-05.
+<https://doi.org/10.1101/2023.05.11.540411>

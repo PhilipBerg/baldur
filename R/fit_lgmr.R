@@ -118,20 +118,31 @@ fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 150
 #' @export
 print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"), digits = 3, ...) {
 
-  mu <- coef(x, TRUE, "coefficients")
+  mu <- round(coef(x, TRUE, "coefficients"), digits = digits)
   pars <- match_pars(pars)
   x <- coef(x, simplify, pars)
+  aux_names  <- c("\U03b1", "RMSE")
+  coef_names <- c("\U03b3_0", "\U03b3_0L", "\U03b3_\U0079\U0304", "\U03b3_\U0079\U0304L")
 
   cat("\nLGMR Model\n")
-  cat("\tmu=", "exp(", mu["I"],
+  cat("\t\U03bc = ", "exp(", mu["I"],
       " - ",
-      mu["S"], " f(bar_y)) + kappa exp(",
+      mu["S"], " f(\U0079\U0304)) + \U03ba exp(\U03b8(",
       mu["I_L"],
       " - ",
       mu["S_L"],
-      " f(bar_y))", sep = ''
+      " f(\U0079\U0304)))", sep = ''
   )
   if (!is.list(x)) {
+    if (pars == "coefficients") {
+      names(x) <- coef_names
+    } else if (pars == "auxiliary") {
+      names(x) <- aux_names
+    } else if (is.matrix(x)) {
+      rownames(x) <- stringr::str_replace(rownames(x), 'theta', "\U03b8")
+    } else {
+      names(x) <- stringr::str_replace(names(x), 'theta', "\U03b8")
+    }
     cat("\n\n",
         paste0(stringr::str_to_title(pars), ":\n")
     )
@@ -144,6 +155,7 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
     return(invisible())
   }
   if ("auxiliary" %in% pars) {
+    rownames(x$aux) <- aux_names
     cat("\n\n",
         "Auxiliary:\n"
     )
@@ -156,23 +168,12 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
   }
 
   if ("coefficients" %in% pars) {
+    rownames(x$coef) <- coef_names
     cat("\n\n",
         "Coefficients:\n"
     )
     print.default(
       x$coef,
-      digits = digits,
-      print.gap = 2L,
-      quote = FALSE
-    )
-  }
-
-  if ("theta" %in% pars) {
-    cat("\n\n",
-        "Theta:\n"
-    )
-    print.default(
-      x$theta,
       digits = digits,
       print.gap = 2L,
       quote = FALSE
