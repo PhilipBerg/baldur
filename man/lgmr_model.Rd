@@ -71,15 +71,18 @@ functions \{
     return exp_beta;
   \}
 \}
+
 data \{
   int<lower=0> N;       // Number of observations
   vector<lower=0>[N] y; // sd
   vector[N] x;          // mean
 \}
+
 transformed data \{
   real v_y = variance(y);                      // for NRMSE
   vector[N] x_star = (x - mean(x))/sd(x);      // f(y_bar)
 \}
+
 parameters \{
   real<lower = 0> alpha;                 // Shape
   vector<lower = 0>[2] eta;              // For S, S_L, I
@@ -87,10 +90,12 @@ parameters \{
   real I_L;                              // Intercept Latent
   real I;                                // Intercep common
 \}
+
 transformed parameters \{
   real<lower = 0> S   = eta[1]; // Slope common
   real<lower = 0> S_L = eta[2]; // Slope Latent
 \}
+
 model \{
   //Priors
   alpha         ~ cauchy(0, 25);
@@ -104,6 +109,7 @@ model \{
     y ~ gamma(alpha, alpha ./ exp_beta);
   \}
 \}
+
 generated quantities \{
   // NRMSE calculations
   real nrmse;
