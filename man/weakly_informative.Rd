@@ -29,6 +29,7 @@ data \{
   real beta;          // beta prior for gamma
   vector[N] u;        // uncertainty
 \}
+
 transformed data\{
   vector[K] n_k;                // per condition measurements
   row_vector[C] n_c;            // per comparison measurements
@@ -39,6 +40,7 @@ transformed data\{
   n_c = n_k' * abs_c;
   n_c = sqrt(n_c);
 \}
+
 parameters \{
   vector[K] mu;           // coefficients for predictors
   real<lower=0> sigma;    // error scale
@@ -46,10 +48,12 @@ parameters \{
   vector[K] eta;          // Error in mean
   vector[K] prior_mu_not; // Estimation error
 \}
+
 transformed parameters\{
   row_vector[C] mu_diff = mu' * c;        // differences in means
   vector[C] sigma_lfc = sigma * n_c';     // variance of y_diff
 \}
+
 model \{
   sigma        ~ gamma(alpha, beta);                      // variance
   eta          ~ normal(0, 1);                            // NCP auxilary variable

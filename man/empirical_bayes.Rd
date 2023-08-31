@@ -29,6 +29,7 @@ data \{
   vector[N] u;        // uncertainty
   vector[K] mu_not;   // prior mu
 \}
+
 transformed data\{
   vector[K] n_k;                // per condition reciprocal measurements
   row_vector[C] n_c;            // per comparison measurements
@@ -40,6 +41,7 @@ transformed data\{
   n_c = sqrt(n_c);
   n_k = sqrt(2*n_k);
 \}
+
 parameters \{
   vector[K] mu;           // mean vector
   real<lower=0> sigma;    // error scale
@@ -47,11 +49,13 @@ parameters \{
   vector[K] eta;          // Error in mean
   vector[K] prior_mu_not; // Estimation error
 \}
+
 transformed parameters\{
   row_vector[C] mu_diff = mu' * c;        // differences in means
   vector[K] sigma_mu_not = sigma * n_k; // variance of ybars
   vector[C] sigma_lfc = sigma * n_c';     // variance of y_diff
 \}
+
 model \{
   sigma        ~ gamma(alpha, beta);                        // variance
   eta          ~ normal(0, 1);                              // NCP auxilary variable

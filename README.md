@@ -26,10 +26,11 @@ sure that is working. Then you can install `baldur` accordingly:
 For the stable release please install from CRAN:
 
 ``` r
-install.packages('baldur') # Once on CRAN
+install.packages('baldur')
 ```
 
-Or you can install the development version of `baldur` from this github:
+Or you can install the developmental version of `baldur` from this
+github:
 
 ``` r
 devtools::install_github('PhilipBerg/baldur', build_vignettes = T)
