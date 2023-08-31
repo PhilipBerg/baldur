@@ -79,23 +79,23 @@ data \{
 transformed data \{
   real v_y = variance(y);                      // for NRMSE
   vector[N] x_star = (x - mean(x))/sd(x);      // f(y_bar)
-  vector[3] lb = [0, 0, negative_infinity()]'; // Boundaries normal coefs.
 \}
 parameters \{
   real<lower = 0> alpha;                 // Shape
-  vector<lower = lb>[3] eta;             // For S, S_L, I
+  vector<lower = 0>[2] eta;              // For S, S_L, I
   vector<lower = 0, upper = 1>[N] theta; // Mixture parameter
-  real I_L; // Intercept Latent
+  real I_L;                              // Intercept Latent
+  real I;                                // Intercep common
 \}
 transformed parameters \{
   real<lower = 0> S   = eta[1]; // Slope common
   real<lower = 0> S_L = eta[2]; // Slope Latent
-  real I              = eta[3]; // Intercep common
 \}
 model \{
   //Priors
   alpha         ~ cauchy(0, 25);
   eta           ~ std_normal();
+  I             ~ std_normal();
   I_L           ~ skew_normal(2, 15,  35);
   theta         ~ beta(1, 1);
   \{
