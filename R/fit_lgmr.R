@@ -116,23 +116,23 @@ fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 150
 #'
 #' @rdname fit_lgmr
 #' @export
-print.lgmr <- function(x, simplify = x$simplify, pars = c("coefficients", "auxiliary"), digits = 3, ...) {
+print.lgmr <- function(x, simplify = x$simplify, pars = c("auxiliary", "coefficients"), digits = 3, ...) {
 
   if (!simplify & x$simplify) {
+    options(warn = 1)
     rlang::warn(
       c(
         "Model is already simplified, cannot print full model specs.",
         "Defaulting to simplify = TRUE"
       )
     )
+    options(warn = 0)
     simplify <- TRUE
   }
 
   mu <- round(coef(x, TRUE, "coefficients"), digits = digits)
   pars <- match_pars(pars)
-  x <- coef(x, simplify, pars) %>%
-    purrr::imap(set_print_names, simplify)
-
+  cf <- coef(x, simplify, pars)
   cat("\nLGMR Model\n")
   cat("\t\U03bc = ", "exp(", mu["I"],
       " - ",
@@ -142,66 +142,56 @@ print.lgmr <- function(x, simplify = x$simplify, pars = c("coefficients", "auxil
       mu["S_L"],
       " f(\U0079\U0304)))", sep = ''
   )
-  if (!is.list(x)) {
-    cat("\n\n",
-        paste0(stringr::str_to_title(pars), ":\n")
-    )
-    print.default(
-      x,
-      digits = digits,
-      print.gap = 2L,
-      quote = FALSE
-    )
-    return(invisible())
-  }
-  if ("auxiliary" %in% pars) {
-    cat("\n\n",
-        "Auxiliary:\n"
-    )
-    print.default(
-      x$aux,
-      digits = digits,
-      print.gap = 2L,
-      quote = FALSE
-    )
-  }
-
-  if ("coefficients" %in% pars) {
-    cat("\n\n",
-        "Coefficients:\n"
-    )
-    print.default(
-      x$coef,
-      digits = digits,
-      print.gap = 2L,
-      quote = FALSE
-    )
+  if (is.list(cf)) {
+    cf %>%
+      purrr::imap(set_print_names, simplify) %>%
+      purrr::walk2(pars, build_print, digits)
+  } else {
+    set_print_names(cf, pars, simplify) %>%
+      build_print(pars, digits)
   }
 }
 
 set_print_names <- function(x, type, simplify) {
-  if (type == "coef") {
-    replacement <- setNames(
+  replacement <- dplyr::case_when(
+    type == "coef" ~ list(setNames(
       c("\U03b3_0L", "\U03b3_0", "\U03b3_\U0079\U0304L", "\U03b3_\U0079\U0304"),
       c("I_L", "I", "S_L", "S")
-    )
-  } else if (type == "aux") {
-    replacement  <- setNames(c("\U03b1", "NRMSE"), c('alpha', 'nrmse'))
-  } else {
-    replacement <- setNames("\U03b8", "theta")
-  }
+    )),
+    type == "aux" ~ list(setNames(c("\U03b1", "NRMSE"), c('alpha', 'nrmse'))),
+    T             ~ list(setNames("\U03b8", "theta"))
+  )[[1]]
+  n <- list()
   if (simplify) {
-    names(x) <- stringr::str_replace_all(
-      names(x),
-      replacement
-    )
+    n$get <-  names
+    n$set <- `names<-`
   } else {
-    rownames(x) <- stringr::str_replace_all(
-      rownames(x),
-      replacement
-    )
+    n$get <-  rownames
+    n$set <- `rownames<-`
   }
+  x <- n$set(x,
+        stringr::str_replace_all(
+          n$get(x),
+          replacement
+        )
+  )
   return(x)
+}
+
+build_print <- function(x, type, digits) {
+  top <- dplyr::case_match(
+    type,
+    "auxiliary"    ~ "Auxiliary:\n",
+    "coefficients" ~ "Coefficients:\n",
+    .default       = "Latent contribution (\U03b8):\n"
+  )
+  cat("\n\n", top)
+  print.default(
+    x,
+    digits = digits,
+    print.gap = 2L,
+    quote = FALSE
+  )
 }
 
 #' @rdname fit_lgmr

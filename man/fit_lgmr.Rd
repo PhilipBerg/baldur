@@ -21,8 +21,8 @@ fit_lgmr(
 
 \method{print}{lgmr}(
   x,
-  simplify = FALSE,
-  pars = c("coefficients", "auxiliary"),
+  simplify = x$simplify,
+  pars = c("auxiliary", "coefficients"),
   digits = 3,
   ...
 )
