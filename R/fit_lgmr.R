@@ -116,13 +116,22 @@ fit_lgmr <- function(data, id_col, model = lgmr_model, iter = 6000, warmup = 150
 #'
 #' @rdname fit_lgmr
 #' @export
-print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"), digits = 3, ...) {
+print.lgmr <- function(x, simplify = x$simplify, pars = c("coefficients", "auxiliary"), digits = 3, ...) {
+
+  if (!simplify & x$simplify) {
+    rlang::warn(
+      c(
+        "Model is already simplified, cannot print full model specs.",
+        "Defaulting to simplify = TRUE"
+      )
+    )
+    simplify <- TRUE
+  }
 
   mu <- round(coef(x, TRUE, "coefficients"), digits = digits)
   pars <- match_pars(pars)
-  x <- coef(x, simplify, pars)
-  aux_names  <- c("\U03b1", "RMSE")
-  coef_names <- c("\U03b3_0", "\U03b3_0L", "\U03b3_\U0079\U0304", "\U03b3_\U0079\U0304L")
+  x <- coef(x, simplify, pars) %>%
+    purrr::imap(set_print_names, simplify)
 
   cat("\nLGMR Model\n")
   cat("\t\U03bc = ", "exp(", mu["I"],
@@ -134,15 +143,6 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
       " f(\U0079\U0304)))", sep = ''
   )
   if (!is.list(x)) {
-    if (pars == "coefficients") {
-      names(x) <- coef_names
-    } else if (pars == "auxiliary") {
-      names(x) <- aux_names
-    } else if (is.matrix(x)) {
-      rownames(x) <- stringr::str_replace(rownames(x), 'theta', "\U03b8")
-    } else {
-      names(x) <- stringr::str_replace(names(x), 'theta', "\U03b8")
-    }
     cat("\n\n",
         paste0(stringr::str_to_title(pars), ":\n")
     )
@@ -155,7 +155,6 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
     return(invisible())
   }
   if ("auxiliary" %in% pars) {
-    rownames(x$aux) <- aux_names
     cat("\n\n",
         "Auxiliary:\n"
     )
@@ -168,7 +167,6 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
   }
 
   if ("coefficients" %in% pars) {
-    rownames(x$coef) <- coef_names
     cat("\n\n",
         "Coefficients:\n"
     )
@@ -179,6 +177,31 @@ print.lgmr <- function(x, simplify = FALSE, pars = c("coefficients", "auxiliary"
       quote = FALSE
     )
   }
+}
+
+set_print_names <- function(x, type, simplify) {
+  if (type == "coef") {
+    replacement <- setNames(
+      c("\U03b3_0L", "\U03b3_0", "\U03b3_\U0079\U0304L", "\U03b3_\U0079\U0304"),
+      c("I_L", "I", "S_L", "S")
+    )
+  } else if (type == "aux") {
+    replacement  <- setNames(c("\U03b1", "NRMSE"), c('alpha', 'nrmse'))
+  } else {
+    replacement <- setNames("\U03b8", "theta")
+  }
+  if (simplify) {
+    names(x) <- stringr::str_replace_all(
+      names(x),
+      replacement
+    )
+  } else {
+    rownames(x) <- stringr::str_replace_all(
+      rownames(x),
+      replacement
+    )
+  }
+  return(x)
 }
 
 #' @rdname fit_lgmr
