@@ -15,8 +15,9 @@ Description: Statistical decision in proteomics data using a hierarchical
     each peptide in the data. Once the posterior is inferred, it integrates the
     tails to estimate the probability of error from which a statistical decision
     can be made.
+    See Berg and Popescu for details (https://doi.org/10.1101/2023.05.11.540411).
 License: MIT + file LICENSE
-URL: https://www.biorxiv.org/content/10.1101/2023.05.11.540411v1
+URL: https://github.com/PhilipBerg/baldur
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
@@ -57,3 +58,4 @@ Suggests:
 VignetteBuilder: knitr
 LazyData: true
 RdMacros: Rdpack
+BugReports: https://github.com/PhilipBerg/baldur/issues
