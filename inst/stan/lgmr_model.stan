@@ -1,4 +1,5 @@
 functions {
+  // mu
   vector reg_function(
     vector x,
     vector theta,
@@ -21,38 +22,39 @@ data {
 }
 
 transformed data {
-  real v_y = variance(y);                 // for NRMSE
-  vector[N] x_star = (x - mean(x))/sd(x); // f(y_bar)
+  real v_y = variance(y);                      // for NRMSE
+  vector[N] x_star = (x - mean(x))/sd(x);      // f(y_bar)
+  vector[3] lb = [0, 0, negative_infinity()]'; // Boundaries normal coefs.
 }
 parameters {
-  real<lower = 0> alpha;    // Shape
-  real<lower = 0> alpha_mu; // Shape mean hyperprior
-  real I;                   // Intercep common
-  real I_L;                 // Intercept Latent
-  vector<lower = 0>[2] eta; // For S,S_L
+  real<lower = 0> alpha;                 // Shape
+  vector<lower = lb>[3] eta;             // For S, S_L, I
   vector<lower = 0, upper = 1>[N] theta; // Mixture parameter
+  real I_L; // Intercept Latent
 }
 
 transformed parameters {
-  real<lower = 0> S     = eta[1];    // Slope common
-  real<lower = 0> S_L   = eta[2]*.1; // Slope Latent
+  real<lower = 0> S   = eta[1]; // Slope common
+  real<lower = 0> S_L = eta[2]; // Slope Latent
+  real I              = eta[3]; // Intercep common
 }
 
 model {
-  alpha         ~ exp_mod_normal(alpha_mu, 1, .1); //Priors
-  alpha_mu      ~ normal(50, 10);
-  I             ~ std_normal();
-  I_L           ~ skew_normal(2, 15,  35);
+  //Priors
+  alpha         ~ cauchy(0, 25);
   eta           ~ std_normal();
-  theta         ~ beta(.5, .5);
+  I_L           ~ skew_normal(2, 15,  35);
+  theta         ~ beta(1, 1);
   {
     vector[N] exp_beta = reg_function(x_star, theta, I, I_L, S, S_L, N);
-    y ~ gamma(alpha, alpha ./ exp_beta); // Likelihood
+    // Likelihood
+    y ~ gamma(alpha, alpha ./ exp_beta);
   }
 }
 
 generated quantities {
-  real nrmse; // NRMSE calculations
+  // NRMSE calculations
+  real nrmse;
   {
     vector[N] se = reg_function(x_star, theta, I, I_L, S, S_L, N);
     se -= y;

@@ -8,16 +8,11 @@
 A data frame with 2235 rows and 7 variables: \describe{
 \item{identifier}{id column for features, true positives contains YEAST and
 true negatives contains Cre}
-\item{ng50_1}{First biological replicates with
+\item{ng50_1,ng50_2,ng50_3}{Biological replicates with
 true positives spiked-in from 50 ng yeast cells}
-\item{ng50_2}{Second
-biological replicates with true positives spiked-in from 50 ng yeast cells}
-\item{ng50_3}{Third biological replicates with true positives spiked-in
-from 50 ng yeast cells} \item{ng100_1}{First biological replicates with
-true positives spiked-in from 100 ng yeast cells} \item{ng100_2}{Second
-biological replicates with true positives spiked-in from 100 ng yeast
-cells} \item{ng100_3}{Third biological replicates with true positives
-spiked-in from 100 ng yeast cells} }
+\item{ng100_1,ng100_2,ng100_3}{Biological replicates with
+true positives spiked-in from 100 ng yeast cells}
+}
 }
 \source{
 \url{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2619-6}

@@ -78,19 +78,21 @@ gr_results <- gr_model %>%
 gr_results %>%
   dplyr::arrange(err)
 #> # A tibble: 1,802 × 22
-#>    identifier                                  comparison          err    lfc lfc_025 lfc_50 lfc_975 lfc_eff lfc_rhat  sigma sigma_025 sigma_50 sigma_975 sigma_eff sigma_rhat    lp lp_025 lp_50 lp_975 lp_eff lp_rhat warnings 
-#>    <chr>                                       <chr>             <dbl>  <dbl>   <dbl>  <dbl>   <dbl>   <dbl>    <dbl>  <dbl>     <dbl>    <dbl>     <dbl>     <dbl>      <dbl> <dbl>  <dbl> <dbl>  <dbl>  <dbl>   <dbl> <list>   
-#>  1 Cre09.g406050.t1.2|PACid:30781126|--219     ng100 vs ng50 4.55e-210  6.18    5.78   6.18    6.59    2818.    1.00  0.124     0.0672   0.114     0.248      1278.       1.00  14.5   8.18  14.9   18.4   999.    1.00 <chr [0]>
-#>  2 sp|P37302|APE3_YEAST--187                   ng100 vs ng50 2.98e-173  1.51    1.40   1.51    1.62    3015.    0.999 0.0461    0.0248   0.0422    0.0915     1265.       1.00  29.7  23.1   30.1   33.7   914.    1.00 <chr [0]>
-#>  3 Cre12.g554100.t1.1|PACid:30791753|--87      ng100 vs ng50 2.11e-168  1.61    1.49   1.61    1.72    3085.    1.00  0.0493    0.0271   0.0449    0.0972     1363.       1.00  28.8  22.0   29.3   32.8   913.    1.00 <chr [0]>
-#>  4 sp|P38788|SSZ1_YEAST--86                    ng100 vs ng50 1.99e-138  1.07    0.986  1.07    1.16    2582.    1.00  0.0363    0.0190   0.0331    0.0732     1191.       1.00  32.3  25.3   32.8   36.4   918.    1.00 <chr [0]>
-#>  5 Cre14.g616700.t1.1|PACid:30776509|--709     ng100 vs ng50 1.74e-127 -4.54   -4.90  -4.54   -4.16    2902.    1.00  0.147     0.0782   0.134     0.295       982.       1.00  15.4   8.45  15.9   19.5   764.    1.00 <chr [0]>
-#>  6 Cre10.g420750.t1.2|PACid:30790763|--50-53   ng100 vs ng50 2.27e-122  4.16    3.80   4.16    4.51    3748.    0.999 0.152     0.0829   0.140     0.301      1462.       1.00  17.4  10.6   17.8   21.4  1133.    1.00 <chr [0]>
-#>  7 sp|P09624|DLDH_YEAST--65-70                 ng100 vs ng50 2.60e-102  1.48    1.34   1.48    1.62    2764.    1.00  0.0578    0.0319   0.0532    0.114      1278.       1.00  26.2  19.4   26.7   30.1   968.    1.00 <chr [0]>
-#>  8 Cre12.g533100.t1.1|PACid:30792932|--188-196 ng100 vs ng50 1.18e-100  1.41    1.28   1.41    1.54    2730.    1.00  0.0579    0.0314   0.0529    0.114      1116.       1.00  26.9  20.2   27.4   30.8   806.    1.00 <chr [0]>
-#>  9 sp|P19882|HSP60_YEAST--132                  ng100 vs ng50 1.30e- 89  0.885   0.798  0.884   0.974   3370.    1.00  0.0410    0.0229   0.0375    0.0792     1437.       1.00  33.2  26.9   33.7   37.0   925.    1.01 <chr [0]>
-#> 10 Cre06.g306550.t1.1|PACid:30779423|--99      ng100 vs ng50 1.80e- 88  4.20    3.80   4.21    4.62    2685.    1.00  0.151     0.0805   0.139     0.298      1210.       1.00  13.8   7.29  14.2   17.9   920.    1.01 <chr [0]>
+#>    identifier         comparison       err   lfc lfc_025 lfc_50 lfc_975 lfc_eff lfc_rhat  sigma sigma_025 sigma_50 sigma_975 sigma_eff
+#>    <chr>              <chr>          <dbl> <dbl>   <dbl>  <dbl>   <dbl>   <dbl>    <dbl>  <dbl>     <dbl>    <dbl>     <dbl>     <dbl>
+#>  1 Cre09.g406050.t1.… ng100 vs … 5.64e-224  6.18   5.80    6.18    6.55   2405.    1.00  0.122     0.0675   0.113     0.236      1273.
+#>  2 sp|P37302|APE3_YE… ng100 vs … 7.05e-188  1.51   1.41    1.51    1.62   3529.    1.00  0.0457    0.0250   0.0416    0.0895     1023.
+#>  3 Cre12.g554100.t1.… ng100 vs … 4.04e-171  1.61   1.49    1.61    1.73   3498.    1.00  0.0496    0.0265   0.0450    0.0990      983.
+#>  4 sp|P38788|SSZ1_YE… ng100 vs … 2.68e-136  1.07   0.985   1.07    1.16   2946.    1.00  0.0355    0.0189   0.0323    0.0741      867.
+#>  5 Cre14.g616700.t1.… ng100 vs … 8.23e-127 -4.54  -4.94   -4.54   -4.16   2674.    1.00  0.145     0.0783   0.134     0.274      1189.
+#>  6 Cre10.g420750.t1.… ng100 vs … 9.90e-126  4.16   3.81    4.16    4.51   3193.    1.00  0.152     0.0830   0.140     0.289      1480.
+#>  7 sp|P09624|DLDH_YE… ng100 vs … 2.74e-100  1.48   1.34    1.48    1.61   2676.    1.00  0.0591    0.0318   0.0543    0.115      1124.
+#>  8 Cre12.g533100.t1.… ng100 vs … 1.71e- 98  1.42   1.28    1.42    1.55   2832.    1.00  0.0588    0.0315   0.0539    0.116      1190.
+#>  9 Cre06.g306550.t1.… ng100 vs … 5.11e- 94  4.21   3.81    4.20    4.63   3197.    0.999 0.149     0.0804   0.136     0.287      1464.
+#> 10 sp|P32481|IF2G_YE… ng100 vs … 2.86e- 77  1.59   1.42    1.59    1.76   2807.    1.00  0.0686    0.0371   0.0622    0.136       970.
 #> # ℹ 1,792 more rows
+#> # ℹ 8 more variables: sigma_rhat <dbl>, lp <dbl>, lp_025 <dbl>, lp_50 <dbl>, lp_975 <dbl>, lp_eff <dbl>, lp_rhat <dbl>,
+#> #   warnings <list>
 ```
 Here `err` is the probability of error, i.e., the two tail-density supporting the null-hypothesis, `lfc` is the estimated log$_2$-fold change, `sigma` is the common variance, and `lp` is the log-posterior.
 Columns without suffix shows the mean estimate from the posterior, while the suffixes `_025`, `_50`, and `_975`, are the 2.5, 50.0, and 97.5, percentiles, respectively.
@@ -110,20 +112,20 @@ We can print the model with `print` and extract parameters of interest with `coe
 print(yeast_lgmr, pars = c("coef", "aux"))
 #> 
 #> LGMR Model
-#> 	mu=exp(-1.798012 - 0.3228386 f(bar_y)) + kappa exp(7.062949 - 0.3843305 f(bar_y))
+#> 	μ = exp(-1.798 - 0.323 f(ȳ)) + κ exp(θ(7.062 - 0.384 f(ȳ)))
 #> 
 #>  Auxiliary:
-#>         mean   se_mean     sd   2.5%    25%    50%    75%  97.5%  n_eff  Rhat
-#> alpha  4.091  0.004432  0.234  3.652  3.929  4.086  4.246  4.566   2788     1
-#> nrmse  0.561  0.000242  0.014  0.534  0.552  0.561  0.571  0.589   3360     1
+#>        mean   se_mean      sd   2.5%    25%    50%    75%  97.5%  n_eff  Rhat
+#> α     4.086  0.004577  0.2344  3.638  3.926  4.081  4.241  4.561   2623     1
+#> RMSE  0.562  0.000246  0.0141  0.534  0.552  0.562  0.571  0.589   3264     1
 #> 
 #> 
 #>  Coefficients:
-#>        mean   se_mean      sd    2.5%     25%     50%     75%   97.5%  n_eff  Rhat
-#> I    -1.798  0.000436  0.0261  -1.849  -1.816  -1.798  -1.781  -1.746   3586     1
-#> I_L   7.063  0.000491  0.0416   6.981   7.035   7.063   7.091   7.146   7161     1
-#> S     0.323  0.000277  0.0232   0.278   0.307   0.323   0.338   0.369   7035     1
-#> S_L   0.384  0.000285  0.0348   0.315   0.361   0.385   0.408   0.452  14936     1
+#>         mean   se_mean      sd    2.5%     25%     50%     75%   97.5%  n_eff  Rhat
+#> γ_0   -1.798  0.000442  0.0259  -1.848  -1.816  -1.798  -1.780  -1.747   3440     1
+#> γ_0L   7.062  0.000502  0.0421   6.981   7.033   7.061   7.090   7.146   7041     1
+#> γ_ȳ    0.323  0.000274  0.0231   0.278   0.307   0.323   0.339   0.368   7132     1
+#> γ_ȳL   0.384  0.000277  0.0349   0.315   0.360   0.384   0.407   0.452  15892     1
 # Extract the regression, alpha, and theta parameters and the NRMSE.
 yeast_lgmr_coef <- coef(yeast_lgmr, pars = "all")
 ```
@@ -179,7 +181,6 @@ lgmr_results %>%
 ```
 
 ![plot of chunk plotting_sa_yeast](plotting_sa_yeast-1.png)![plot of chunk plotting_sa_yeast](plotting_sa_yeast-2.png)
-
 While it is hard to see with this few examples, in general a good decision is indicated by a lack of a trend between $\sigma$ and LFC.
 To make a volcano plot one uses `plot_volcano` in a similar fashion to `plot_sa`:
 

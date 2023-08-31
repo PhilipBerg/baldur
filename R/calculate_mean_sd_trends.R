@@ -15,6 +15,8 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr across
 #' @importFrom dplyr matches
+#' @importFrom utils combn
+#' @importFrom utils stack
 #'
 #' @examples
 #'
@@ -59,12 +61,12 @@ check_design <- function(design_matrix, data, cenv = rlang::caller_call()) {
     dplyr::select(matches(stringr::str_flatten(condi, '|'))) %>%
     colnames()
 
-  check_dups <- apply(combn(condi, 2), 2, check_column_directionality, simplify = T)
+  check_dups <- apply(utils::combn(condi, 2), 2, check_column_directionality, simplify = T)
   check_dups <- check_dups[!is.na(check_dups)]
 
   tbl <- setNames(paste0("^", condi), condi) %>%
     purrr::map(grep, cols, value = TRUE) %>%
-    stack() %>%
+    utils::stack() %>%
     table()
   dup_rows <- rowSums(tbl) != 1
 
