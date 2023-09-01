@@ -13,7 +13,7 @@ data {
 transformed data{
   vector[K] n_k;                // per condition measurements
   row_vector[C] n_c;            // per comparison measurements
-  matrix[K, C] abs_c = fabs(c); // abs of C for n_c calculation
+  matrix[K, C] abs_c = abs(c); // abs of C for n_c calculation
   for (i in 1:K) {
     n_k[i] = 1/sum(x[,i]);
   }
@@ -24,7 +24,7 @@ transformed data{
 parameters {
   vector[K] mu;           // coefficients for predictors
   real<lower=0> sigma;    // error scale
-  real y_diff[C];         // difference in coefficients
+  array[C] real y_diff;         // difference in coefficients
   vector[K] eta;          // Error in mean
   vector[K] prior_mu_not; // Estimation error
 }
