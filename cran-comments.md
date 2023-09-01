@@ -1,6 +1,6 @@
 # For release of Baldur 0.0.2
 I've patched minor bug in a function that checks that input structure is correct for several functions.
-I've updated the printing of a S3 method to use Greek letters to better link the to the manuscript of `baldur`.
+I've updated the printing of a S3 method to use Greek letters to better link the to the manuscript of `baldur` .
 I've also updated one of the Stan models in `baldur` to accommodate peer-reviewer feedback.
 
 
