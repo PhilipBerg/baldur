@@ -1,6 +1,6 @@
 Package: baldur
 Title: Bayesian Hierarchical Modeling for Label-Free Proteomics
-Version: 0.0.2.9000
+Version: 0.0.3
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3772-6185"))
