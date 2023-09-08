@@ -1,3 +1,10 @@
+# For release of Baldur 0.0.3
+Updated Stan models for future comparability with `rstan` as suggested by one of their developers on `baldur`'s GitHub:
+https://github.com/PhilipBerg/baldur/pull/16
+All checks pass with same or fewer notes reported for earlier releases.
+The main difference is a note for recent update six days ago, but this update is due to unforeseen updates in the `rstan` dependency.
+
+
 # For release of Baldur 0.0.2
 I've patched minor bug in a function that checks that input structure is correct for several functions.
 I've updated the printing of a S3 method to use Greek letters to better link the to the manuscript of `baldur` .

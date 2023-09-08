@@ -11,9 +11,14 @@ data {
 }
 
 transformed data{
-  vector[K] n_k;                // per condition measurements
-  row_vector[C] n_c;            // per comparison measurements
-  matrix[K, C] abs_c = abs(c); // abs of C for n_c calculation
+  vector[K] n_k;      // per condition measurements
+  row_vector[C] n_c;  // per comparison measurements
+  matrix[K, C] abs_c; // abs of C for n_c calculation
+  for (i in 1:K) {
+    for (j in 1:C) {
+      abs_c[i, j] = abs(c[i, j]);
+    }
+  }
   for (i in 1:K) {
     n_k[i] = 1/sum(x[,i]);
   }
@@ -24,7 +29,7 @@ transformed data{
 parameters {
   vector[K] mu;           // coefficients for predictors
   real<lower=0> sigma;    // error scale
-  array[C] real y_diff;         // difference in coefficients
+  array[C] real y_diff;   // difference in coefficients
   vector[K] eta;          // Error in mean
   vector[K] prior_mu_not; // Estimation error
 }
@@ -37,7 +42,7 @@ transformed parameters{
 model {
   sigma        ~ gamma(alpha, beta);                      // variance
   eta          ~ normal(0, 1);                            // NCP auxilary variable
-  prior_mu_not ~ normal(0, 10);                          // prior mean
+  prior_mu_not ~ normal(0, 10);                           // prior mean
   mu           ~ normal(prior_mu_not + sigma*eta, sigma); // mean
   y            ~ normal(x * mu, sigma*u);                 // data model
   y_diff       ~ normal(mu_diff, sigma_lfc);              // difference statistic
