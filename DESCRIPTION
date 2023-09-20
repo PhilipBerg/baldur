@@ -1,6 +1,6 @@
 Package: baldur
 Title: Bayesian Hierarchical Modeling for Label-Free Proteomics
-Version: 0.0.3
+Version: 0.0.3.9000
 Authors@R: 
     person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3772-6185"))
@@ -15,7 +15,7 @@ Description: Statistical decision in proteomics data using a hierarchical
     each peptide in the data. Once the posterior is inferred, it integrates the
     tails to estimate the probability of error from which a statistical decision
     can be made.
-    See Berg and Popescu for details (https://doi.org/10.1101/2023.05.11.540411).
+    See Berg and Popescu for details (<doi:10.1101/2023.05.11.540411>).
 License: MIT + file LICENSE
 URL: https://github.com/PhilipBerg/baldur
 Encoding: UTF-8
