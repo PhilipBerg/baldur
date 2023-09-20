@@ -1,3 +1,5 @@
+# baldur (development version)
+
 # baldur 0.0.3
 * Updated in response to new `rstan` release on CRAN
 
