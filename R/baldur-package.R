@@ -12,7 +12,6 @@
 #'   tails to estimate the probability of error from which a statistical
 #'   decision can be made.
 #'
-#' @docType package
 #' @name baldur-package
 #' @aliases baldur
 #' @useDynLib baldur, .registration = TRUE
@@ -32,13 +31,13 @@
 #' @importFrom dplyr matches
 #' @importFrom rlang dots_list
 #' @importFrom Rdpack reprompt
-#' @references Berg and Popescu (2023). Baldur: Bayesian Hierarchical Modeling
-#' For Label-Free Proteomics Exploiting Gamma Dependent Mean-Variance Trends.
-#' Under review.
+#' @references Berg George Popescu (2023) "Baldur: Bayesian Hierarchical Modeling for Label-Free Proteomics with Gamma Regressing Mean-Variance Trends"
+#' Molecular & Cellular Proteomics: 2023-12. https://doi.org/10.1016/j.mcpro.2023.100658
+#'
 #' Stan Development Team (2022). RStan: the R interface to Stan. R package version
 #' 2.21.5. https://mc-stan.org
 #'
 ## usethis namespace: start
 #' @importFrom lifecycle deprecated
 ## usethis namespace: end
-NULL
+"_PACKAGE"
