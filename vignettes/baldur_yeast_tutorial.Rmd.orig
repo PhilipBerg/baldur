@@ -29,6 +29,9 @@ yeast_contrast <- matrix(c(-1, 1), nrow = 2)
 # Set id column
 id_col <- colnames(yeast)[1] # "identifier"
 
+# Define the number of parallel workers to use
+workers <- floor(parallel::detectCores()/2)
+
 # Since baldur itself does not deal with missing data we remove the
 # rows that have missing values for the purpose of the tutorial.
 # Else, one would replace the filtering step with imputation but that is outside
@@ -72,8 +75,8 @@ gr_results <- gr_model %>%
     yeast_design,
     yeast_contrast,
     unc_gr,
-    clusters = 10 # I highly recommend using parallel workers/clusters
-  )               # this will greatly reduce the speed of running baldur
+    clusters = workers # I highly recommend using parallel workers/clusters
+  )                    # this will greatly reduce the time of running baldur
 # The top hits then looks as follows:
 gr_results %>%
   dplyr::arrange(err)
@@ -86,7 +89,7 @@ In general, a larger `_eff` indicates a better sampling efficiency, and `_rhat` 
 # 4. Running Baldur with Latent Gamma Mixture Regression estimation
 First we fit the LGMR model:
 ```{r lgmr}
-yeast_lgmr <- fit_lgmr(yeast_norm, id_col, lgmr_model, cores = 5)
+yeast_lgmr <- fit_lgmr(yeast_norm, id_col, lgmr_model, cores = min(5, workers))
 ```
 
 We can print the model with `print` and extract parameters of interest with `coef`:
@@ -102,6 +105,8 @@ They can be plotted accordingly:
 plot_lgmr_regression(yeast_lgmr)
 plot_regression_field(yeast_lgmr, rng = 25)
 ```
+In generall, a good fit spreads out and captures the overall M-V trend.
+The main M-V density is captured by the common trend while the sparser part is captured by the latent trend.
 
 We can then estimate the uncertainty similar to the GR case:
 ```{r lgmr_unc}
@@ -119,7 +124,7 @@ lgmr_results <- yeast_lgmr %>%
     yeast_design,
     yeast_contrast,
     unc_lgmr,
-    clusters = 10
+    clusters = workers
   )
 ```
 

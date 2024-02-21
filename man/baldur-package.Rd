@@ -19,9 +19,21 @@ tails to estimate the probability of error from which a statistical
 decision can be made.
 }
 \references{
-Berg and Popescu (2023). Baldur: Bayesian Hierarchical Modeling
-For Label-Free Proteomics Exploiting Gamma Dependent Mean-Variance Trends.
-Under review.
+Berg George Popescu (2023) "Baldur: Bayesian Hierarchical Modeling for Label-Free Proteomics with Gamma Regressing Mean-Variance Trends"
+Molecular & Cellular Proteomics: 2023-12. https://doi.org/10.1016/j.mcpro.2023.100658
+
 Stan Development Team (2022). RStan: the R interface to Stan. R package version
 2.21.5. https://mc-stan.org
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/PhilipBerg/baldur}
+  \item Report bugs at \url{https://github.com/PhilipBerg/baldur/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Philip Berg \email{pb1015@msstate.edu} (\href{https://orcid.org/0000-0002-3772-6185}{ORCID})
+
 }
