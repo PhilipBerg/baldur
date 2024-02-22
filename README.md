@@ -52,7 +52,7 @@ Please see the vignettes for examples
 
 ## Reference
 
-Berg, Philip, and George Popescu. “Baldur: Bayesian hierarchical
-modeling for label-free proteomics exploiting gamma dependent
-mean-variance trends.” bioRxiv (2023): 2023-05.
-<https://doi.org/10.1101/2023.05.11.540411>
+Berg, Philip, and George Popescu. “Baldur: Bayesian Hierarchical
+Modeling for Label-Free Proteomics with Gamma Regressing Mean-Variance
+Trends” Molecular & Cellular Proteomics (2023): 2023-12.
+<https://doi.org/10.1016/j.mcpro.2023.100658>
