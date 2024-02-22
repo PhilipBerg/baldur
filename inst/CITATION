@@ -1,0 +1,11 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Baldur: Bayesian Hierarchical Modeling for Label-Free Proteomics with Gamma Regressing Mean-Variance Trends",
+  author   = c(person("Philip", "Berg", email = "pb1015@msstate.edu"),
+               person("Popescu", "George", email = "popescu@igbb.msstate.edu")),
+  journal  = "Molecular & Cellular Proteomics",
+  year     = 2023,
+  volume   = 22,
+  number   = 12,
+  doi      = "10.1016/j.mcpro.2023.100658"
+)
