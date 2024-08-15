@@ -14,6 +14,7 @@ infer_data_and_decision_model(
   stan_model = empirical_bayes,
   clusters = 1,
   h_not = 0,
+  auxiliary_columns = c(),
   ...
 )
 }
@@ -37,11 +38,15 @@ where \code{x} is a column in the contrast matrix.}
 \item{uncertainty_matrix}{A matrix of observation specific uncertainties}
 
 \item{stan_model}{Which Bayesian model to use. Defaults to \link{empirical_bayes}
-but also allows \link{weakly_informative}, or an user supplied function see [].}
+but also allows \link{weakly_informative}, or an user supplied function.}
 
 \item{clusters}{The number of parallel threads/workers to run on.}
 
 \item{h_not}{The value of the null hypothesis for the difference in means}
+
+\item{auxiliary_columns}{Names of columns in the design matrix that does not
+have corresponding data in the data set. For example, this can be
+co-founding variables such as bashes.}
 
 \item{...}{Additional arguments passed to
 \code{\link[rstan:sampling]{rstan::sampling}}. Note that verbose will
@@ -152,7 +157,7 @@ yeast_norm \%>\%
     contrast,
     unc,
     clusters = 1 # I highly recommend increasing the number of parallel workers/clusters
-                 # this will greatly reduce the speed of running baldur
+                 # this will greatly reduce the time of running baldur
   )
 }
 }

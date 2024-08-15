@@ -5,6 +5,7 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @description
 #' `r lifecycle::badge('experimental')`
 #'
+#'
 #'   Function to sample the posterior of the Bayesian data and
 #'   decision model. It first produces the needed inputs for Stan's [sampling()]
 #'   for each peptide (or protein, PTM, etc.). It then runs the sampling for the
@@ -72,9 +73,12 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   where `x` is a column in the contrast matrix.
 #' @param uncertainty_matrix A matrix of observation specific uncertainties
 #' @param stan_model Which Bayesian model to use. Defaults to [empirical_bayes]
-#'   but also allows [weakly_informative], or an user supplied function see [].
+#'   but also allows [weakly_informative], or an user supplied function.
 #' @param clusters The number of parallel threads/workers to run on.
 #' @param h_not The value of the null hypothesis for the difference in means
+#' @param auxiliary_columns Names of columns in the design matrix that does not
+#' have corresponding data in the data set. For example, this can be
+#' co-founding variables such as bashes.
 #' @param ... Additional arguments passed to
 #'   \code{\link[rstan:sampling]{rstan::sampling}}. Note that verbose will
 #'   always be forced to `FALSE` to avoid console flooding.
@@ -161,19 +165,30 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'     contrast,
 #'     unc,
 #'     clusters = 1 # I highly recommend increasing the number of parallel workers/clusters
-#'                  # this will greatly reduce the speed of running baldur
+#'                  # this will greatly reduce the time of running baldur
 #'   )
 #' }
-infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_matrix, uncertainty_matrix, stan_model = empirical_bayes, clusters = 1, h_not = 0, ...){
+infer_data_and_decision_model <- function(data,
+                                          id_col,
+                                          design_matrix,
+                                          contrast_matrix,
+                                          uncertainty_matrix,
+                                          stan_model = empirical_bayes,
+                                          clusters = 1,
+                                          h_not = 0,
+                                          auxiliary_columns = c(),
+                                          ...) {
+
   rlang::is_missing(data)
   rlang::is_missing(id_col)
   rlang::is_missing(uncertainty_matrix)
-  check_contrast_and_design(contrast_matrix, design_matrix, data)
+  check_contrast_and_design(contrast_matrix, design_matrix, data, auxiliary_columns)
   check_id_col(id_col, colnames(data))
 
   rstan_inputs <- rlang::dots_list(...)
   rstan_inputs$verbose <- F
-  N <- sum(design_matrix)
+
+  N <- nrow(design_matrix)
   K <- ncol(design_matrix)
   C <- ncol(contrast_matrix)
   ori_data <- data
@@ -219,7 +234,8 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
                                'stan_model',
                                "h_not",
                                "rstan_inputs",
-                               "stan_nse_wrapper"
+                               "stan_nse_wrapper",
+                               "auxiliary_columns"
                              )
     )
 
@@ -246,7 +262,8 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
                                                   N, K, C,
                                                   ..2, ..3,
                                                   condi,
-                                                  condi_regex
+                                                  condi_regex,
+                                                  auxiliary_columns
                                                 )
                              )
     )
@@ -276,7 +293,7 @@ infer_data_and_decision_model <- function(data, id_col, design_matrix, contrast_
                           bayesian_testing,
                           ori_data, id_col, design_matrix, contrast_matrix,
                           stan_model, N, K, C, uncertainty_matrix, h_not,
-                          rstan_inputs
+                          rstan_inputs, auxiliary_columns
         )
       ) %>%
       tidyr::unnest(tmp)
@@ -294,12 +311,13 @@ stan_nse_wrapper <- function(data, model, ...){
   )
 }
 
-generate_stan_data_input <- function(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex){
+generate_stan_data_input <- function(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, auxiliary_columns){
   row <- data[data[[id_col]] == id, stringr::str_detect(names(data), condi_regex)]
   ybar <- purrr::map_dbl(purrr::set_names(condi, condi),
                          ~as.numeric(row[stringr::str_which(colnames(row), .x)]) %>%
                            mean()
   )[condi]
+  ybar[auxiliary_columns] <- 0
   if(is.null(uncertainty)){
     u = rep(1,N)
   }else{
@@ -361,10 +379,10 @@ stan_summary <- function(samp, dat, condi, contrast,  h_not){
   )
 }
 
-bayesian_testing <- function(id, alpha, beta, data, id_col, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args){
+bayesian_testing <- function(id, alpha, beta, data, id_col, design_matrix, comparison, model, N, K, C, uncertainty = NULL, h_not, rstan_args, auxiliary_columns){
   condi <- colnames(design_matrix)
   condi_regex <- get_conditions(design_matrix)
-  dat <- generate_stan_data_input(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex)
+  dat <- generate_stan_data_input(id, id_col, design_matrix, data, uncertainty, comparison, N, K, C, alpha, beta, condi, condi_regex, auxiliary_columns)
   stan_output <- purrr::quietly(stan_nse_wrapper)(dat, model, rstan_args)
   stan_output %>%
     stan_summary(dat, condi, dat$c, h_not)
@@ -378,11 +396,11 @@ contrast_to_comps <- function(contrast, conditions){
   stringr::str_c(positives, negatives, sep = ' vs ')
 }
 
-check_contrast_and_design <- function(contrast_matrix, design_matrix, data) {
+check_contrast_and_design <- function(contrast_matrix, design_matrix, data, auxiliary_columns) {
   cenv <- rlang::caller_call()
-
+  design_matrix_no_aux <- check_design_aux(design_matrix, auxiliary_columns)
   check_contrast(contrast_matrix, cenv)
-  check_design(design_matrix, data, cenv)
+  check_design(design_matrix_no_aux, data, cenv)
 
   cr <- nrow(contrast_matrix)
   dn <- ncol(design_matrix)
@@ -405,11 +423,11 @@ check_contrast <- function(contrast_matrix, cenv = rlang::caller_call()) {
   rlang::is_missing(contrast_matrix)
   check_matrix(inp, "contrast matrix", cenv)
 
-  cs  <- colSums(contrast_matrix)
-  acs <- colSums(abs(contrast_matrix))
+  cs  <- !purrr::map_lgl(colSums(contrast_matrix),      ~ isTRUE(all.equal(.x, 0, check.attributes = F)))
+  acs <- !purrr::map_lgl(colSums(abs(contrast_matrix)), ~ isTRUE(all.equal(.x, 2, check.attributes = F)))
 
-  if (any(cs != 0)) {
-    csi <- which(cs != 0)
+  if (any(cs)) {
+    csi <- which(cs)
     rlang::abort(
       c(
         paste0(
@@ -429,8 +447,8 @@ check_contrast <- function(contrast_matrix, cenv = rlang::caller_call()) {
       call = cenv
     )
   }
-  if (any(acs != 2)) {
-    acsw <- which(acs != 2)
+  if (any(acs)) {
+    acsw <- which(acs)
     rlang::abort(
       c(
         paste0('Contrast column(s) ', acsw, "s absolute value do not sum to 2."),

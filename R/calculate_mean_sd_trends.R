@@ -6,8 +6,12 @@
 #'  Calculates the mean and standard deviation of each row (peptide)
 #'  and adds them as new columns. Assumes that the condition names are the
 #'  names in the design matrix.
+#'
 #' @param data A `tibble` or `data.frame` to annotate with mean and sd
 #' @param design_matrix A design matrix for the data (see example).
+#' @param auxiliary_columns Names of columns in the design matrix that does not
+#' have corresponding data in the data set. For example, this can be
+#' co-founding variables such as bashes.
 #'
 #' @return A `tibble` or `data.frame` with the mean and sd vectors
 #' @export
@@ -29,7 +33,8 @@
 #'     psrn("identifier") %>%
 #'     # Get mean-variance trends
 #'     calculate_mean_sd_trends(design)
-calculate_mean_sd_trends <- function(data, design_matrix){
+calculate_mean_sd_trends <- function(data, design_matrix, auxiliary_columns = c()){
+  design_matrix <- check_design_aux(design_matrix, auxiliary_columns)
   check_design(design_matrix, data)
 
   conditions <- get_conditions(design_matrix)
@@ -97,6 +102,15 @@ check_design <- function(design_matrix, data, cenv = rlang::caller_call()) {
       call = cenv
     )
   }
+}
+
+check_design_aux <- function(design_matrix, auxiliary_columns) {
+  if (!is.null(auxiliary_columns)) {
+    if (is.character(auxiliary_columns))
+      auxiliary_columns <- which(colnames(design_matrix) %in% auxiliary_columns)
+    design_matrix <- design_matrix[, -auxiliary_columns, drop = F]
+  }
+  return(design_matrix)
 }
 
 check_matrix <- function(input, type, cenv) {

@@ -4,12 +4,16 @@
 \alias{calculate_mean_sd_trends}
 \title{Calculate the Mean-Variance trend}
 \usage{
-calculate_mean_sd_trends(data, design_matrix)
+calculate_mean_sd_trends(data, design_matrix, auxiliary_columns = c())
 }
 \arguments{
 \item{data}{A \code{tibble} or \code{data.frame} to annotate with mean and sd}
 
 \item{design_matrix}{A design matrix for the data (see example).}
+
+\item{auxiliary_columns}{Names of columns in the design matrix that does not
+have corresponding data in the data set. For example, this can be
+co-founding variables such as bashes.}
 }
 \value{
 A \code{tibble} or \code{data.frame} with the mean and sd vectors

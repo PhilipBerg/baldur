@@ -1,4 +1,6 @@
 # baldur (development version)
+Added capability to add auxiliary variables to the design matrix, e.g., batches.
+Fixed bug with numeric overflow when checking that the contrast matrix is correctly setup.
 
 # baldur 0.0.3
 * Updated in response to new `rstan` release on CRAN

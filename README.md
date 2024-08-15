@@ -2,10 +2,11 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-![cran-badge](http://www.r-pkg.org/badges/version/baldur)
 ![R-CMD-check](https://github.com/PhilipBerg/baldur/actions/workflows/check-standard.yaml/badge.svg)
 ![Static
 Badge](https://img.shields.io/badge/10.1016%2Fj.mcpro.2023.100658-green?style=palstic&label=DOI%3A&labelColor=grey&link=https%3A%2F%2Fdoi.org%2F10.1016%2Fj.mcpro.2023.100658)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/baldur)](https://CRAN.R-project.org/package=baldur)
 <!-- badges: end -->
 
 # Baldur
