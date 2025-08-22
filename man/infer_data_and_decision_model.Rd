@@ -48,12 +48,11 @@ but also allows \link{weakly_informative}, or an user supplied function.}
 have corresponding data in the data set. For example, this can be
 co-founding variables such as bashes.}
 
-\item{...}{Additional arguments passed to
-\code{\link[rstan:sampling]{rstan::sampling}}. Note that verbose will
-always be forced to \code{FALSE} to avoid console flooding.}
+\item{...}{Additional arguments passed to \link[rstan:stanmodel-method-sampling]{sampling}.
+Note that verbose will always be forced to \code{FALSE} to avoid console flooding.}
 }
 \value{
-A \code{\link[=tibble]{tibble()}} or \code{\link[=data.frame]{data.frame()}} annotated  with statistics of the
+A \link[tibble:tibble]{tibble} or \code{\link[=data.frame]{data.frame()}} annotated  with statistics of the
 posterior and p(error). \code{err} is the probability of error, i.e., the two
 tail-density supporting the null-hypothesis, \code{lfc} is the estimated
 \eqn{\log_2}-fold change, \code{sigma} is the common variance, and \code{lp} is the

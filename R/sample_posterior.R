@@ -79,11 +79,10 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #' @param auxiliary_columns Names of columns in the design matrix that does not
 #' have corresponding data in the data set. For example, this can be
 #' co-founding variables such as bashes.
-#' @param ... Additional arguments passed to
-#'   \code{\link[rstan:sampling]{rstan::sampling}}. Note that verbose will
-#'   always be forced to `FALSE` to avoid console flooding.
+#' @param ... Additional arguments passed to [sampling][rstan::sampling()].
+#' Note that verbose will always be forced to `FALSE` to avoid console flooding.
 #'
-#' @return A [tibble()] or [data.frame()] annotated  with statistics of the
+#' @return A [tibble][tibble::tibble()] or [data.frame()] annotated  with statistics of the
 #'   posterior and p(error). `err` is the probability of error, i.e., the two
 #'   tail-density supporting the null-hypothesis, `lfc` is the estimated
 #'   \eqn{\log_2}-fold change, `sigma` is the common variance, and `lp` is the

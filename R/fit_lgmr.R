@@ -11,7 +11,7 @@ utils::globalVariables(c("reg", "coef"))
 #'@param  id_col A character for the name of the column containing the name of
 #'  the features in data (e.g., peptides, proteins, etc.)
 #'@param model Defaults to [lgmr_model] (see it for details on the model), can
-#'  also be an user supplied [stan_model()]
+#'  also be an user supplied [stan_model][rstan::stan_model()]
 #'@param iter Total number of samples to draw
 #'@param warmup Number of warm-up samples to draw
 #'@param chains Number of chains to run
