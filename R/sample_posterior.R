@@ -75,11 +75,10 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'   but also allows [weakly_informative], or an user supplied function see [].
 #' @param clusters The number of parallel threads/workers to run on.
 #' @param h_not The value of the null hypothesis for the difference in means
-#' @param ... Additional arguments passed to
-#'   \code{\link[rstan:sampling]{rstan::sampling}}. Note that verbose will
-#'   always be forced to `FALSE` to avoid console flooding.
+#' @param ... Additional arguments passed to [sampling][rstan::sampling()].
+#'  Note that verbose will always be forced to `FALSE` to avoid console flooding.
 #'
-#' @return A [tibble()] or [data.frame()] annotated  with statistics of the
+#' @return A [tibble][tibble::tibble()] or [data.frame()] annotated  with statistics of the
 #'   posterior and p(error). `err` is the probability of error, i.e., the two
 #'   tail-density supporting the null-hypothesis, `lfc` is the estimated
 #'   \eqn{\log_2}-fold change, `sigma` is the common variance, and `lp` is the
