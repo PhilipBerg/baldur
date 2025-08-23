@@ -38,7 +38,7 @@ the features in data (e.g., peptides, proteins, etc.). Has to be a unique
 identifier for each feature.}
 
 \item{model}{Defaults to \link{lgmr_model} (see it for details on the model), can
-also be an user supplied \code{\link[=stan_model]{stan_model()}}}
+also be an user supplied \link[rstan:stan_model]{stan_model}}
 
 \item{iter}{Total number of samples to draw}
 
