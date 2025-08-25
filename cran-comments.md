@@ -1,9 +1,10 @@
 # For release of Baldur 0.0.4
 * Added capability to add auxiliary variables to the design matrix, e.g., batches.
 * Fixed bug with numeric overflow when checking that the contrast matrix is correctly setup.
-* Updated links to other packages as requested
-* Improved Vignettes
-
+* Updated links to other packages in accordance with new CRAN policies
+* Fixed numerical overflow in geometric mean calculation (psrn.R).
+* Extensive README update and documentation improvements.
+* Updated/corrected parts of the vignettes to be more accurate and explicit.
 
 # For release of Baldur 0.0.3
 Updated Stan models for future comparability with `rstan` as suggested by one of their developers on `baldur`'s GitHub:
