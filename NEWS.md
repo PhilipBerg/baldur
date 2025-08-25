@@ -1,4 +1,4 @@
-# baldur (development version)
+# baldur 0.0.4
 Added capability to add auxiliary variables to the design matrix, e.g., batches.
 Fixed bug with numeric overflow when checking that the contrast matrix is correctly setup.
 
