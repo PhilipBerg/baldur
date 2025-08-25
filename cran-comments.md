@@ -1,3 +1,10 @@
+# For release of Baldur 0.0.4
+* Added capability to add auxiliary variables to the design matrix, e.g., batches.
+* Fixed bug with numeric overflow when checking that the contrast matrix is correctly setup.
+* Updated links to other packages as requested
+* Improved Vignettes
+
+
 # For release of Baldur 0.0.3
 Updated Stan models for future comparability with `rstan` as suggested by one of their developers on `baldur`'s GitHub:
 https://github.com/PhilipBerg/baldur/pull/16
