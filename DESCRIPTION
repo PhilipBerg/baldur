@@ -2,7 +2,7 @@ Package: baldur
 Title: Bayesian Hierarchical Modeling for Label-Free Proteomics
 Version: 0.0.4
 Authors@R: 
-    person("Philip", "Berg", , "pb1015@msstate.edu", role = c("aut", "cre"),
+    person("Philip", "Berg", , "pberg@live.se", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3772-6185"))
 Description: Statistical decision in proteomics data using a hierarchical
     Bayesian model. There are two regression models for describing the 
