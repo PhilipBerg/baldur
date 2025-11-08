@@ -34,6 +34,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Philip Berg \email{pb1015@msstate.edu} (\href{https://orcid.org/0000-0002-3772-6185}{ORCID})
+\strong{Maintainer}: Philip Berg \email{pberg@live.se} (\href{https://orcid.org/0000-0002-3772-6185}{ORCID})
 
 }

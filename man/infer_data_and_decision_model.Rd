@@ -69,11 +69,11 @@ the Stan manual for more details). In addition it returns a column
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Function to sample the posterior of the Bayesian data and
-decision model. It first produces the needed inputs for Stan's \code{\link[=sampling]{sampling()}}
+decision model. It first produces the needed inputs for Stan's \link[rstan:stanmodel-method-sampling]{sampling}
 for each peptide (or protein, PTM, etc.). It then runs the sampling for the
 data and decision model. From the posterior, it then collects estimates and
 sampling statistics from the posterior of data model and integrates the
-decision distribution D. It then returns a \code{\link[=tibble]{tibble()}} with all the
+decision distribution D. It then returns a \link[tibble:tibble]{tibble} with all the
 information for each peptide's posterior (see \strong{Value} below). There are
 major time gains to be made by running this procedure in parallel.
 \code{infer_data_and_decision_model} has an efficient wrapper around

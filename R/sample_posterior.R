@@ -7,11 +7,11 @@ utils::globalVariables(c("alpha", "betau", "id", "tmp", "intu", "condi"))
 #'
 #'
 #'   Function to sample the posterior of the Bayesian data and
-#'   decision model. It first produces the needed inputs for Stan's [sampling()]
+#'   decision model. It first produces the needed inputs for Stan's [sampling][rstan::sampling()]
 #'   for each peptide (or protein, PTM, etc.). It then runs the sampling for the
 #'   data and decision model. From the posterior, it then collects estimates and
 #'   sampling statistics from the posterior of data model and integrates the
-#'   decision distribution D. It then returns a [tibble()] with all the
+#'   decision distribution D. It then returns a [tibble][tibble::tibble()] with all the
 #'   information for each peptide's posterior (see **Value** below). There are
 #'   major time gains to be made by running this procedure in parallel.
 #'   `infer_data_and_decision_model` has an efficient wrapper around
